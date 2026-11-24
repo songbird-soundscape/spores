@@ -385,6 +385,22 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
   #statsBox.inset{width:calc(100% - 20px)}
   #statsBox.inset.collapsed{width:auto; max-width:calc(100% - 150px)}
 }
+/* the two find maps sit side by side whenever their panel is at least 400 px wide (desktop and tablet); stacked on phones */
+.geo{container-type:inline-size}
+/* the time tree can fill the whole window */
+#ttWrap.ttfull{position:fixed; inset:0; z-index:60; margin:0; border-radius:0; border:0; overflow:hidden; padding:12px 16px; display:flex; flex-direction:column; gap:8px}
+#ttWrap.ttfull .ttgrid{flex:1 1 auto; min-height:0; grid-template-rows:minmax(0,1fr); align-items:stretch}
+#ttWrap.ttfull .tt-scroll{max-height:none; height:100%}
+#ttWrap.ttfull #ttDetail{overflow:auto; max-height:100%}
+body.ttfull-open{overflow:hidden}
+#ttExpand{align-self:flex-end}
+#ttWrap.ttfull > .sub, #ttWrap.ttfull > .dsrc{display:none}
+/* with nothing selected, the tree takes the full width */
+.ttgrid:has(> #ttDetail[hidden]){grid-template-columns:minmax(0,1fr)}
+@container (min-width:400px){
+  .geomaps{grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
+  .geomaps figcaption{min-height:3em; display:flex; align-items:flex-end}
+}
 /* semantic zoom: world lines keep their width and world labels their size */
 #stage line, .hull path, .clad path, .band ellipse, .band rect{vector-effect:non-scaling-stroke}
 .hull text{font-size:calc(12px / var(--k, 1)); stroke-width:calc(3px / var(--k, 1))}
@@ -519,6 +535,7 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
       <div class="field"><span>Intervals shown</span><div class="seg" role="group" aria-label="Intervals in the time tree" id="ttSeg"></div></div>
       <button type="button" id="ttAll">All intervals</button>
       <div class="field"><span>Zoom</span><div class="seg" role="group" aria-label="Time tree zoom"><button type="button" id="ttZoomOut" aria-label="Zoom out">−</button><button type="button" id="ttZoomFit">Fit width</button><button type="button" id="ttZoomIn" aria-label="Zoom in">+</button></div></div>
+      <button type="button" id="ttExpand" aria-pressed="false" title="Fill the window with the time tree (Esc to close)">⤢ Expand</button>
       <label class="checks" id="ttSporesBox"><input type="checkbox" id="ttSpores" checked> List spore genera where no plant is known</label>
     </div>
     <div class="ttgrid"><div class="tt-scroll"><svg id="tt" role="img" aria-label="Time tree of plant lineages with genera placed by interval"></svg></div>
@@ -2096,10 +2113,21 @@ function syncDiscoveryUI(){
   const disc = active === "discovery";
   document.querySelector(".yearbox").style.display = disc ? "" : "none";
   statsBox.style.display = disc ? "" : "none";
+  const ms = document.querySelector("section.timeline"); if (ms) ms.style.display = disc ? "" : "none";
   if (!disc) stopPlay();
 }
 document.querySelectorAll(".seg button[data-mode]").forEach(b => b.addEventListener("click", () => setTimeout(syncDiscoveryUI, 0)));
 setTimeout(syncDiscoveryUI, 0);
+/* Expand: the time tree fills the window; Esc or the button brings it back */
+(function ttExpand(){
+  const btn = document.getElementById("ttExpand"), sec = document.getElementById("ttWrap"); if (!btn || !sec) return;
+  const setFull = on => { sec.classList.toggle("ttfull", on); document.body.classList.toggle("ttfull-open", on);
+    btn.setAttribute("aria-pressed", on); btn.textContent = on ? "✕ Close (Esc)" : "⤢ Expand";
+    requestAnimationFrame(() => { window.dispatchEvent(new Event("resize")); setTimeout(() => document.getElementById("ttZoomFit")?.click(), 200); }); };
+  btn.onclick = () => setFull(!sec.classList.contains("ttfull"));
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && sec.classList.contains("ttfull")) setFull(false); });
+  new MutationObserver(() => { if (sec.hidden && sec.classList.contains("ttfull")) setFull(false); }).observe(sec, {attributes:true, attributeFilter:["hidden"]});
+})();
 /* drag the left edge of the Selected Taxon panel (or the time tree's panel) to give it more or less room;
    double-click the edge to reset; arrow keys work too. The width is kept for next time. */
 (function sidePanelGrip(){
