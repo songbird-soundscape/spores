@@ -2356,7 +2356,18 @@ setTimeout(syncDiscoveryUI, 0);
 /* outside the Pennsylvanian: the call for documents names the era, and the survey-literature section (Pennsylvanian only) is hidden */
 if (!IS_PENN) {
   const era = {"silurian-devonian": "Paleozoic", mississippian: "Paleozoic", permian: "Paleozoic", "triassic-jurassic": "Mesozoic", cretaceous: "Mesozoic", cenozoic: "Cenozoic"}[PERIOD] || "fossil";
-  const cp = document.querySelector("#contribute .sub"); if (cp) cp.innerHTML = cp.innerHTML.replace("Pennsylvanian spores and plants", era + " spores and plants");
+  const cp = document.querySelector("#contribute .sub");
+  /* what kinds of documents and data each interval's record lives in */
+  const KINDS = {
+    "silurian-devonian": ["oil-company and agency reports", "spore and acritarch counts, species lists, chert or compression floras, localities, or well and outcrop correlations"],
+    mississippian: ["coal- and oil-company and agency reports", "spore counts, species lists, coal-ball, chert or compression floras, localities, or coal-bed and well correlations"],
+    permian: ["coal- and oil-company and agency reports", "spore and pollen counts, species lists, compression or silicified floras, localities, or coal-bed and well correlations"],
+    "triassic-jurassic": ["oil-company and agency reports", "spore, pollen and dinoflagellate counts, species lists, leaf or charcoalified mesofossil floras, localities, or well and outcrop correlations"],
+    cretaceous: ["oil-company and agency reports", "spore, pollen and dinoflagellate counts, species lists, leaf or charcoalified mesofossil floras, localities, or well and outcrop correlations"],
+    cenozoic: ["oil-company, agency and environmental-consultancy reports", "pollen and spore counts, species lists, pollen diagrams, leaf and fruit floras, lake or peat cores, localities, or well and outcrop correlations"]}[PERIOD];
+  if (cp) { let h = cp.innerHTML.replace("Pennsylvanian spores and plants", era + " spores and plants");
+    if (KINDS) h = h.replace("coal-company and agency reports", KINDS[0]).replace("spore counts, species lists, coal-ball or compression floras, localities or coal-bed correlations", KINDS[1]);
+    cp.innerHTML = h; }
   const wm = document.getElementById("where-more"); if (wm) wm.style.display = "none";
 }
 { let rmt = null, lastW = 0; new ResizeObserver(() => { const w = document.querySelector(".dbtl")?.clientWidth || 0; if (!w || Math.abs(w - lastW) < 4) return; lastW = w;
