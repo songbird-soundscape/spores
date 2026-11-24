@@ -1,0 +1,143 @@
+{
+ "note": "Living genera kept on the time tree because fossil taxa are referred to them (named after them, or their affinity names them). Built 24 Nov 2026 by matching Plants Through Time genera; false stem matches removed by hand.",
+ "referents": {
+  "Areca": [
+   "Arecipites"
+  ],
+  "Aster": [
+   "Asteropollis"
+  ],
+  "Azolla": [
+   "Azolla"
+  ],
+  "Bombax": [
+   "Bombacacidites"
+  ],
+  "Casuarina": [
+   "Casuarinidites"
+  ],
+  "Cupressus": [
+   "Cupressacites"
+  ],
+  "Cyathea": [
+   "Cyathidites",
+   "Kuylisporites"
+  ],
+  "Cycas": [
+   "Cycadopites"
+  ],
+  "Cyperus": [
+   "Cyperaceaepollis"
+  ],
+  "Ephedra": [
+   "Ephedra",
+   "Ephedripites"
+  ],
+  "Equisetum": [
+   "Equisetosporites"
+  ],
+  "Erica": [
+   "Ericipites"
+  ],
+  "Fagus": [
+   "Faguspollenites"
+  ],
+  "Gleichenia": [
+   "Gleicheniidites"
+  ],
+  "Gnetum": [
+   "Gnetaceaepollenites"
+  ],
+  "Gunnera": [
+   "Tricolpites reticulatus"
+  ],
+  "Ilex": [
+   "Clavatricolpites",
+   "Ilexpollenites"
+  ],
+  "Juglans": [
+   "Juglans",
+   "Juglanspollenites"
+  ],
+  "Lilium": [
+   "Liliacidites"
+  ],
+  "Liquidambar": [
+   "Liquidambar",
+   "Liquidambarpollenites",
+   "Periporopollenites"
+  ],
+  "Lycopodium": [
+   "Lycopodiacidites",
+   "Lycopodiumsporites",
+   "Retitriletes"
+  ],
+  "Malva": [
+   "Malvacipollis"
+  ],
+  "Myrica": [
+   "Myricipites"
+  ],
+  "Myrtus": [
+   "Myrtaceidites"
+  ],
+  "Nyssa": [
+   "Nyssa",
+   "Nyssapollenites"
+  ],
+  "Pandanus": [
+   "Pandaniidites"
+  ],
+  "Pinus": [
+   "Pinus",
+   "Pinuspollenites"
+  ],
+  "Plantago": [
+   "Plantago"
+  ],
+  "Podocarpus": [
+   "Podocarpidites",
+   "Podocarpus"
+  ],
+  "Polypodium": [
+   "Polypodiaceoisporites",
+   "Polypodiidites",
+   "Polypodiisporites",
+   "Polypodiisporonites"
+  ],
+  "Protea": [
+   "Proteacidites"
+  ],
+  "Pteris": [
+   "Polypodiaceoisporites"
+  ],
+  "Rhizophora": [
+   "Zonocostites"
+  ],
+  "Schizaea": [
+   "Schizaeoisporites"
+  ],
+  "Selaginella": [
+   "Neoraistrickia",
+   "Selaginella"
+  ],
+  "Tilia": [
+   "Tiliaepollenites"
+  ],
+  "Tsuga": [
+   "Cerebropollenites",
+   "Tsuga",
+   "Tsugaepollenites"
+  ],
+  "Typha": [
+   "Sparganiaceaepollenites"
+  ],
+  "Ulmus": [
+   "Ulmipollenites",
+   "Ulmoideipites"
+  ],
+  "Welwitschia": [
+   "Gnetaceaepollenites"
+  ]
+ }
+}

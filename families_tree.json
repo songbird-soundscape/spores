@@ -1,0 +1,916 @@
+{
+ "genus_family": {
+  "Acorus": "Araceae",
+  "Juncus": "Juncaceae",
+  "Cyperus": "Cyperaceae",
+  "Dioscorea": "Dioscoreaceae",
+  "Areca": "Arecaceae",
+  "Amaranthus": "Amaranthaceae",
+  "Drosera": "Droseraceae",
+  "Dianthus": "Caryophyllaceae",
+  "Aster": "Asteraceae",
+  "Ilex": "Aquifoliaceae",
+  "Acanthaceae": "Acanthaceae",
+  "Loranthus": "Loranthaceae",
+  "Hamamelis": "Hamamelidaceae",
+  "Liquidambar": "Hamamelidaceae",
+  "Buxus": "Buxaceae",
+  "Gunnera": "Gunneraceae",
+  "Berberis": "Berberidaceae",
+  "Convolvulus": "Convolvulaceae",
+  "Laurus": "Lauraceae",
+  "Alisma": "Alismaceae",
+  "Combretum": "Combretaceae",
+  "Alnus": "Betulaceae",
+  "Betula": "Betulaceae",
+  "Fagus": "Fagaceae",
+  "Juglans": "Juglandaceae",
+  "Casuarina": "Casuarinaceae",
+  "Euphorbia": "Euphorbiaceae",
+  "Celtis": "Ulmaceae",
+  "Bombax": "Bombacaceae",
+  "Annona": "Annonaceae",
+  "Magnoliaceae": "Magnoliaceae",
+  "Drimys": "Winteraceae",
+  "Cupressus": "Cupressaceae",
+  "Dacrycarpus": "Podocarpaceae",
+  "Gleichenia": "Gleicheniaceae",
+  "Equisetum": "Equisetaceae",
+  "Azolla": "Salviniaceae",
+  "Dryopteris": "Dryopteridaceae",
+  "Cyathea": "Cyatheaceae",
+  "Anemia": "Anemiaceae",
+  "Lygodium": "Lygodiaceae",
+  "Lycopodium": "Lycopodiaceae",
+  "Isoetes": "Isoetaceae",
+  "Agathis": "Araucariaceae",
+  "Araucaria": "Araucariaceae",
+  "Gnetum": "Gnetaceae",
+  "Ginkgo": "Ginkgoaceae",
+  "Ephedra": "Ephedraceae",
+  "Cycas": "Cycadaceae",
+  "Pinus": "Pinaceae",
+  "Tsuga": "Pinaceae",
+  "Nymphaea": "Nymphaeaceae",
+  "Pandanus": "Pandanaceae",
+  "Typha": "Typhaceae",
+  "Polygonum": "Polygonaceae",
+  "Taraxacum": "Asteraceae",
+  "Rubia": "Rubiaceae",
+  "Olea": "Oleaceae",
+  "Plantago": "Plantaginaceae",
+  "Nyssa": "Nyssaceae",
+  "Nelumbo": "Nelumbonaceae",
+  "Platanus": "Platanaceae",
+  "Ranunculus": "Ranunculaceae",
+  "Solanum": "Solanaceae",
+  "Myrtus": "Myrtaceae",
+  "Vitis": "Vitaceae",
+  "Vicia": "Fabaceae",
+  "Nothofagus": "Nothofagaceae",
+  "Quercus": "Fagaceae",
+  "Myrica": "Myricaceae",
+  "Passiflora": "Passifloraceae",
+  "Salix": "Salicaceae",
+  "Rhizophora": "Rhizophoraceae",
+  "Rosa": "Rosaceae",
+  "Ulmus": "Ulmaceae",
+  "Mimosa": "Mimosaceae",
+  "Urtica": "Urticaceae",
+  "Sapindus": "Sapindaceae",
+  "Tilia": "Tiliaceae",
+  "Malva": "Malvaceae",
+  "Piper": "Piperaceae",
+  "Schisandra": "Schisandraceae",
+  "Metasequoia": "Cupressaceae",
+  "Podocarpus": "Podocarpaceae",
+  "Ophioglossum": "Ophioglossaceae",
+  "Osmunda": "Osmundaceae",
+  "Woodwardia": "Blechnaceae",
+  "Polypodium": "Polypodiaceae",
+  "Onoclea": "Onocleaceae",
+  "Pteris": "Pteridaceae",
+  "Schizaea": "Schizaeaceae",
+  "Selaginella": "Selaginellaceae",
+  "Welwitschia": "Welwitschiaceae",
+  "Zamia": "Zamiaceae",
+  "Acanthus": "Acanthaceae",
+  "Amborella": "Amborellaceae",
+  "Apium": "Apiaceae",
+  "Arum": "Araceae",
+  "Asclepias": "Apocynaceae",
+  "Brassica": "Brassicaceae",
+  "Chloranthus": "Chloranthaceae",
+  "Erica": "Ericaceae",
+  "Huperzia": "Lycopodiaceae",
+  "Lamium": "Lamiaceae",
+  "Lilium": "Liliaceae",
+  "Magnolia": "Magnoliaceae",
+  "Manilkara": "Sapotaceae",
+  "Oenothera": "Onagraceae",
+  "Orchis": "Orchidaceae",
+  "Papaver": "Papaveraceae",
+  "Poa": "Poaceae",
+  "Protea": "Proteaceae",
+  "Restio": "Restionaceae",
+  "Zingiber": "Zingiberaceae",
+  "Cucurbita": "Cucurbitaceae",
+  "Morus": "Moraceae"
+ },
+ "family": {
+  "Acanthaceae": {
+   "crown": 63.4,
+   "crown_lo": 51.5,
+   "crown_hi": 76.1,
+   "ptt_id": "acanthaceae"
+  },
+  "Alismaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": null
+  },
+  "Amaranthaceae": {
+   "crown": 73.8,
+   "crown_lo": 62.1,
+   "crown_hi": 86.3,
+   "ptt_id": "amaranthaceae"
+  },
+  "Anemiaceae": {
+   "crown": 145.8,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "anemiaceae"
+  },
+  "Annonaceae": {
+   "crown": 74.1,
+   "crown_lo": 57.6,
+   "crown_hi": 90.3,
+   "ptt_id": "annonaceae"
+  },
+  "Aquifoliaceae": {
+   "crown": 12.3,
+   "crown_lo": 1.9,
+   "crown_hi": 29.7,
+   "ptt_id": "aquifoliaceae"
+  },
+  "Araceae": {
+   "crown": 137.1,
+   "crown_lo": 130.4,
+   "crown_hi": 142.6,
+   "ptt_id": "araceae"
+  },
+  "Araucariaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "araucariaceae"
+  },
+  "Arecaceae": {
+   "crown": 94.3,
+   "crown_lo": 78.2,
+   "crown_hi": 112.0,
+   "ptt_id": "arecaceae"
+  },
+  "Asteraceae": {
+   "crown": 57.8,
+   "crown_lo": 47.5,
+   "crown_hi": 69.8,
+   "ptt_id": "asteraceae"
+  },
+  "Berberidaceae": {
+   "crown": 66.7,
+   "crown_lo": 45.0,
+   "crown_hi": 93.0,
+   "ptt_id": "berberidaceae"
+  },
+  "Betulaceae": {
+   "crown": 68.2,
+   "crown_lo": 56.0,
+   "crown_hi": 81.4,
+   "ptt_id": "betulaceae"
+  },
+  "Blechnaceae": {
+   "crown": 88.2,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "blechnaceae"
+  },
+  "Bombacaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": null
+  },
+  "Buxaceae": {
+   "crown": 103.1,
+   "crown_lo": 68.1,
+   "crown_hi": 147.4,
+   "ptt_id": "buxaceae"
+  },
+  "Caryophyllaceae": {
+   "crown": 85.5,
+   "crown_lo": 70.5,
+   "crown_hi": 99.0,
+   "ptt_id": "caryophyllaceae"
+  },
+  "Casuarinaceae": {
+   "crown": 28.2,
+   "crown_lo": 9.0,
+   "crown_hi": 55.4,
+   "ptt_id": "casuarinaceae"
+  },
+  "Combretaceae": {
+   "crown": 48.4,
+   "crown_lo": 21.6,
+   "crown_hi": 84.9,
+   "ptt_id": "combretaceae"
+  },
+  "Convolvulaceae": {
+   "crown": 64.9,
+   "crown_lo": 49.4,
+   "crown_hi": 76.6,
+   "ptt_id": "convolvulaceae"
+  },
+  "Cupressaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "cupressaceae"
+  },
+  "Cyatheaceae": {
+   "crown": 97.9,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "cyatheaceae"
+  },
+  "Cycadaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "cycadaceae"
+  },
+  "Cyperaceae": {
+   "crown": 60.6,
+   "crown_lo": 47.1,
+   "crown_hi": 77.4,
+   "ptt_id": "cyperaceae"
+  },
+  "Dioscoreaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "dioscoreaceae"
+  },
+  "Droseraceae": {
+   "crown": 53.1,
+   "crown_lo": 28.9,
+   "crown_hi": 80.9,
+   "ptt_id": "droseraceae"
+  },
+  "Dryopteridaceae": {
+   "crown": 131.1,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "dryopteridaceae"
+  },
+  "Ephedraceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "ephedraceae"
+  },
+  "Equisetaceae": {
+   "crown": 174.1,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "equisetaceae"
+  },
+  "Euphorbiaceae": {
+   "crown": 69.6,
+   "crown_lo": 56.9,
+   "crown_hi": 83.0,
+   "ptt_id": "euphorbiaceae"
+  },
+  "Fabaceae": {
+   "crown": 94.4,
+   "crown_lo": 79.5,
+   "crown_hi": 109.4,
+   "ptt_id": "fabaceae"
+  },
+  "Fagaceae": {
+   "crown": 71.8,
+   "crown_lo": 38.9,
+   "crown_hi": 96.9,
+   "ptt_id": "fagaceae"
+  },
+  "Ginkgoaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "ginkgoaceae"
+  },
+  "Gleicheniaceae": {
+   "crown": 139.6,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "gleicheniaceae"
+  },
+  "Gnetaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "gnetaceae"
+  },
+  "Gunneraceae": {
+   "crown": 41.5,
+   "crown_lo": 11.8,
+   "crown_hi": 79.0,
+   "ptt_id": "gunneraceae"
+  },
+  "Hamamelidaceae": {
+   "crown": 92.9,
+   "crown_lo": 83.6,
+   "crown_hi": 105.5,
+   "ptt_id": "hamamelidaceae"
+  },
+  "Isoetaceae": {
+   "crown": 58.9,
+   "crown_lo": 57.3,
+   "crown_hi": 60.1,
+   "ptt_id": "isoetaceae"
+  },
+  "Juglandaceae": {
+   "crown": 70.5,
+   "crown_lo": 64.4,
+   "crown_hi": 82.3,
+   "ptt_id": "juglandaceae"
+  },
+  "Juncaceae": {
+   "crown": 54.2,
+   "crown_lo": 32.9,
+   "crown_hi": 79.5,
+   "ptt_id": "juncaceae"
+  },
+  "Lauraceae": {
+   "crown": 77.5,
+   "crown_lo": 52.3,
+   "crown_hi": 106.2,
+   "ptt_id": "lauraceae"
+  },
+  "Loranthaceae": {
+   "crown": 43.2,
+   "crown_lo": 13.1,
+   "crown_hi": 82.8,
+   "ptt_id": "loranthaceae"
+  },
+  "Lycopodiaceae": {
+   "crown": 368.4,
+   "crown_lo": 326,
+   "crown_hi": 389,
+   "ptt_id": "lycopodiaceae"
+  },
+  "Lygodiaceae": {
+   "crown": 59.2,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "lygodiaceae"
+  },
+  "Magnoliaceae": {
+   "crown": 47.4,
+   "crown_lo": 6.5,
+   "crown_hi": 87.2,
+   "ptt_id": "magnoliaceae"
+  },
+  "Malvaceae": {
+   "crown": 76.1,
+   "crown_lo": 67.4,
+   "crown_hi": 85.4,
+   "ptt_id": "malvaceae"
+  },
+  "Mimosaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": null
+  },
+  "Myricaceae": {
+   "crown": 47.5,
+   "crown_lo": 11.3,
+   "crown_hi": 82.9,
+   "ptt_id": "myricaceae"
+  },
+  "Myrtaceae": {
+   "crown": 73.4,
+   "crown_lo": 59.8,
+   "crown_hi": 87.1,
+   "ptt_id": "myrtaceae"
+  },
+  "Nelumbonaceae": {
+   "crown": 11.0,
+   "crown_lo": 2.4,
+   "crown_hi": 22.7,
+   "ptt_id": "nelumbonaceae"
+  },
+  "Nothofagaceae": {
+   "crown": 30.0,
+   "crown_lo": 7.8,
+   "crown_hi": 64.9,
+   "ptt_id": "nothofagaceae"
+  },
+  "Nymphaeaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "nymphaeaceae"
+  },
+  "Nyssaceae": {
+   "crown": 69.3,
+   "crown_lo": 20.1,
+   "crown_hi": 110.1,
+   "ptt_id": "nyssaceae"
+  },
+  "Oleaceae": {
+   "crown": 48.9,
+   "crown_lo": 31.3,
+   "crown_hi": 67.7,
+   "ptt_id": "oleaceae"
+  },
+  "Onocleaceae": {
+   "crown": 81.3,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "onocleaceae"
+  },
+  "Ophioglossaceae": {
+   "crown": 244.5,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "ophioglossaceae"
+  },
+  "Osmundaceae": {
+   "crown": 117.6,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "osmundaceae"
+  },
+  "Pandanaceae": {
+   "crown": 64.1,
+   "crown_lo": 56.0,
+   "crown_hi": 77.3,
+   "ptt_id": "pandanaceae"
+  },
+  "Passifloraceae": {
+   "crown": 63.8,
+   "crown_lo": 45.2,
+   "crown_hi": 88.2,
+   "ptt_id": "passifloraceae"
+  },
+  "Pinaceae": {
+   "crown": 171.97,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "pinaceae"
+  },
+  "Piperaceae": {
+   "crown": 69.9,
+   "crown_lo": 50.4,
+   "crown_hi": 89.9,
+   "ptt_id": "piperaceae"
+  },
+  "Plantaginaceae": {
+   "crown": 76.3,
+   "crown_lo": 66.8,
+   "crown_hi": 87.9,
+   "ptt_id": "plantaginaceae"
+  },
+  "Platanaceae": {
+   "crown": 72.1,
+   "crown_lo": 56.0,
+   "crown_hi": 97.3,
+   "ptt_id": "platanaceae"
+  },
+  "Podocarpaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "podocarpaceae"
+  },
+  "Polygonaceae": {
+   "crown": 50.2,
+   "crown_lo": 31.7,
+   "crown_hi": 72.6,
+   "ptt_id": "polygonaceae"
+  },
+  "Polypodiaceae": {
+   "crown": 104.0,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "polypodiaceae"
+  },
+  "Pteridaceae": {
+   "crown": 221.5,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "pteridaceae"
+  },
+  "Ranunculaceae": {
+   "crown": 87.2,
+   "crown_lo": 70.2,
+   "crown_hi": 104.1,
+   "ptt_id": "ranunculaceae"
+  },
+  "Rhizophoraceae": {
+   "crown": 67.4,
+   "crown_lo": 50.7,
+   "crown_hi": 83.5,
+   "ptt_id": "rhizophoraceae"
+  },
+  "Rosaceae": {
+   "crown": 76.4,
+   "crown_lo": 55.2,
+   "crown_hi": 96.4,
+   "ptt_id": "rosaceae"
+  },
+  "Rubiaceae": {
+   "crown": 74.2,
+   "crown_lo": 54.6,
+   "crown_hi": 93.3,
+   "ptt_id": "rubiaceae"
+  },
+  "Salicaceae": {
+   "crown": 78.3,
+   "crown_lo": 61.7,
+   "crown_hi": 91.0,
+   "ptt_id": "salicaceae"
+  },
+  "Salviniaceae": {
+   "crown": 136.2,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "salviniaceae"
+  },
+  "Sapindaceae": {
+   "crown": 74.4,
+   "crown_lo": 56.0,
+   "crown_hi": 96.7,
+   "ptt_id": "sapindaceae"
+  },
+  "Schisandraceae": {
+   "crown": 56.4,
+   "crown_lo": 15.6,
+   "crown_hi": 99.8,
+   "ptt_id": "schisandraceae"
+  },
+  "Schizaeaceae": {
+   "crown": 115.9,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "schizaeaceae"
+  },
+  "Selaginellaceae": {
+   "crown": 340,
+   "crown_lo": 330,
+   "crown_hi": 350,
+   "ptt_id": "selaginellaceae"
+  },
+  "Solanaceae": {
+   "crown": 58.6,
+   "crown_lo": 52.2,
+   "crown_hi": 67.6,
+   "ptt_id": "solanaceae"
+  },
+  "Tiliaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": null
+  },
+  "Typhaceae": {
+   "crown": 72.4,
+   "crown_lo": 51.7,
+   "crown_hi": 92.8,
+   "ptt_id": "typhaceae"
+  },
+  "Ulmaceae": {
+   "crown": 60.7,
+   "crown_lo": 48.5,
+   "crown_hi": 77.0,
+   "ptt_id": "ulmaceae"
+  },
+  "Urticaceae": {
+   "crown": 57.2,
+   "crown_lo": 43.9,
+   "crown_hi": 70.3,
+   "ptt_id": "urticaceae"
+  },
+  "Vitaceae": {
+   "crown": 86.5,
+   "crown_lo": 61.7,
+   "crown_hi": 121.7,
+   "ptt_id": "vitaceae"
+  },
+  "Welwitschiaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "welwitschiaceae"
+  },
+  "Winteraceae": {
+   "crown": 31.6,
+   "crown_lo": 10.8,
+   "crown_hi": 57.5,
+   "ptt_id": "winteraceae"
+  },
+  "Zamiaceae": {
+   "crown": 156.1,
+   "crown_lo": 107.0,
+   "crown_hi": 207.9,
+   "ptt_id": "zamiaceae"
+  },
+  "Apocynaceae": {
+   "crown": 67.8,
+   "crown_lo": 50.3,
+   "crown_hi": 85.8,
+   "ptt_id": "apocynaceae"
+  },
+  "Poaceae": {
+   "crown": 86.4,
+   "crown_lo": 79.5,
+   "crown_hi": 93.0,
+   "ptt_id": "poaceae"
+  },
+  "Liliaceae": {
+   "crown": 56.3,
+   "crown_lo": 30.7,
+   "crown_hi": 87.8,
+   "ptt_id": "liliaceae"
+  },
+  "Chloranthaceae": {
+   "crown": 131.5,
+   "crown_lo": 123.0,
+   "crown_hi": 140.2,
+   "ptt_id": "chloranthaceae"
+  },
+  "Onagraceae": {
+   "crown": 64.0,
+   "crown_lo": 26.4,
+   "crown_hi": 92.5,
+   "ptt_id": "onagraceae"
+  },
+  "Ericaceae": {
+   "crown": 92.8,
+   "crown_lo": 84.0,
+   "crown_hi": 103.3,
+   "ptt_id": "ericaceae"
+  },
+  "Amborellaceae": {
+   "crown": null,
+   "crown_lo": null,
+   "crown_hi": null,
+   "ptt_id": "amborellaceae"
+  },
+  "Lamiaceae": {
+   "crown": 59.4,
+   "crown_lo": 50.1,
+   "crown_hi": 68.7,
+   "ptt_id": "lamiaceae"
+  },
+  "Orchidaceae": {
+   "crown": 106.5,
+   "crown_lo": 92.3,
+   "crown_hi": 118.3,
+   "ptt_id": "orchidaceae"
+  },
+  "Papaveraceae": {
+   "crown": 78.3,
+   "crown_lo": 36.6,
+   "crown_hi": 115.7,
+   "ptt_id": "papaveraceae"
+  },
+  "Apiaceae": {
+   "crown": 64.9,
+   "crown_lo": 54.1,
+   "crown_hi": 76.1,
+   "ptt_id": "apiaceae"
+  },
+  "Proteaceae": {
+   "crown": 80.4,
+   "crown_lo": 72.1,
+   "crown_hi": 93.3,
+   "ptt_id": "proteaceae"
+  },
+  "Restionaceae": {
+   "crown": 81.9,
+   "crown_lo": 53.3,
+   "crown_hi": 106.6,
+   "ptt_id": "restionaceae"
+  },
+  "Brassicaceae": {
+   "crown": 40.9,
+   "crown_lo": 31.5,
+   "crown_hi": 50.2,
+   "ptt_id": "brassicaceae"
+  },
+  "Sapotaceae": {
+   "crown": 71.1,
+   "crown_lo": 56.0,
+   "crown_hi": 93.1,
+   "ptt_id": "sapotaceae"
+  },
+  "Zingiberaceae": {
+   "crown": 42.3,
+   "crown_lo": 27.0,
+   "crown_hi": 55.9,
+   "ptt_id": "zingiberaceae"
+  },
+  "Cucurbitaceae": {
+   "crown": 48.0,
+   "crown_lo": 28.8,
+   "crown_hi": 75.8,
+   "ptt_id": "cucurbitaceae"
+  },
+  "Moraceae": {
+   "crown": 55.9,
+   "crown_lo": 47.8,
+   "crown_hi": 69.2,
+   "ptt_id": "moraceae"
+  }
+ },
+ "basis": {
+  "Acorus": "PBDB taxonomy",
+  "Juncus": "PBDB taxonomy",
+  "Cyperus": "PBDB taxonomy",
+  "Dioscorea": "PBDB taxonomy",
+  "Areca": "PBDB taxonomy",
+  "Amaranthus": "PBDB taxonomy",
+  "Drosera": "PBDB taxonomy",
+  "Dianthus": "PBDB taxonomy",
+  "Aster": "PBDB taxonomy",
+  "Ilex": "PBDB taxonomy",
+  "Acanthaceae": "PBDB taxonomy",
+  "Loranthus": "PBDB taxonomy",
+  "Hamamelis": "PBDB taxonomy",
+  "Liquidambar": "PBDB taxonomy",
+  "Buxus": "PBDB taxonomy",
+  "Gunnera": "PBDB taxonomy",
+  "Berberis": "PBDB taxonomy",
+  "Convolvulus": "PBDB taxonomy",
+  "Laurus": "PBDB taxonomy",
+  "Alisma": "PBDB taxonomy",
+  "Combretum": "PBDB taxonomy",
+  "Alnus": "PBDB taxonomy",
+  "Betula": "PBDB taxonomy",
+  "Fagus": "PBDB taxonomy",
+  "Juglans": "PBDB taxonomy",
+  "Casuarina": "PBDB taxonomy",
+  "Euphorbia": "PBDB taxonomy",
+  "Celtis": "PBDB taxonomy",
+  "Bombax": "PBDB taxonomy",
+  "Annona": "PBDB taxonomy",
+  "Magnoliaceae": "PBDB taxonomy",
+  "Drimys": "PBDB taxonomy",
+  "Cupressus": "PBDB taxonomy",
+  "Dacrycarpus": "PBDB taxonomy",
+  "Gleichenia": "PBDB taxonomy",
+  "Equisetum": "PBDB taxonomy",
+  "Azolla": "PBDB taxonomy",
+  "Dryopteris": "PBDB taxonomy",
+  "Cyathea": "PBDB taxonomy",
+  "Anemia": "PBDB taxonomy",
+  "Lygodium": "PBDB taxonomy",
+  "Lycopodium": "PBDB taxonomy",
+  "Isoetes": "PBDB taxonomy",
+  "Agathis": "PBDB taxonomy",
+  "Araucaria": "PBDB taxonomy",
+  "Gnetum": "PBDB taxonomy",
+  "Ginkgo": "PBDB taxonomy",
+  "Ephedra": "PBDB taxonomy",
+  "Cycas": "PBDB taxonomy",
+  "Pinus": "PBDB taxonomy",
+  "Tsuga": "PBDB taxonomy",
+  "Nymphaea": "PBDB taxonomy",
+  "Pandanus": "PBDB taxonomy",
+  "Typha": "PBDB taxonomy",
+  "Polygonum": "PBDB taxonomy",
+  "Taraxacum": "PBDB taxonomy",
+  "Rubia": "PBDB taxonomy",
+  "Olea": "PBDB taxonomy",
+  "Plantago": "PBDB taxonomy",
+  "Nyssa": "PBDB taxonomy",
+  "Nelumbo": "PBDB taxonomy",
+  "Platanus": "PBDB taxonomy",
+  "Ranunculus": "PBDB taxonomy",
+  "Solanum": "PBDB taxonomy",
+  "Myrtus": "PBDB taxonomy",
+  "Vitis": "PBDB taxonomy",
+  "Vicia": "PBDB taxonomy",
+  "Nothofagus": "PBDB taxonomy",
+  "Quercus": "PBDB taxonomy",
+  "Myrica": "PBDB taxonomy",
+  "Passiflora": "PBDB taxonomy",
+  "Salix": "PBDB taxonomy",
+  "Rhizophora": "PBDB taxonomy",
+  "Rosa": "PBDB taxonomy",
+  "Ulmus": "PBDB taxonomy",
+  "Mimosa": "PBDB taxonomy",
+  "Urtica": "PBDB taxonomy",
+  "Sapindus": "PBDB taxonomy",
+  "Tilia": "PBDB taxonomy",
+  "Malva": "PBDB taxonomy",
+  "Piper": "PBDB taxonomy",
+  "Schisandra": "PBDB taxonomy",
+  "Metasequoia": "PBDB taxonomy",
+  "Podocarpus": "PBDB taxonomy",
+  "Ophioglossum": "PBDB taxonomy",
+  "Osmunda": "PBDB taxonomy",
+  "Woodwardia": "PBDB taxonomy",
+  "Polypodium": "PBDB taxonomy",
+  "Onoclea": "PBDB taxonomy",
+  "Pteris": "PBDB taxonomy",
+  "Schizaea": "PBDB taxonomy",
+  "Selaginella": "PBDB taxonomy",
+  "Welwitschia": "PBDB taxonomy",
+  "Zamia": "PBDB taxonomy",
+  "Acanthus": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Amborella": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Apium": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Arum": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Asclepias": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Brassica": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Chloranthus": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Erica": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Huperzia": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Lamium": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Lilium": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Magnolia": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Manilkara": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Oenothera": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Orchis": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Papaver": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Poa": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Protea": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Restio": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Zingiber": "standard family placement (APG IV / PPG I), not from PBDB",
+  "Cucurbita": "standard family placement (APG IV); PBDB matched a zoological homonym",
+  "Morus": "standard family placement (APG IV); PBDB matched a zoological homonym"
+ },
+ "fossil_genus_family": {
+  "Elatides": "Taxaceae",
+  "Fagopsis": "Fagaceae",
+  "Burretia": "Tiliaceae",
+  "Cycadeoidea": "Bennettitaceae",
+  "Apterocladus": "Podocarpaceae",
+  "Danaeopsis": "Marattiaceae",
+  "Calamites": "Calamitaceae",
+  "Equisetites": "Equisetaceae",
+  "Dictyophyllum": "Dipteridaceae",
+  "Coniopteris": "Cyatheaceae",
+  "Dicksonia": "Dicksoniaceae",
+  "Brachyphyllum": "Araucariaceae",
+  "Aneurophyton": "Aneurophytaceae",
+  "Archaeopteris": "Archaeopteridaceae",
+  "Autunia": "Peltaspermaceae",
+  "Dicroidium": "Corystospermaceae",
+  "Caytonia": "Caytoniaceae",
+  "Calamopitys": "Calamopityaceae",
+  "Leclercqia": "Protolepidodendraceae",
+  "Platanites": "Platanaceae",
+  "Macginitiea": "Platanaceae",
+  "Musgraveinanthus": "Proteaceae",
+  "Hippomaneoidea": "Euphorbiaceae",
+  "Florissantia": "Sterculiaceae",
+  "Lyginopteris": "Lyginopteridaceae",
+  "Medullosa": "Medullosaceae",
+  "Osmundopsis": "Osmundaceae",
+  "Gleichenites": "Gleicheniaceae",
+  "Oligocarpia": "Gleicheniaceae",
+  "Phlebopteris": "Matoniaceae",
+  "Matonidium": "Matoniaceae",
+  "Pelletixia": "Schizaeaceae",
+  "Klukia": "Schizeaceae",
+  "Pleuromeia": "Pleuromeiaceae",
+  "Hirmeriella": "Cheirolepidiaceae",
+  "Frenelopsis": "Cheirolepidiaceae",
+  "Lepidopteris": "Peltaspermaceae",
+  "Lepidodendron": "Lepidodendraceae",
+  "Lepidophloios": "Lepidodendraceae",
+  "Voltzia": "Voltziaceae",
+  "Rissikia": "Podocarpaceae",
+  "Renalia": "Cooksoniaceae",
+  "Todites": "Osmundaceae",
+  "Renaultia": "Marattiaceae",
+  "Psaronius": "Marattiaceae",
+  "Schizoneura": "Equisetaceae",
+  "Rodeites": "Marsileaceae",
+  "Thaumatopteris": "Dipteridaceae",
+  "Ruffordia": "Schizaeaceae",
+  "Schizaeopsis": "Schizaeaceae",
+  "Senftenbergia": "Schizaeaceae",
+  "Pseudofrenelopsis": "Cheirolepidiaceae",
+  "Tatarina": "Peltaspermaceae",
+  "Psilophyton": "Psilophytaceae",
+  "Sigillaria": "Sigillariaceae"
+ },
+ "genus_topology": {}
+}
