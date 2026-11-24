@@ -541,14 +541,14 @@ body.ttfull-open{overflow:hidden}
         <div class="legend" style="margin-top:8px">
           <span><i class="dot" style="background:var(--spore)"></i>Dispersed spore or pollen genus</span>
           <span><i class="dot" style="background:var(--mega)"></i>Dispersed megaspore genus</span>
-          <span><i class="dot" style="background:var(--organ)"></i>Organ genus (cone, leaf, root, seed)</span>
+          <span><i class="dot" style="background:var(--organ)"></i>Organ genus: cone, leaf, root or seed</span>
           <span><i class="dot" style="background:var(--plant)"></i>Whole-plant genus</span>
           <span><i class="dot" style="background:transparent; border:2px solid var(--gond)"></i>Purple ring: Gondwanan</span>
-          <span><i class="sw" style="border-color:var(--insitu)"></i>Spores found inside the organ (in situ)</span>
+          <span><i class="sw" style="border-color:var(--insitu)"></i>Spores found inside the organ, in situ</span>
           <span><i class="sw" style="border-color:var(--assembly)"></i>Organ linked to the whole plant</span>
           <span><i class="sw" style="border-color:var(--affinity); border-top-style:dotted"></i>Assigned to a group only</span>
           <span><i class="sw" style="border-color:var(--insitu); border-top-style:dashed"></i>Dashed: year approximate or a "known by" bound</span>
-          <span id="keyHabitat"><i class="sw" style="border-color:var(--hull); border-top-style:dotted"></i>Habitat view: dotted outline = supposed habitat (click it)</span>
+          <span id="keyHabitat"><i class="sw" style="border-color:var(--hull); border-top-style:dotted"></i>Habitat view: dotted outline marks a supposed habitat; click it</span>
         </div>
       </div>
     </aside>
@@ -1329,30 +1329,29 @@ function drawOrgan(g, type, R){
   const c = "var(--plant)", f = "var(--faint)", w = Math.max(0.8, R*0.12), k = R/22;
   const P = (d, extra={}) => { const e = g.append("path").attr("d", d).attr("fill", extra.fill || "none").attr("stroke", c).attr("stroke-width", extra.w || w).attr("transform", `scale(${k})`); return e; };
   if (type==="leaf") { P("M0,22 L0,-22", {w:w/k*1.2}); for (let i=-3;i<=3;i++) P(`M0,${i*6} q-12,-3 -16,-9 M0,${i*6} q12,-3 16,-9`, {w:w/k}); }
-  else if (type==="root") {   /* a root system: a short stem base, a tapering main root, laterals curving down and splitting into fine rootlets */
-    P("M-9,-19 H9", {w:w/k*0.7}).attr("stroke-opacity", 0.5);
-    P("M0,-22 C0.6,-14 -0.6,-6 0,0", {w:w/k*1.7}); P("M0,0 C0.8,6 -0.6,12 0.4,20", {w:w/k*1});
-    [[-1,-13,-12,-4,-17,4],[1,-13,12,-4,17,4],[-1,-5,-9,2,-13,12],[1,-5,9,2,13,12],[-1,3,-5,9,-7,18],[1,3,5,9,7,18]].forEach(([s,y0,cx,cy,x1,y1], j) => {
-      P(`M0,${y0} Q${cx},${cy} ${x1},${y1}`, {w:w/k*(j < 2 ? 0.85 : 0.7)});
-      P(`M${(cx+x1)/2},${(cy+y1)/2} q${s*3},1 ${s*4},6`, {w:w/k*0.4}); P(`M${x1},${y1} q${s*-1},3 ${s*0.5},5`, {w:w/k*0.35}); }); }
-  else if (type==="cone") {   /* a cone with its scales in Fibonacci spirals: golden-angle placement, front scales drawn last */
-    P("M0,-22 C13,-21 13,21 0,22 C-13,21 -13,-21 0,-22Z", {fill:f, w:w/k*0.7});
-    const GA = 2.39996323, sc = [];
-    for (let i = 0; i < 46; i++) { const y = -18 + 36*(i + 0.5)/46, th = i*GA, rx = 11*Math.sqrt(Math.max(0, 1 - (y/21)**2)), front = Math.cos(th);
-      if (front > -0.15) sc.push({x: rx*Math.sin(th), y, d: front, s: 2.3 + 1.6*front}); }
-    sc.sort((a, b) => a.d - b.d).forEach(q => P(`M${q.x - q.s},${q.y} L${q.x},${q.y - q.s*0.7} L${q.x + q.s},${q.y} L${q.x},${q.y + q.s*0.9}Z`, {fill:f, w:w/k*(0.25 + 0.25*q.d)})); }
+  else if (type==="root") {   /* schematic root system: a bent main root and a few uneven laterals */
+    P("M-8,-19 H8", {w:w/k*0.6}).attr("stroke-opacity", 0.45);
+    P("M0,-22 C1,-12 -2,-3 1,5 C3,11 1,16 2.5,21", {w:w/k*1.3});
+    P("M0,-13 C-5,-11 -11,-6 -16,3", {w:w/k*0.9}); P("M-10,-7 q-1,5 -5,8", {w:w/k*0.5});
+    P("M0.6,-8 C6,-6 10,-1 12,6", {w:w/k*0.8});
+    P("M-0.6,0 C-4,3 -7,9 -8,16", {w:w/k*0.7});
+    P("M2,8 C5,10 7,13 9,19", {w:w/k*0.6}); }
+  else if (type==="cone") {   /* schematic cone: an outline crossed by two families of spirals (parastichies) */
+    const outline = "M0,-22 C13,-21 13,21 0,22 C-13,21 -13,-21 0,-22Z";
+    P(outline, {fill:f, w:w/k*0.85});
+    const cid = "oc" + (++clipN); g.append("clipPath").attr("id", cid).append("path").attr("d", outline).attr("transform", `scale(${k})`);
+    const cg = g.append("g").attr("clip-path", `url(#${cid})`);
+    for (let i = -4; i <= 4; i++) for (const sgn of [1, -1]) cg.append("path").attr("d", `M${-14*sgn},${i*7 + 5} Q0,${i*7 - 2} ${14*sgn},${i*7 - 9}`)
+      .attr("fill", "none").attr("stroke", c).attr("stroke-width", w*0.45).attr("transform", `scale(${k})`); }
   else if (type==="seed") { P("M0,-22 C14,-10 14,14 0,22 C-14,14 -14,-10 0,-22Z", {fill:f, w:w/k}); for (const x of [-5,0,5]) P(`M${x},-16 L${x},16`, {w:w/k*0.6}); }
-  else if (type==="synangium") {   /* Scolecopteris: elongate, beaked sporangia joined at the base on a short stalk, seen from the side */
-    P("M0,9 L0,21", {w:w/k*1.2}); P("M-9,21 Q0,17 9,21", {w:w/k*0.9}).attr("stroke-opacity", 0.6);
-    [[-19, 0.5], [19, 0.5], [-8, 0.8], [8, 0.8], [0, 1]].forEach(([a, op]) => {
-      P("M0,9 C-4,6 -4.2,-9 -1,-17 Q0,-21 0.8,-22.5 Q0.5,-19 1.1,-16 C4.2,-9 4,6 0,9Z", {fill:f, w:w/k*0.7}).attr("transform", `scale(${k}) rotate(${a} 0 9)`).attr("stroke-opacity", op);
-      P("M0,7 C0.4,-2 0.3,-9 0.5,-15", {w:w/k*0.5}).attr("transform", `scale(${k}) rotate(${a} 0 9)`).attr("stroke-opacity", op*0.7); }); }
-  else if (type==="pollenorgan") {   /* an anther: two pollen sacs side by side on a slender filament, a groove between them, pollen escaping at the top */
-    P("M0,22 C-0.8,14 0.8,8 0,2", {w:w/k*0.85});
+  else if (type==="synangium") {   /* schematic Scolecopteris: four pointed sporangia joined at the base on a short stalk */
+    P("M0,9 L0,21", {w:w/k*1.1});
+    [[-15, 0.6], [15, 0.6], [-5, 1], [5, 1]].forEach(([a, op]) =>
+      P("M0,9 C-4.2,5 -4.2,-10 0,-21 C4.2,-10 4.2,5 0,9Z", {fill:f, w:w/k*0.75}).attr("transform", `scale(${k}) rotate(${a} 0 9)`).attr("stroke-opacity", op)); }
+  else if (type==="pollenorgan") {   /* schematic anther: two pollen sacs on a slender filament */
+    P("M0,22 C-0.6,14 0.6,8 0,2", {w:w/k*0.85});
     P("M-0.6,3 C-9,3 -10,-15 -2.2,-19 C-0.8,-19.6 -0.4,-17 -0.6,-14Z", {fill:f, w:w/k*0.75});
-    P("M0.6,3 C9,3 10,-15 2.2,-19 C0.8,-19.6 0.4,-17 0.6,-14Z", {fill:f, w:w/k*0.75});
-    P("M-4.6,-15 C-6,-8 -5.4,-2 -3.4,1 M4.6,-15 C6,-8 5.4,-2 3.4,1", {w:w/k*0.5}).attr("stroke-opacity", 0.7);
-    for (const [x, y] of [[-3,-21.5],[0.5,-22.5],[3.6,-21],[-5.5,-20],[6.2,-19]]) g.append("circle").attr("cx", x*k).attr("cy", y*k).attr("r", Math.max(0.35, 0.9*k)).attr("fill", c); }
+    P("M0.6,3 C9,3 10,-15 2.2,-19 C0.8,-19.6 0.4,-17 0.6,-14Z", {fill:f, w:w/k*0.75}); }
   else if (type==="tree") { P("M0,22 L0,-6", {w:w/k*2.4}); P("M0,-6 l-10,-10 M0,-6 l10,-10 M-10,-16 l-5,-6 M-10,-16 l4,-7 M10,-16 l5,-6 M10,-16 l-4,-7", {w:w/k*1.3}); }
   else if (type==="small") { P("M0,22 L0,-4", {w:w/k*1.6}); P("M0,-4 q-10,-6 -14,-16 M0,-4 q10,-6 14,-16 M0,4 q-8,-3 -12,-9 M0,4 q8,-3 12,-9", {w:w/k*1.1}); }
   else g.append("circle").attr("r", R).attr("fill", c);
@@ -2324,11 +2323,11 @@ setTimeout(syncDiscoveryUI, 0);
   const box = document.querySelector(".main > aside h2 + .legend")?.closest(".box"); if (!box) return;
   box.id = "keyBar"; box.classList.add("keybar"); box.querySelector("h2").textContent = "Key";
   const leg = box.querySelector(".legend");
-  const parts = [["cone","Cone (strobilus): scales in spirals, bearing the sporangia"],["synangium","Synangium: fused sporangia, as in Scolecopteris (marattialean ferns)"],["pollenorgan","Pollen organ of a seed plant"],
-    ["seed","Seed or ovule"],["leaf","Leaf or frond"],["root","Root or rooting organ (e.g. Stigmaria)"],["tree","Whole plant: tree"],["small","Whole plant: herb, shrub or climber"]];
+  const parts = [["cone","Cone or strobilus"],["synangium","Synangium: fused sporangia"],["pollenorgan","Pollen organ"],
+    ["seed","Seed or ovule"],["leaf","Leaf or frond"],["root","Root or rooting organ"],["tree","Whole plant: tree"],["small","Whole plant: herb, shrub or climber"]];
   const used = new Set(Object.values(organOf)); used.add("small");
   const wrap = document.createElement("div"); wrap.className = "keyparts";
-  wrap.innerHTML = `<p class="kick">Plant parts and whole plants (the symbols on organ and plant genera in the network)</p><div class="partgrid"></div>`;
+  wrap.innerHTML = `<p class="kick">Plant parts and whole plants: their symbols in the network</p><div class="partgrid"></div>`;
   parts.filter(([k]) => used.has(k)).forEach(([k, label]) => {
     const it = document.createElement("span"); it.className = "part";
     it.innerHTML = `<svg viewBox="-14 -14 28 28" width="28" height="28" aria-hidden="true"></svg>${esc(label)}`;
@@ -3400,6 +3399,194 @@ try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorag
   const boot = () => { addButton(); if (!store.get()) setTimeout(welcome, 1200); };
   if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
   window.SD_TOUR = {start};
+})();
+</script>
+
+<style>
+/* Build-the-plants game board, shown in place of the network */
+#buildBoard{position:absolute; inset:0; z-index:5; background:var(--panel); display:flex; flex-direction:column}
+#buildBoard[hidden]{display:none}
+#buildBoard .bbhead{display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; padding:10px 14px; border-bottom:1px solid var(--rule); font-size:13px}
+#buildBoard .bbmsg{flex:1 1 300px; min-height:1.5em}
+#buildBoard .bbmsg .ok{color:#2f7d4f; font-weight:600} #buildBoard .bbmsg .no{color:#c0392b; font-weight:600}
+#buildBoard .bbscore b{font-variant-numeric:tabular-nums}
+#buildBoard button{font:500 12.5px var(--body); padding:4px 10px; border-radius:6px; border:1px solid var(--rule); background:var(--panel); color:var(--ink); cursor:pointer}
+#buildBoard button.go{background:var(--accent); border-color:var(--accent); color:#fff}
+#buildBoard svg{flex:1 1 auto; width:100%; min-height:0; display:block; touch-action:manipulation}
+#buildBoard .piece{cursor:pointer}
+#buildBoard .piece text{font-family:var(--body); font-size:12px; fill:var(--ink)}
+#buildBoard .piece .ring{fill:none; stroke:transparent; stroke-width:3}
+#buildBoard .piece.sel .ring{stroke:var(--accent)}
+#buildBoard .piece.done .name{fill:var(--muted)}
+#buildBoard .colhead{font-family:var(--body); font-size:11px; letter-spacing:.07em; text-transform:uppercase; fill:var(--muted)}
+#buildBoard .bad{stroke:#c0392b; stroke-width:2.5; stroke-dasharray:5 4}
+/* game mode: only the title, the interval picker and the board remain */
+body.gaming .wrap > :not(header):not(#intervalBar):not(.main){display:none !important}
+body.gaming .main{grid-template-columns:minmax(0,1fr) !important}
+body.gaming .main > aside{display:none}
+body.gaming #stage{height:min(78vh, 820px)}
+body.gaming #pageSub, body.gaming #tourBtn{display:none}
+#intervalBar .gamefield{margin-left:auto}
+body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); color:#fff}
+#gameIvNote{font-size:12.5px; color:var(--muted); margin:6px 0 0; flex-basis:100%}
+#buildBoard .bbdone{padding:8px 14px; border-top:1px solid var(--rule); font-size:13px; max-height:30%; overflow:auto}
+#buildBoard .bbdone ul{margin:4px 0 0; padding-left:18px} #buildBoard .bbdone li{margin:3px 0}
+#buildBoard .bbdone a{color:var(--accent)}
+</style>
+<script>
+/* Match game, rebuilt as "build the plants". Each round deals five spore genera at random (from the browser's cryptographic
+   random source) from the intervals chosen in the Interval bar, with only the organs and whole plants they belong to.
+   Join each spore to the organ or plant it was found inside, then build up to the whole plant. A finished plant links to
+   the studies that put it together and to a search for its reconstructions. */
+(function(){
+  const stage = document.getElementById("stage"); if (!stage || typeof DATASETS === "undefined") return;
+  const R01 = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(R01() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const INS = new Set(["insitu", "insitu-gen"]);
+  const ivBar = document.querySelector('.bar[aria-label="Geological interval"]'); if (ivBar) ivBar.id = "intervalBar";
+  /* the game button moves into the Interval bar */
+  const gb = document.getElementById("gameBtn"), gf = gb.closest(".field");
+  if (ivBar && gf) { gf.classList.add("gamefield"); ivBar.appendChild(gf); }
+  const note = document.createElement("p"); note.id = "gameIvNote"; note.hidden = true;
+  note.textContent = "Game mode: click intervals to include or leave out; each round deals five spores from the intervals picked.";
+  ivBar?.appendChild(note);
+  const picked = new Set([PERIOD]);
+
+  /* the game's world: every node and link from the chosen intervals, merged by name */
+  function world(){
+    const K = {}, ins = {}, asm = {}, refs = {}, from = {};
+    [...picked].forEach(p => { const D = DATASETS[p]; if (!D) return;
+      D.nodes.forEach(r => { const [id, kind] = r; if (!K[id]) K[id] = kind; (from[id] ||= new Set()).add(p); });
+      D.edges.forEach(([s, t, type, year, yc, ref]) => { const ks = K[s], kt = K[t], part = k => k === "organ" || k === "plant";
+        if (INS.has(type) && (ks === "spore" || ks === "mega") && part(kt)) (ins[s] ||= new Set()).add(t);
+        if (type === "assembly" && part(ks) && part(kt)) { (asm[s] ||= new Set()).add(t); if (ref) (refs[s + "|" + t] ||= new Set()).add(ref); } }); });
+    return {K, ins, asm, refs, from, pool: Object.keys(ins)};
+  }
+  const board = document.createElement("div"); board.id = "buildBoard"; board.hidden = true;
+  board.innerHTML = `<div class="bbhead"><span class="bbmsg" aria-live="polite"></span><span class="bbscore"></span>
+    <button type="button" data-b="hint">Show one link</button><button type="button" data-b="new" class="go">New five</button><button type="button" data-b="end">End game</button></div>
+    <svg role="img" aria-label="Spores, organs and whole plants to join"></svg><div class="bbdone" hidden></div>`;
+  stage.appendChild(board);
+  const svg = d3.select(board.querySelector("svg")), msg = board.querySelector(".bbmsg"), score = board.querySelector(".bbscore"), doneBox = board.querySelector(".bbdone");
+  let W0 = null, round = null, sel = null;
+  const kindOf = id => W0.K[id];
+  const glyphKind = id => organOf[id] || (kindOf(id) === "plant" ? "tree" : "small");
+
+  function deal(){
+    W0 = world();
+    if (!W0.pool.length) { round = null; svg.selectAll("*").remove(); score.textContent = ""; doneBox.hidden = true;
+      msg.textContent = "No spores in the chosen intervals have been found inside a named organ yet. Pick another interval above."; return; }
+    const spores = shuffle(W0.pool.slice()).slice(0, 5), pieces = new Set(), need = new Map();
+    const req = (a, b, t) => { if (!need.has(a + "|" + b)) need.set(a + "|" + b, {a, b, t, done: false}); };
+    spores.forEach(s => { pieces.add(s); shuffle([...W0.ins[s]]).slice(0, 2).forEach(o => { pieces.add(o); req(s, o, "insitu"); }); });
+    /* follow each organ up its chain to the whole plant (organ to organ to plant), two branches at most at each step */
+    let front = [...pieces].filter(id => kindOf(id) === "organ");
+    for (let d = 0; d < 3 && front.length; d++) { const next = [];
+      front.forEach(o => shuffle([...(W0.asm[o] || [])]).slice(0, 2).forEach(p => { if (!pieces.has(p) && kindOf(p) === "organ") next.push(p); pieces.add(p); req(o, p, "assembly"); }));
+      front = next; }
+    /* any further true links among the pieces also count */
+    spores.forEach(s => W0.ins[s].forEach(o => { if (pieces.has(o)) req(s, o, "insitu"); }));
+    pieces.forEach(o => (W0.asm[o] || []).forEach(p => { if (pieces.has(p)) req(o, p, "assembly"); }));
+    round = {spores, pieces, need, wrong: 0, hints: 0, built: new Set()}; sel = null; doneBox.hidden = true; doneBox.innerHTML = "";
+    msg.innerHTML = `Join each spore to the organ or plant it was found inside, then build up to the whole plant: organ to organ (a fertile organ to its foliage, say) and organ to plant. Click one piece, then the piece it belongs with.`;
+    draw();
+  }
+  const col = id => { const k = kindOf(id); return k === "spore" || k === "mega" ? 0 : k === "organ" ? 1 : 2; };
+  function draw(){
+    if (!round) return; svg.selectAll("*").remove();
+    const W = board.clientWidth || 800, H = Math.max(260, board.querySelector("svg").getBoundingClientRect().height || 600);
+    svg.attr("viewBox", `0 0 ${W} ${H}`);
+    const cols = [[], [], []]; round.pieces.forEach(id => cols[col(id)].push(id));
+    if (!round.order) { cols.forEach(c => shuffle(c)); round.order = cols; }
+    const X = [Math.max(150, W*0.2), W*0.5, Math.min(W - 150, W*0.8)];
+    ["Spores", "Organs", "Whole plants"].forEach((h, i) => svg.append("text").attr("class", "colhead").attr("x", X[i]).attr("y", 22).attr("text-anchor", "middle").text(h));
+    const pos = {}; round.order.forEach((c, i) => c.forEach((id, j) => { pos[id] = [X[i], 46 + (H - 70) * (j + 0.5) / Math.max(1, c.length)]; }));
+    round.pos = pos;
+    const link = (g, a, b) => { const [x1, y1] = pos[a], [x2, y2] = pos[b], same = Math.abs(x1 - x2) < 1;
+      return g.append("path").attr("d", same ? `M${x1},${y1} Q${x1 + 26 + Math.abs(y2 - y1)*0.35},${(y1 + y2)/2} ${x2},${y2}` : `M${x1},${y1} L${x2},${y2}`).attr("fill", "none"); };
+    round.link = link;
+    const lg = svg.append("g");
+    round.need.forEach(e => { if (e.done) link(lg, e.a, e.b).attr("stroke", css(e.t === "insitu" ? "--insitu" : "--assembly")).attr("stroke-width", 2.4); });
+    round.bad = svg.append("g");
+    round.pieces.forEach(id => { const [x, y] = pos[id], k = kindOf(id);
+      const done = [...round.need.values()].filter(e => e.a === id || e.b === id).every(e => e.done);
+      const g = svg.append("g").attr("class", "piece" + (sel === id ? " sel" : "") + (done ? " done" : "")).attr("transform", `translate(${x},${y})`).attr("tabindex", 0)
+        .attr("role", "button").attr("aria-label", `${k === "spore" || k === "mega" ? "spore" : k} ${id}`);
+      g.append("circle").attr("class", "ring").attr("r", 22);
+      g.append("circle").attr("r", 18).attr("fill", "var(--panel)").attr("stroke", "var(--rule)").attr("stroke-width", 0.8);
+      const v = g.append("g");
+      if (k === "spore" || k === "mega") drawSpore(v, UNCODED.has(id) ? null : MG[id] || null, 14, true); else drawOrgan(v, glyphKind(id), 15);
+      /* names sit on the outer side of each column (organs: below), clear of the joining lines */
+      const c0 = col(id), anchor = c0 === 0 ? "end" : c0 === 2 ? "start" : "middle", dx = c0 === 0 ? -26 : c0 === 2 ? 26 : 0, dy = c0 === 1 ? 34 : 4;
+      g.append("text").attr("class", "name").attr("x", dx).attr("y", dy).attr("text-anchor", anchor).style("font-style", "italic").text(id);
+      g.on("click", () => pick(id)).on("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(id); } });
+    });
+    const need = [...round.need.values()], made = need.filter(e => e.done).length;
+    score.innerHTML = `Joined <b>${made}</b> of <b>${need.length}</b> · Wrong <b>${round.wrong}</b>${round.hints ? ` · Hints <b>${round.hints}</b>` : ""}`;
+  }
+  /* a whole plant is built when every link on the board leading into it is joined: then it links to its papers */
+  function plantCard(p){
+    const steps = [...round.need.values()].filter(e => e.t === "assembly" && e.b === p);
+    const refs = new Set(); steps.forEach(e => (W0.refs[e.a + "|" + e.b] || []).forEach(r => refs.add(r)));
+    const cites = []; refs.forEach(r => (typeof citesIn === "function" ? citesIn(r) : []).forEach(c => cites.push(c)));
+    const uniq = [...new Map(cites.map(c => [c.who + c.year, c])).values()];
+    const sch = q => (typeof scholarURL === "function" ? scholarURL(q) : "https://scholar.google.com/scholar?q=" + encodeURIComponent(q));
+    return `<li><b><i>${esc(p)}</i></b> built. <a href="${sch(`"${p}" whole-plant reconstruction`)}" target="_blank" rel="noopener">Papers reconstructing <i>${esc(p)}</i> ↗</a>` +
+      (uniq.length ? ` · the studies that joined its parts: ${uniq.map(c => `<a href="${sch((citeFull?.(c)) || `${c.who} ${c.year} ${p}`)}" target="_blank" rel="noopener">${esc(c.who)} ${c.year} ↗</a>`).join(", ")}` : "") + `</li>`;
+  }
+  function checkBuilt(){
+    const plants = [...round.pieces].filter(id => col(id) === 2), newly = [];
+    plants.forEach(p => { if (round.built.has(p)) return;
+      /* everything upstream of p on the board: organs joined to it, their organs, and the spores in them */
+      const up = new Set([p]); let grew = true;
+      while (grew) { grew = false; round.need.forEach(e => { if (up.has(e.b) && !up.has(e.a)) { up.add(e.a); grew = true; } }); }
+      const edges = [...round.need.values()].filter(e => up.has(e.b) && up.has(e.a));
+      if (edges.length && edges.every(e => e.done)) { round.built.add(p); newly.push(p); } });
+    if (newly.length) { doneBox.hidden = false; doneBox.innerHTML = (doneBox.innerHTML ? doneBox.innerHTML.replace(/<\/ul>$/, "") : `<b>Plants you have put together</b><ul>`) + newly.map(plantCard).join("") + `</ul>`; }
+    return newly;
+  }
+  function pick(id){
+    if (!round) return;
+    if (!sel || sel === id) { sel = sel === id ? null : id; return draw(); }
+    const a = sel, b = id; sel = null;
+    const e = round.need.get(a + "|" + b) || round.need.get(b + "|" + a);
+    if (e && !e.done) { e.done = true;
+      msg.innerHTML = `<span class="ok">Right.</span> ` + (e.t === "insitu" ? `<i>${esc(e.a)}</i> was found inside <i>${esc(e.b)}</i>.` : `<i>${esc(e.a)}</i> belongs with <i>${esc(e.b)}</i>${kindOf(e.b) === "plant" ? ", the whole plant" : ""}.`); }
+    else if (e && e.done) msg.innerHTML = `Already joined.`;
+    else if (col(a) === col(b) && col(a) !== 1) { msg.innerHTML = `Pick pieces from two different columns (only organs can join other organs).`; return draw(); }
+    else { round.wrong++; msg.innerHTML = `<span class="no">Not a known link.</span> <i>${esc(a)}</i> and <i>${esc(b)}</i> have not been joined by any study in these intervals.`;
+      draw(); round.link(round.bad, a, b).attr("class", "bad").transition().delay(700).duration(400).style("opacity", 0).remove(); return; }
+    after();
+  }
+  function after(){
+    draw(); const newly = checkBuilt();
+    if (newly.length) msg.innerHTML += ` <span class="ok">${newly.map(p => `<i>${esc(p)}</i>`).join(", ")} built:</span> see below for papers on ${newly.length === 1 ? "its" : "their"} reconstruction.`;
+    if ([...round.need.values()].every(e => e.done)) msg.innerHTML = `<span class="ok">All built.</span> ${round.wrong ? round.wrong + " wrong tr" + (round.wrong === 1 ? "y" : "ies") : "No wrong tries"} this round. Press <b>New five</b> for another round.`;
+  }
+  board.querySelector(".bbhead").addEventListener("click", e => { const b = e.target.closest("[data-b]"); if (!b) return;
+    if (b.dataset.b === "new") deal();
+    if (b.dataset.b === "end") setBuild(false);
+    if (b.dataset.b === "hint" && round) { const left = [...round.need.values()].filter(e => !e.done); if (!left.length) return;
+      const e = left[Math.floor(R01() * left.length)]; e.done = true; round.hints++;
+      msg.innerHTML = `Hint: <i>${esc(e.a)}</i> ${e.t === "insitu" ? "was found inside" : "belongs with"} <i>${esc(e.b)}</i>.`; after(); } });
+  /* in game mode the interval buttons pick which intervals to draw from, instead of switching the page */
+  const seg = document.getElementById("periodSeg");
+  const ivButtons = () => [...seg.querySelectorAll("button")].map((b, i) => [b, NETPERIODS[i]]);
+  seg.addEventListener("click", e => { if (!document.body.classList.contains("gaming")) return; const b = e.target.closest("button"); if (!b) return;
+    e.stopPropagation(); e.preventDefault();
+    const k = ivButtons().find(([x]) => x === b)?.[1]; if (!k) return;
+    if (picked.has(k) && picked.size > 1) picked.delete(k); else picked.add(k);
+    ivButtons().forEach(([x, kk]) => x.setAttribute("aria-pressed", picked.has(kk)));
+    deal(); }, true);
+  function setBuild(on){
+    document.body.classList.toggle("gaming", on); board.hidden = !on; note.hidden = !on; gb.setAttribute("aria-pressed", on);
+    stage.querySelector(":scope > svg")?.style.setProperty("visibility", on ? "hidden" : "visible");
+    ivButtons().forEach(([x, kk]) => x.setAttribute("aria-pressed", on ? picked.has(kk) : kk === PERIOD));
+    if (on) { const v = document.querySelector('.seg button[data-mode="discovery"]'); if (v && v.getAttribute("aria-pressed") !== "true") v.click();
+      window.scrollTo({top: 0, behavior: "smooth"}); setTimeout(deal, 60); }
+  }
+  gb.onclick = () => setBuild(board.hidden);
+  new ResizeObserver(() => { if (!board.hidden && round) draw(); }).observe(board);
 })();
 </script>
 
