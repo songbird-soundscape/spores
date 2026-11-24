@@ -399,12 +399,20 @@ body.ttfull-open{overflow:hidden}
 .discbar{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:12px 22px; align-items:start; padding:12px 16px}
 .dbtime{display:grid; grid-template-columns:auto minmax(0,1fr) auto; column-gap:12px; row-gap:0; align-items:center; min-width:0}
 .dbtime #year{width:100%; margin:0; accent-color:var(--accent)}
-.dbtl, .msnow{grid-column:2; min-width:0}
+.dbtl, .msnow, .mslist{grid-column:2; min-width:0}
 .dbtl{overflow:hidden}
 #tl{display:block; width:100%; min-width:0}
 #tl .mslab{font-size:12.5px; fill:var(--ink); opacity:.9}
 #tl a:hover .mslab{text-decoration:underline; fill:var(--accent)}
 #tl .pubdot circle{cursor:pointer} #tl .pubdot:hover circle{stroke:var(--ink); stroke-width:1.2}
+.mslist{grid-column:2; list-style:none; margin:2px 0 4px; padding:0; columns:3 250px; column-gap:22px; font-size:12.5px}
+.mslist li{break-inside:avoid; display:flex; align-items:baseline; gap:4px; margin:0 0 3px}
+.mslist .msgo{all:unset; cursor:pointer; color:var(--ink); line-height:1.35} .mslist .msgo:hover{color:var(--accent)} .mslist .msgo:focus-visible{outline:2px solid var(--accent)}
+.mslist .msn{display:inline-block; min-width:1.6em; font-family:var(--mono); font-size:11px; color:var(--muted)}
+.mslist b{font-weight:600; margin-right:3px} .mslist li.cur .msgo{font-weight:600} .mslist li.cur{background:color-mix(in srgb, var(--accent) 10%, transparent); border-radius:4px}
+.mslist a.schol{margin:0}
+#tl .msnum{font-family:var(--mono); font-size:9.5px; fill:var(--muted)} #tl .msnum.cur{fill:var(--ink); font-weight:700}
+#tl .msg.hl{filter:drop-shadow(0 0 3px var(--accent))}
 .publeg{grid-column:2; margin:2px 0 0; font-size:12px; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 14px; align-items:center}
 .publeg span{display:inline-flex; align-items:center; gap:5px} .publeg i{display:inline-block; width:8px; height:8px; border-radius:50%}
 #tl .mslab.cur{fill:var(--ink); font-weight:600}
@@ -637,7 +645,7 @@ body.ttfull-open{overflow:hidden}
   </section>
 
   <section class="contrib" aria-labelledby="contribTitle" id="contribute">
-    <h2 id="contribTitle">Help fill the gaps: send a document</h2>
+    <h2 id="contribTitle">Help fill the gaps: send a document or photo</h2>
     <p class="sub" style="font-size:13.5px">Much of what is known about Pennsylvanian spores and plants sits outside the journals: state geological survey bulletins and circulars, USGS open-file reports, theses and dissertations, field-trip guidebooks, coal-company and agency reports, museum catalogues, and slide collections. If you have, or know of, a document with spore counts, species lists, coal-ball or compression floras, localities or coal-bed correlations, please send it here. Documents in any language are welcome (German, French, Dutch, Spanish, Polish, Czech, Russian, Ukrainian, Turkish, Chinese and others); an original-language citation is fine. Each submission is read and checked before anything from it is added, and it is credited to its original authors. Send a citation and link if the document is online; upload a scan only if you have the right to share it.</p>
     <form id="contribForm" hidden>
       <label class="wide">Citation or title (required)<input type="text" name="citation" required maxlength="600" placeholder="Author, year, title, series and number, publisher"></label>
@@ -646,11 +654,11 @@ body.ttfull-open{overflow:hidden}
       <label>Where and when (basin, state, formation or coal bed)<input type="text" name="where" maxlength="300" placeholder="Illinois Basin; Herrin (No. 6) Coal"></label>
       <label>What it holds<select name="holds"><option>Spore and pollen counts or lists</option><option>Plant compressions</option><option>Coal balls (permineralized plants)</option><option>Several of these</option><option>Localities or correlation only</option></select></label>
       <label class="wide">Notes (pages, tables, why it matters)<textarea name="notes" maxlength="2000"></textarea></label>
-      <label class="wide" id="fileLabel" hidden>A scan or PDF, optional (up to 20 MB; only if you may share it)<input type="file" name="file" accept="application/pdf,image/*"></label>
+      <label class="wide" id="fileLabel" hidden>A scan, PDF or photo, optional (up to 20 MB; only if you may share it)<input type="file" name="file" accept="application/pdf,image/*"></label>
       <label class="wide">How to reach you about it, optional<input type="text" name="contact" maxlength="200" placeholder="name or email; seen only by the page owner"></label>
       <div class="row wide"><button type="submit">Send</button><span class="status" id="contribStatus" role="status" aria-live="polite"></span></div>
     </form>
-    <p class="status" id="contribAlt">Sign in to claude.ai with access to this page to send a document. If you can only view the page, add a comment instead: a citation in a comment works just as well.</p>
+    <p class="status" id="contribAlt">Sign in to claude.ai with access to this page to send a document or photo. If you can only view the page, add a comment instead: a citation in a comment works just as well.</p>
     <div id="contribMine"></div>
     <div id="contribAll"></div>
   </section>
@@ -843,6 +851,33 @@ const firstSel = (() => { if (IS_PENN) return "Lycospora";
   const sp = DATA.nodes.filter(n => n[1]==="spore" || n[1]==="mega").map(n => n[0]);
   return sp.find(id => DATA.edges.some(e => e[0]===id && e[2]==="insitu")) || sp[0] || DATA.nodes[0]?.[0]; })();
 /* the year slider (Discovery view only) starts with the first fossil names: Sternberg 1820, the starting point of fossil-plant nomenclature, or the interval's first name if later */
+/* landmarks in the history of the science, added to the intervals they bear on (S-D Silurian-Devonian, M Mississippian, P Pennsylvanian,
+   Pm Permian, TJ Triassic-Jurassic, K Cretaceous, Cz Cenozoic) */
+const EXTRA_MS = [
+  [1820, "Sternberg's Flora der Vorwelt names Lepidodendron and other fossil plants", "M P Pm"],
+  [1822, "Brongniart begins a systematic classification of fossil plants", "M P Pm TJ K"],
+  [1828, "Brongniart's Prodrome: many organ genera named", "M P Pm TJ K"],
+  [1884, "Reinsch: Micro-Palaeophytologia, spores studied in Carboniferous coal", "M P"],
+  [1886, "Bennie and Kidston: spores and megaspores from Scottish Carboniferous rocks", "M P"],
+  [1916, "von Post: the first pollen diagram", "Cz"],
+  [1932, "Potonie, Ibrahim and Loose: spore forms from Ruhr coal seams", "P"],
+  [1934, "Raistrick: coal seams correlated by their spores", "P"],
+  [1935, "Wodehouse: Pollen Grains", "Cz"],
+  [1944, "Hyde and Williams coin the word palynology", "S-D M P Pm TJ K Cz"],
+  [1955, "Potonie and Kremp: Die Sporae dispersae des Ruhrkarbons", "P"],
+  [1960, "Erdtman: the acetolysis method described", "Cz"],
+  [1967, "Smith and Butterworth: miospores in British Carboniferous coal seams", "M P"],
+  [1967, "Chaloner: Spores and land-plant evolution", "S-D"],
+  [1967, "AASP, the palynological society, founded", "S-D M P Pm TJ K Cz"],
+  [1970, "Peppers: palynology of Illinois coals", "P"],
+  [1988, "Traverse: Paleopalynology", "S-D M P Pm TJ K Cz"],
+  [1996, "Peppers: palynological correlation of Pennsylvanian boundaries", "P"]];
+{ const code = {"silurian-devonian":"S-D", mississippian:"M", pennsylvanian:"P", permian:"Pm", "triassic-jurassic":"TJ", cretaceous:"K", cenozoic:"Cz"}[PERIOD];
+  DATA.milestones = (DATA.milestones || []).slice();
+  EXTRA_MS.forEach(([y, t, where]) => { if (!where.split(" ").includes(code)) return;
+    const who = t.split(/[:' ]/)[0].toLowerCase();
+    if (!DATA.milestones.some(x => x[0] === y && x[1].toLowerCase().includes(who))) DATA.milestones.push([y, t]); });
+  DATA.milestones.sort((x, y) => x[0] - y[0]); }
 const ALLYEARS = DATA.nodes.map(n => n[3]).concat((DATA.milestones || []).map(m => m[0])).filter(y => typeof y === "number" && isFinite(y));
 const YMIN = Math.max(1820, Math.floor(Math.min(...ALLYEARS, 2000) / 10) * 10), YMAX = Math.max(2025, ...ALLYEARS);
 const state = {year:YMIN, region:"all", ghosts:true, labels:true, aff:true, species:IS_PENN, sel:firstSel, selZone:null, mode:"discovery", scale:"form", eco:"all", ecoPer:false};
@@ -2145,8 +2180,9 @@ const discBar = (function makeDiscBar(){
   const tlsvg = document.getElementById("tl"); tlsvg.removeAttribute("preserveAspectRatio");
   const now = document.createElement("p"); now.id = "msNow"; now.className = "msnow";
   const pleg = document.createElement("p"); pleg.id = "pubLegend"; pleg.className = "publeg";
+  const msl = document.createElement("ol"); msl.id = "msList"; msl.className = "mslist"; msl.setAttribute("aria-label", "Milestones");
   [play, yin, yout].forEach(e => time.appendChild(e));
-  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); time.appendChild(now); time.appendChild(pleg);
+  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); time.appendChild(msl); time.appendChild(now); time.appendChild(pleg);
   yb.style.display = "none";
   const oldTl = document.querySelector("section.timeline"); if (oldTl) oldTl.style.display = "none";
   statsBox.id = "statsBox"; statsBox.classList.add("dbcounts");
@@ -2191,28 +2227,29 @@ function drawMilestones(){
     a.append("title").text(`${p.who} ${p.year} (${kinds})${about ? ": " + about : ""}${p.full ? "\n" + p.full : ""}\nClick to search Google Scholar`);
     a.append("circle").attr("cx", b * D).attr("cy", TLY + 9 + k * D).attr("r", 2.1).attr("fill", colOf(p)).attr("stroke", css("--panel")).attr("stroke-width", 0.6);
     pubNodes.push({y: p.year, a}); });
-  const ROW = 19, ROW0 = TLY + 14 + maxStack * D + 14, ends = [];
-  (DATA.milestones || []).slice().sort((a, b) => a[0] - b[0]).forEach(([y, t]) => {
-    const x = tx(y), maxc = W < 700 ? 30 : 46, lab = `${y} ${t.length > maxc ? t.slice(0, maxc - 2).trimEnd() + "…" : t}`;
-    const anchor = x > W - 240 ? "end" : "start";
-    const la = tl.append("a").attr("href", scholarURL(t)).attr("target","_blank").attr("rel","noopener");
-    const txt = la.append("text").attr("class","mslab").attr("x",x).attr("y",-50).attr("text-anchor",anchor).text(lab);
-    txt.append("title").text(`${y}: ${t}\nClick to search Google Scholar`);
-    const w = txt.node().getComputedTextLength() || lab.length * 7, x0 = anchor === "end" ? x - w : anchor === "start" ? x : x - w / 2;
-    let li = ends.findIndex(e => e + 12 < x0); if (li < 0) { li = ends.length; ends.push(0); }
-    ends[li] = x0 + w; const ly = ROW0 + li * ROW;
-    txt.attr("y", ly);
-    const tick = tl.insert("line", "g.pubs").attr("x1",x).attr("x2",x).attr("y1",TLY).attr("y2",ly - 13).attr("stroke",css("--muted")).attr("stroke-width",0.8).attr("opacity",0.6);
-    /* each milestone is marked with a Reinschospora glyph; clicking it moves the slider there */
-    const mk = tl.append("g").attr("class","msg").attr("transform",`translate(${x},${TLY})`).style("cursor","pointer")
-      .on("click",()=>{ stopPlay?.(); state.year=y; document.getElementById("year").value=y; document.getElementById("yearOut").textContent=y; render(); });
+  /* milestones: a numbered Reinschospora glyph on the axis, and below the timeline a numbered list in full, so every one reads */
+  const list = document.getElementById("msList"), goYear = y => { stopPlay?.(); state.year = y; document.getElementById("year").value = y; document.getElementById("yearOut").textContent = y; render(); };
+  if (list) list.innerHTML = ""; let lastBadge = null;
+  (DATA.milestones || []).slice().sort((a, b) => a[0] - b[0]).forEach(([y, t], i) => {
+    const x = tx(y), num = i + 1;
+    const mk = tl.append("g").attr("class","msg").attr("transform",`translate(${x},${TLY})`).style("cursor","pointer").on("click", () => goYear(y));
     mk.append("circle").attr("r",12).attr("fill","transparent");
     if (typeof drawSpore === "function" && MG.Reinschospora) drawSpore(mk.append("g"), MG.Reinschospora, 10, true);
     else mk.append("circle").attr("r",4).attr("fill",css("--accent"));
-    mk.append("title").text(`${y}: ${t}\nClick to move the slider to ${y}`);
+    mk.append("title").text(`${num}. ${y}: ${t}\nClick to move the slider to ${y}`);
+    const tick = tl.insert("line", "g.pubs").attr("x1", x).attr("x2", x).attr("y1", TLY).attr("y2", TLY + 14 + maxStack * D).attr("stroke", css("--muted")).attr("stroke-width", 0.6).attr("opacity", 0.35);
+    const by = (lastBadge && x - lastBadge.x < 13) ? (lastBadge.lift ? 0 : 10) : 0; lastBadge = {x, lift: by > 0};
+    const badge = tl.append("text").attr("class", "msnum").attr("x", x).attr("y", TLY + 26 + maxStack * D + by).attr("text-anchor", "middle").text(num);
+    let li = null;
+    if (list) { li = document.createElement("li"); li.dataset.y = y;
+      li.innerHTML = `<button type="button" class="msgo" title="Move the slider to ${y}"><span class="msn">${num}</span><b>${y}</b> ${esc(t)}</button> <a class="schol" href="${scholarURL(t)}" target="_blank" rel="noopener" title="Search Google Scholar">↗</a>`;
+      li.querySelector(".msgo").onclick = () => goYear(y);
+      li.onmouseenter = () => mk.classed("hl", true); li.onmouseleave = () => mk.classed("hl", false);
+      list.appendChild(li); }
+    const txt = {style: (k, v) => { if (li) li.style.opacity = v; badge.style("opacity", v); return txt; }, classed: (c, on) => { li?.classList.toggle(c, on); badge.classed(c, on); return txt; }};
     msNodes.push({y, t, txt, tick, mk});
   });
-  const H = ROW0 + Math.max(1, ends.length) * ROW - 4;
+  const H = TLY + 42 + maxStack * D;
   tl.attr("viewBox", `0 0 ${W} ${H}`).attr("width", W).attr("height", H).style("height", H + "px");
   marker = tl.append("line").attr("y1",TLY-14).attr("y2",TLY+14).attr("stroke",css("--ink")).attr("stroke-width",2).style("pointer-events","none");
   const leg = document.getElementById("pubLegend");
@@ -3226,7 +3263,7 @@ if (re) setDV(true);
       if (alt && /\.github\.io$/.test(h)) {
         const repo = location.pathname.split("/").filter(Boolean)[0];
         const url = "https://github.com/" + h.split(".")[0] + (repo ? "/" + repo : "/" + h) + "/issues/new?title=" + encodeURIComponent("Document suggestion: ");
-        alt.innerHTML = 'To suggest a document, <a href="' + url + '" target="_blank" rel="noopener">open an issue on GitHub</a> with the citation, a link if it is online, where and when it comes from, and what it holds. A citation alone is very welcome.';
+        alt.innerHTML = 'To suggest a document or photo, <a href="' + url + '" target="_blank" rel="noopener">open an issue on GitHub</a> with the citation, a link if it is online, where and when it comes from, and what it holds. A citation alone is very welcome.';
       }
       return;
     }
@@ -3417,6 +3454,8 @@ try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorag
 #buildBoard .piece text{font-family:var(--body); font-size:12px; fill:var(--ink)}
 #buildBoard .piece .ring{fill:none; stroke:transparent; stroke-width:3}
 #buildBoard .piece.sel .ring{stroke:var(--accent)}
+#buildBoard .piece.drop .ring{stroke:var(--accent); stroke-dasharray:3 3}
+#buildBoard .piece{touch-action:none}
 #buildBoard .piece.done .name{fill:var(--muted)}
 #buildBoard .colhead{font-family:var(--body); font-size:11px; letter-spacing:.07em; text-transform:uppercase; fill:var(--muted)}
 #buildBoard .bad{stroke:#c0392b; stroke-width:2.5; stroke-dasharray:5 4}
@@ -3488,7 +3527,7 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
     spores.forEach(s => W0.ins[s].forEach(o => { if (pieces.has(o)) req(s, o, "insitu"); }));
     pieces.forEach(o => (W0.asm[o] || []).forEach(p => { if (pieces.has(p)) req(o, p, "assembly"); }));
     round = {spores, pieces, need, wrong: 0, hints: 0, built: new Set()}; sel = null; doneBox.hidden = true; doneBox.innerHTML = "";
-    msg.innerHTML = `Join each spore to the organ or plant it was found inside, then build up to the whole plant: organ to organ (a fertile organ to its foliage, say) and organ to plant. Click one piece, then the piece it belongs with.`;
+    msg.innerHTML = `Join each spore to the organ or plant it was found inside, then build up to the whole plant: organ to organ (a fertile organ to its foliage, say) and organ to plant. Drag a piece onto the piece it belongs with (or tap one, then the other).`;
     draw();
   }
   const col = id => { const k = kindOf(id); return k === "spore" || k === "mega" ? 0 : k === "organ" ? 1 : 2; };
@@ -3510,7 +3549,7 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
     round.bad = svg.append("g");
     round.pieces.forEach(id => { const [x, y] = pos[id], k = kindOf(id);
       const done = [...round.need.values()].filter(e => e.a === id || e.b === id).every(e => e.done);
-      const g = svg.append("g").attr("class", "piece" + (sel === id ? " sel" : "") + (done ? " done" : "")).attr("transform", `translate(${x},${y})`).attr("tabindex", 0)
+      const g = svg.append("g").attr("class", "piece" + (sel === id ? " sel" : "") + (done ? " done" : "")).attr("data-id", id).attr("transform", `translate(${x},${y})`).attr("tabindex", 0)
         .attr("role", "button").attr("aria-label", `${k === "spore" || k === "mega" ? "spore" : k} ${id}`);
       g.append("circle").attr("class", "ring").attr("r", 22);
       g.append("circle").attr("r", 18).attr("fill", "var(--panel)").attr("stroke", "var(--rule)").attr("stroke-width", 0.8);
@@ -3519,7 +3558,23 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
       /* names sit on the outer side of each column (organs: below), clear of the joining lines */
       const c0 = col(id), anchor = c0 === 0 ? "end" : c0 === 2 ? "start" : "middle", dx = c0 === 0 ? -26 : c0 === 2 ? 26 : 0, dy = c0 === 1 ? 34 : 4;
       g.append("text").attr("class", "name").attr("x", dx).attr("y", dy).attr("text-anchor", anchor).style("font-style", "italic").text(id);
-      g.on("click", () => pick(id)).on("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(id); } });
+      g.on("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(id); } });
+      /* drag a piece onto the piece it belongs with (a short tap still selects it, then tap the partner) */
+      g.on("pointerdown", ev => { ev.preventDefault(); const node = svg.node(), pt = e2 => { const m = node.getScreenCTM().inverse(), p = node.createSVGPoint(); p.x = e2.clientX; p.y = e2.clientY; return p.matrixTransform(m); };
+        const p0 = pt(ev), [sx, sy] = pos[id]; let moved = false;
+        const band = svg.append("line").attr("x1", sx).attr("y1", sy).attr("x2", sx).attr("y2", sy).attr("stroke", css("--accent")).attr("stroke-width", 2).attr("stroke-dasharray", "4 3").style("pointer-events", "none");
+        const ghost = svg.append("g").style("pointer-events", "none").attr("opacity", 0.85).attr("transform", `translate(${sx},${sy})`);
+        ghost.append("circle").attr("r", 18).attr("fill", "var(--panel)").attr("stroke", css("--accent")).attr("stroke-width", 1.5);
+        const gv = ghost.append("g"); if (k === "spore" || k === "mega") drawSpore(gv, UNCODED.has(id) ? null : MG[id] || null, 14, false); else drawOrgan(gv, glyphKind(id), 15);
+        const near = q => { let best = null, bd = 30; Object.entries(pos).forEach(([pid, [px, py]]) => { const d = Math.hypot(px - q.x, py - q.y); if (pid !== id && d < bd) { bd = d; best = pid; } }); return best; };
+        let over = null;
+        const mv = e2 => { const q = pt(e2); if (Math.hypot(q.x - p0.x, q.y - p0.y) > 5) moved = true; band.attr("x2", q.x).attr("y2", q.y); ghost.attr("transform", `translate(${q.x},${q.y})`);
+          const o = near(q); if (o !== over) { svg.selectAll(".piece").classed("drop", false); over = o; if (o) svg.selectAll(".piece").filter(function(){ return this.dataset.id === o; }).classed("drop", true); } };
+        const up = e2 => { window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); window.removeEventListener("pointercancel", up);
+          band.remove(); ghost.remove(); svg.selectAll(".piece").classed("drop", false);
+          if (!moved) return pick(id);
+          const o = near(pt(e2)); if (o) { sel = id; pick(o); } else draw(); };
+        window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up); });
     });
     const need = [...round.need.values()], made = need.filter(e => e.done).length;
     score.innerHTML = `Joined <b>${made}</b> of <b>${need.length}</b> · Wrong <b>${round.wrong}</b>${round.hints ? ` · Hints <b>${round.hints}</b>` : ""}`;
