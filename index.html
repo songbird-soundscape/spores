@@ -277,9 +277,9 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
 .tt-clade.st-cited{fill:var(--muted)}
 .tt-node{fill:var(--panel); stroke:var(--muted); stroke-width:1.4} .tt-node.st-cited{stroke:var(--muted)} .tt-node.st-polytomy, .tt-node.st-affinity{stroke-dasharray:2 2}
 .tt-range{stroke:var(--muted); stroke-opacity:.35; stroke-width:5; stroke-linecap:round} .tt-range.living{stroke:var(--ink); stroke-opacity:.55}
-:root{--g-angio:#b26b00; --g-gymno:#c0470a; --g-sfern:#a8507f; --g-spheno:#00805d; --g-fern:#2b7fb8; --g-lyco:#1f4fa0; --g-early:#6b6b6b; --g-bryo:#8a7d00; --g-charo:#4a6d78; --g-other:#7a7a7a}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--g-angio:#f3c56b; --g-gymno:#f4a582; --g-sfern:#e6a8cc; --g-spheno:#7fd8bd; --g-fern:#9fd3f3; --g-lyco:#9db8ef; --g-early:#cfcfcf; --g-bryo:#f0e68c; --g-charo:#b5dbe4; --g-other:#bdbdbd} }
-:root[data-theme="dark"]{--g-angio:#f3c56b; --g-gymno:#f4a582; --g-sfern:#e6a8cc; --g-spheno:#7fd8bd; --g-fern:#9fd3f3; --g-lyco:#9db8ef; --g-early:#cfcfcf; --g-bryo:#f0e68c; --g-charo:#b5dbe4; --g-other:#bdbdbd}
+:root{--g-angio:#b26b00; --g-gymno:#c0470a; --g-sfern:#a8507f; --g-spheno:#00805d; --g-fern:#2b7fb8; --g-lyco:#1f4fa0; --g-early:#6b6b6b; --g-bryo:#8a7d00; --g-charo:#4a6d78; --g-other:#7a7a7a; --g-algae:#3f7d5c; --g-fungi:#8a5a7c}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--g-angio:#f3c56b; --g-gymno:#f4a582; --g-sfern:#e6a8cc; --g-spheno:#7fd8bd; --g-fern:#9fd3f3; --g-lyco:#9db8ef; --g-early:#cfcfcf; --g-bryo:#f0e68c; --g-charo:#b5dbe4; --g-other:#bdbdbd; --g-algae:#8fd1ac; --g-fungi:#d6a6c8} }
+:root[data-theme="dark"]{--g-angio:#f3c56b; --g-gymno:#f4a582; --g-sfern:#e6a8cc; --g-spheno:#7fd8bd; --g-fern:#9fd3f3; --g-lyco:#9db8ef; --g-early:#cfcfcf; --g-bryo:#f0e68c; --g-charo:#b5dbe4; --g-other:#bdbdbd; --g-algae:#8fd1ac; --g-fungi:#d6a6c8}
 :root{--dv-bryo:#8f6a00; --dv-lyco:#1f4fa0; --dv-fern:#0f8a74; --dv-mega:#b8336a; --dv-gymno:#c0470a; --dv-angio:#7b4fb5; --dv-gyro:#00899a}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--dv-bryo:#a3830c; --dv-lyco:#5f8ce0; --dv-fern:#2fa38b; --dv-mega:#d8628f; --dv-gymno:#e0703a; --dv-angio:#a07ddc; --dv-gyro:#1aa0ab} }
 :root[data-theme="dark"]{--dv-bryo:#a3830c; --dv-lyco:#5f8ce0; --dv-fern:#2fa38b; --dv-mega:#d8628f; --dv-gymno:#e0703a; --dv-angio:#a07ddc; --dv-gyro:#1aa0ab}
@@ -314,7 +314,7 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
 .dvtab .scroll{max-height:320px; overflow:auto}
 .tt-gname.grp-angio,.tt-sname.grp-angio{fill:var(--g-angio)} .tt-gname.grp-gymno,.tt-sname.grp-gymno{fill:var(--g-gymno)} .tt-gname.grp-sfern,.tt-sname.grp-sfern{fill:var(--g-sfern)}
 .tt-gname.grp-spheno,.tt-sname.grp-spheno{fill:var(--g-spheno)} .tt-gname.grp-fern,.tt-sname.grp-fern{fill:var(--g-fern)} .tt-gname.grp-lyco,.tt-sname.grp-lyco{fill:var(--g-lyco)}
-.tt-gname.grp-early,.tt-sname.grp-early{fill:var(--g-early)} .tt-gname.grp-bryo,.tt-sname.grp-bryo{fill:var(--g-bryo)} .tt-gname.grp-charo,.tt-sname.grp-charo{fill:var(--g-charo)} .tt-gname.grp-other,.tt-sname.grp-other{fill:var(--g-other)}
+.tt-gname.grp-early,.tt-sname.grp-early{fill:var(--g-early)} .tt-gname.grp-bryo,.tt-sname.grp-bryo{fill:var(--g-bryo)} .tt-gname.grp-charo,.tt-sname.grp-charo{fill:var(--g-charo)} .tt-gname.grp-other,.tt-sname.grp-other{fill:var(--g-other)} .grp-algae,.tt-sname.grp-algae{fill:var(--g-algae)} .grp-fungi,.tt-sname.grp-fungi{fill:var(--g-fungi)}
 .tt-tip:hover .tt-range, .tt-tip:focus .tt-range{stroke:var(--accent)}
 .tt-gname{font-size:10px; font-style:italic; fill:var(--ink)} .tt-sname{font-size:9px; font-style:italic; fill:var(--muted)}
 .tt-sbar{stroke:var(--muted); stroke-opacity:.5; stroke-width:1.2} .tt-sp:hover .tt-sbar, .tt-sp:focus .tt-sbar{stroke:var(--ink); stroke-opacity:1} .tt-sp:hover .tt-sname{fill:var(--ink)}
@@ -564,7 +564,7 @@ body.ttfull-open{overflow:hidden}
 
   <section id="ttWrap" class="box" hidden aria-labelledby="ttTitle">
     <h2 id="ttTitle">Time tree: plants through time</h2>
-    <p class="sub" style="font-size:13.5px">Time runs upward, oldest at the bottom as in a rock column. Built from the R project's cited trees: every clade carries its status and sources (click a clade), and branch points sit at the clade's dated age (median over 20 random resolutions of the polytomies, dated with paleotree, minimum branch length 1 Myr). <b>Lineages</b> shows each lineage as a stem with the genera of each opened interval on it; <b>Genera</b> shows every whole-plant genus as a range bar on the dated synthesis tree, so alleged ancestors (grades, marked * or "grade") sit below the groups thought to descend from them. Bands are not to scale: opened intervals get equal height. Genus ranges and lineage origins are approximate and listed for hand-checking in the R project.</p>
+    <p class="sub" style="font-size:13.5px">Time runs upward, oldest at the bottom as in a rock column. Built from the R project's cited trees: every clade carries its status and sources (click a clade), and branch points sit at the clade's dated age (median over 20 random resolutions of the polytomies, dated with paleotree, minimum branch length 1 Myr). <b>Lineages</b> shows each lineage as a stem with the genera of each opened interval on it; <b>Genera</b> shows every whole-plant genus as a range bar on the dated synthesis tree, so alleged ancestors (grades, marked * or "grade") sit below the groups thought to descend from them. By default the bands are not to scale: opened intervals get equal height. Choose <b>True scale</b> to draw geologic time in proportion. Genus ranges and lineage origins are approximate and listed for hand-checking in the R project.</p>
     <p class="dsrc" id="ttHypNote"></p>
     <div class="ttlegend" aria-label="Key to the time tree">
       <span><i style="width:5px;height:16px;background:var(--ink);opacity:.55;border-radius:3px"></i>whole-plant genus, living</span>
@@ -576,7 +576,7 @@ body.ttfull-open{overflow:hidden}
     </div>
     <div class="ttlegend" aria-label="Name colours by group"><span>Names by group:</span>
       <span style="color:var(--g-charo)">Charophytes</span><span style="color:var(--g-bryo)">Bryophytes</span><span style="color:var(--g-early)">Early land plants</span><span style="color:var(--g-lyco)">Lycophytes</span>
-      <span style="color:var(--g-spheno)">Sphenopsids</span><span style="color:var(--g-fern)">Ferns</span><span style="color:var(--g-sfern)">Seed ferns, progymnosperms</span><span style="color:var(--g-gymno)">Gymnosperms</span><span style="color:var(--g-angio)">Flowering plants</span><span style="color:var(--g-other)">Fungi, other algae, unplaced</span>
+      <span style="color:var(--g-spheno)">Sphenopsids</span><span style="color:var(--g-fern)">Ferns</span><span style="color:var(--g-sfern)">Seed ferns, progymnosperms</span><span style="color:var(--g-gymno)">Gymnosperms</span><span style="color:var(--g-angio)">Flowering plants</span><span style="color:var(--g-algae)">Other algae</span><span style="color:var(--g-other)">Unplaced</span><span style="color:var(--g-fungi)">Fungi</span>
     </div>
     <div class="ttctl">
       <div class="field"><span>Show</span><div class="seg" role="group" aria-label="Time tree mode" id="ttModeSeg"><button type="button" data-tm="branch" hidden>Branching (as Plants Through Time)</button><button type="button" data-tm="lineage" hidden>Lineages (R project)</button><button type="button" data-tm="genus">Genera (dated tree)</button></div></div>
@@ -1031,22 +1031,42 @@ function triPathC(r, c){ return polarTri(r, c, 1.6); }   /* concave-sided triang
 /* ---------- charophyte gyrogonite (calcified oogonium) in side view: an ovoid wrapped in spiral cells ---------- */
 let gyroN = 0;
 function drawGyrogonite(g, s, R){
+  const CK = {fill:"#F4F1EA", dark:"#A0998C", line:"#8C8579", pale:"#FAF8F3", mid:"#D8D2C6", deep:"#7C7569"};   /* marble tones, local to the gyrogonite */
   const m = s.gyro === 1 ? {} : s.gyro, rx = R * (m.shape === "spheroidal" ? 0.95 : m.shape === "cylindrical" ? 0.62 : 0.78), ry = R;
   const n = m.spiral_n || 5, dir = m.spiral_dir || "sinistral", id = "gyc" + (++gyroN);
   if (m.utricle) g.append("ellipse").attr("rx", rx * 1.28).attr("ry", ry * 1.18).attr("fill", CK.pale).attr("stroke", CK.mid).attr("stroke-width", Math.max(0.6, R * 0.05));
   g.append("clipPath").attr("id", id).append("ellipse").attr("rx", rx).attr("ry", ry);
-  g.append("ellipse").attr("rx", rx).attr("ry", ry).attr("fill", CK.fill).attr("stroke", CK.line).attr("stroke-width", Math.max(0.6, R * 0.06));
+  /* carved white marble: a matte, lit body with the spiral cells as rounded ridges between shadowed grooves, faint veining,
+     and a soft shadow toward the lower right, like a small classical sculpture */
+  const mb = "gmb" + gyroN, sh = "gms" + gyroN, defs = g.append("defs");
+  const rgB = defs.append("radialGradient").attr("id", mb).attr("cx", 0.36).attr("cy", 0.3).attr("r", 0.85);
+  [[0, "#FFFFFF"], [0.35, "#F6F3EC"], [0.7, "#E4DFD4"], [1, "#BDB6A8"]].forEach(([o, c]) => rgB.append("stop").attr("offset", o).attr("stop-color", c));
+  const rgS = defs.append("radialGradient").attr("id", sh).attr("cx", 0.38).attr("cy", 0.32).attr("r", 0.78);
+  [[0, "#000", 0], [0.55, "#2E2A22", 0], [1, "#2E2A22", 0.42]].forEach(([o, c, a]) => rgS.append("stop").attr("offset", o).attr("stop-color", c).attr("stop-opacity", a));
+  g.append("ellipse").attr("rx", rx).attr("ry", ry).attr("fill", `url(#${mb})`).attr("stroke", "#8F887B").attr("stroke-width", Math.max(0.5, R * 0.04));
   const cg = g.append("g").attr("clip-path", `url(#${id})`), sw = Math.max(0.6, R * 0.07);
+  /* each spiral cell as a rounded tube: layered strokes from shadowed flanks to a lit crest */
+  const tube = (d, wd) => [[1, "#BFB8AA", 1], [0.74, "#DAD4C8", 1], [0.46, "#EEEAE2", 1], [0.2, "#FFFFFF", 0.9]].forEach(([f, c, op], j) =>
+    cg.append("path").attr("d", d).attr("fill", "none").attr("stroke", c).attr("stroke-opacity", op).attr("stroke-width", wd * f).attr("stroke-linecap", "round")
+      .attr("transform", j === 3 ? `translate(${-wd * 0.12},${-wd * 0.16})` : null));
+  /* a ridge: shadowed groove below, lit crest above */
+  const ridge = d => { cg.append("path").attr("d", d).attr("fill", "none").attr("stroke", "#7E776A").attr("stroke-opacity", 0.55).attr("stroke-width", sw * 1.05).attr("stroke-linecap", "round");
+    cg.append("path").attr("d", d).attr("fill", "none").attr("stroke", "#FFFFFF").attr("stroke-opacity", 0.85).attr("stroke-width", sw * 0.55).attr("transform", `translate(${-sw * 0.35},${-sw * 0.55})`); };
   if (dir === "vertical") {
     /* Sycidiales: cells run from pole to pole */
     for (let i = 1; i < n + 1; i++) { const x = -rx + (2 * rx * i) / (n + 1), bow = (x / rx) * rx * 0.35;
-      cg.append("path").attr("d", `M${x},${-ry} Q${x + bow},0 ${x},${ry}`).attr("fill", "none").attr("stroke", CK.dark).attr("stroke-width", sw); }
+      ridge(`M${x},${-ry} Q${x + bow},0 ${x},${ry}`); }
+    for (let i = 0; i < n + 1; i++) { const x = -rx + (2 * rx * (i + 0.5)) / (n + 1), bow = (x / rx) * rx * 0.35;
+      tube(`M${x},${-ry} Q${x + bow},0 ${x},${ry}`, (2 * rx) / (n + 1) * 0.92); }
+    for (let i = 1; i < n + 1; i++) { const x = -rx + (2 * rx * i) / (n + 1), bow = (x / rx) * rx * 0.35;
+      cg.append("path").attr("d", `M${x},${-ry} Q${x + bow},0 ${x},${ry}`).attr("fill", "none").attr("stroke", "#857E71").attr("stroke-opacity", 0.6).attr("stroke-width", sw * 0.55); }
   } else {
     /* spiral cells seen side-on: parallel bands climbing the egg; sinistral rise to the left, dextral to the right */
     const k = dir === "dextral" ? -1 : 1, step = (2 * ry) / n * 0.9, slope = 0.45;
     for (let i = -n; i <= n * 1.6; i++) { const y0 = -ry * 1.5 + i * step;
-      cg.append("path").attr("d", `M${-rx * 1.2},${y0 + k * slope * rx * 1.2} Q0,${y0 - step * 0.18} ${rx * 1.2},${y0 - k * slope * rx * 1.2}`)
-        .attr("fill", "none").attr("stroke", CK.dark).attr("stroke-width", sw);
+      const yc = y0 + step * 0.5;
+      tube(`M${-rx * 1.2},${yc + k * slope * rx * 1.2} Q0,${yc - step * 0.18} ${rx * 1.2},${yc - k * slope * rx * 1.2}`, step * 0.9);
+      cg.append("path").attr("d", `M${-rx * 1.2},${y0 + k * slope * rx * 1.2} Q0,${y0 - step * 0.18} ${rx * 1.2},${y0 - k * slope * rx * 1.2}`).attr("fill", "none").attr("stroke", "#857E71").attr("stroke-opacity", 0.6).attr("stroke-width", sw * 0.55);
       if (m.orn === "nodular" || m.orn === "tuberculate") for (let t = -0.6; t <= 0.6; t += 0.4) cg.append("circle").attr("cx", t * rx).attr("cy", y0 - t * k * slope * rx - step * 0.5).attr("r", R * 0.06).attr("fill", CK.mid);
     }
   }
@@ -1081,6 +1101,11 @@ function drawGyrogonite(g, s, R){
   if (st.has("rosette")) for (let i = 0; i < 5; i++) { const a = Math.PI + (i + 0.5) * Math.PI / 5;
     g.append("circle").attr("cx", rx * 0.3 * Math.cos(a)).attr("cy", top + ry * 0.12 + ry * 0.12 * Math.sin(a)).attr("r", R * 0.1).attr("fill", CK.mid).attr("stroke", CK.deep).attr("stroke-width", sw * 0.6); }
   if (m.basal_pore !== 0) g.append("circle").attr("cy", ry * 0.95).attr("r", R * 0.07).attr("fill", CK.deep);
+  /* faint marble veining, then the form shadow that rounds it */
+  if (R > 6) { const vg = g.append("g").attr("clip-path", `url(#${id})`);
+    [[-0.7, -0.5, 0.2, 0.15, 0.8, 0.55], [-0.5, 0.35, 0.1, 0.55, 0.6, 0.25]].forEach(([x1, y1, cx, cy, x2, y2]) =>
+      vg.append("path").attr("d", `M${x1 * rx},${y1 * ry} Q${cx * rx},${cy * ry} ${x2 * rx},${y2 * ry}`).attr("fill", "none").attr("stroke", "#A9A294").attr("stroke-opacity", 0.28).attr("stroke-width", Math.max(0.3, R * 0.018))); }
+  g.append("ellipse").attr("rx", rx).attr("ry", ry).attr("fill", `url(#${sh})`).style("pointer-events", "none");
 }
 function drawSporeFlat(g, s, R, detail){
   if (s && s.gyro) return drawGyrogonite(g, s, R);
@@ -1357,7 +1382,7 @@ function drawSpore(g, s, R, detail){
       g.append("circle").attr("cx", d * Math.cos(a)).attr("cy", d * Math.sin(a)).attr("r", br).attr("fill", "url(#spMid)").attr("stroke", SOFT[AM.line]).attr("stroke-width", Math.max(0.15, R * 0.009)); }
   }
   if (R > 2.5 && !s.fringe) g.append("ellipse").attr("cx", -R * 0.3).attr("cy", -R * 0.36).attr("rx", R * 0.42).attr("ry", R * 0.27).attr("fill", "url(#spHi)").style("pointer-events", "none");
-  if (R > 6 && !s.fringe) g.append("ellipse").attr("cx", -R * 0.42).attr("cy", -R * 0.46).attr("rx", R * 0.1).attr("ry", R * 0.065).attr("fill", "#fff").attr("fill-opacity", 0.55).style("pointer-events", "none");   /* a small specular glint */
+  if (R > 6 && !s.fringe && !s.gyro) g.append("ellipse").attr("cx", -R * 0.42).attr("cy", -R * 0.46).attr("rx", R * 0.1).attr("ry", R * 0.065).attr("fill", "#fff").attr("fill-opacity", 0.55).style("pointer-events", "none");   /* a small specular glint */
 }
 
 function drawOrgan(g, type, R){
@@ -2357,7 +2382,14 @@ setTimeout(syncDiscoveryUI, 0);
 (function ttKeys(){
   const wrapTT = document.getElementById("ttWrap"), sc = () => document.querySelector(".tt-scroll"); if (!wrapTT) return;
   const ctl = wrapTT.querySelector(".ttctl"); if (ctl) { const p = document.createElement("p"); p.className = "meta ttkeys"; p.style.cssText = "flex-basis:100%; margin:2px 0 0";
-    p.innerHTML = "Keyboard: arrow keys move around the tree (Shift for bigger steps); Ctrl + ↑ zooms in, Ctrl + ↓ zooms out."; ctl.appendChild(p); }
+    p.innerHTML = "Keyboard: arrow keys move around the tree (Shift for bigger steps); Ctrl + ↑ zooms in, Ctrl + ↓ zooms out."; ctl.appendChild(p);
+    /* time scale: equal bands for each opened interval, or geologic time to true scale */
+    try { window.__ttScale = sessionStorage.getItem("ttScale") || "equal"; } catch(e) { window.__ttScale = "equal"; }
+    const f = document.createElement("div"); f.className = "field";
+    f.innerHTML = `<span>Time scale</span><div class="seg" role="group" aria-label="Time scale"><button type="button" data-ts="equal">Equal bands</button><button type="button" data-ts="true">True scale</button></div>`;
+    const syncTs = () => f.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.ts === window.__ttScale));
+    f.querySelectorAll("button").forEach(b => b.onclick = () => { window.__ttScale = b.dataset.ts; try { sessionStorage.setItem("ttScale", b.dataset.ts); } catch(e) {} syncTs(); window.__tt?.draw?.(); });
+    syncTs(); ctl.insertBefore(f, p); }
   window.addEventListener("keydown", e => {
     if (wrapTT.hidden || !sc()) return;
     if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.classList?.contains("sidegrip")) return;
@@ -2559,7 +2591,10 @@ function save(){ try { sessionStorage.setItem("ttSel", JSON.stringify(sel)); ses
 /* shared vertical scale: opened intervals tall, others thin; oldest at the bottom */
 function bandsFor(BH, BT, TOP){
   const bands = []; let y = TOP;
-  [...TT_INTERVALS].reverse().forEach(iv => { const on = sel.includes(iv[0]); const h = on ? BH : BT; bands.push({iv, on, y0:y, y1:y+h}); y += h; });
+  /* equal bands (each opened interval the same height) or true scale (height proportional to its duration) */
+  const trueScale = window.__ttScale === "true", dur = iv => Math.max(0, iv[2] - iv[3]), onIv = TT_INTERVALS.filter(iv => sel.includes(iv[0]));
+  const kMa = trueScale ? (BH * onIv.length) / Math.max(1, onIv.reduce((s, iv) => s + dur(iv), 0)) : 0;
+  [...TT_INTERVALS].reverse().forEach(iv => { const on = sel.includes(iv[0]); const h = !on ? BT : trueScale ? Math.max(iv[3] < 0.02 && dur(iv) < 1 ? 90 : 34, dur(iv) * kMa) : BH; bands.push({iv, on, y0:y, y1:y+h}); y += h; });
   const Y = ma => { const b = bands.find(b => ma <= b.iv[2] && ma >= b.iv[3]) || (ma > 485.4 ? bands[bands.length-1] : bands[0]);
     const f = (b.iv[2] - Math.min(ma, b.iv[2])) / (b.iv[2] - b.iv[3] || 1); return b.y1 - f*(b.y1 - b.y0); };
   return {bands, Y, H: y + 20};
@@ -2803,6 +2838,8 @@ function drawGenus(){
   const GF = TTFAM.genus_family || {};
   const LIVEFAM = new Set([...Object.values(GF), ...PT.CL.filter(c => c.rank === "family" && c.status === "extant").map(c => c.name.split(" (")[0])]);
   /* flowering plants follow APG IV (Plants Through Time's lineage tree): genera under their family, every lineage that holds anything a branch point */
+  /* families within each angiosperm order, resolved by the Open Tree of Life synthesis (R/family_topology_otol.R) */
+  const FAMTOPO = {"source":"Open Tree of Life synthetic tree (opentree16.1), induced subtree of each order's families; fetched 2026-11-24","orders":{"Nymphaeales":[["Nymphaeaceae","Cabombaceae"],"Hydatellaceae"],"Austrobaileyales":[["Schisandraceae","Trimeniaceae"],"Austrobaileyaceae"],"Piperales":[["Piperaceae","Saururaceae"],"Aristolochiaceae"],"Magnoliales":["Myristicaceae",[[["Degeneriaceae","Himantandraceae"],"Magnoliaceae"],["Annonaceae","Eupomatiaceae"]]],"Laurales":[[[["Lauraceae","Monimiaceae"],"Hernandiaceae"],["Siparunaceae",["Atherospermataceae","Gomortegaceae"]]],"Calycanthaceae"],"Alismatales":[["Araceae",[["Alismataceae",["Hydrocharitaceae","Butomaceae"]],[[[[["Potamogetonaceae","Zosteraceae"],["Cymodoceaceae","Posidoniaceae"]],["Maundiaceae","Juncaginaceae"]],"Scheuchzeriaceae"],"Aponogetonaceae"]]],"Tofieldiaceae"],"Dioscoreales":["Nartheciaceae",["Dioscoreaceae","Burmanniaceae"]],"Pandanales":[[[["Pandanaceae","Cyclanthaceae"],"Stemonaceae"],"Triuridaceae"],"Velloziaceae"],"Liliales":[[[[["Colchicaceae","Alstroemeriaceae"],[["Liliaceae","Smilacaceae"],["Ripogonaceae","Philesiaceae"]]],"Petermanniaceae"],"Melanthiaceae"],["Corsiaceae","Campynemataceae"]],"Asparagales":[[[[[[[["Amaryllidaceae","Asphodelaceae"],"Xeronemataceae"],"Iridaceae"],["Tecophilaeaceae","Ixioliriaceae"]],"Doryanthaceae"],[[[["Hypoxidaceae","Lanariaceae"],"Asteliaceae"],"Blandfordiaceae"],"Boryaceae"]],"Asparagaceae"],"Orchidaceae"],"Commelinales":[[["Commelinaceae","Hanguanaceae"],"Philydraceae"],["Haemodoraceae","Pontederiaceae"]],"Zingiberales":[[[["Zingiberaceae","Costaceae"],["Cannaceae","Marantaceae"]],[["Lowiaceae","Strelitziaceae"],"Heliconiaceae"]],"Musaceae"],"Poales":[[[[[[[[["Poaceae",["Joinvilleaceae","Ecdeiocoleaceae"]],"Flagellariaceae"],"Restionaceae"],"Xyridaceae"],"Eriocaulaceae"],"Mayacaceae"],[["Juncaceae","Cyperaceae"],"Thurniaceae"]],"Rapateaceae"],["Bromeliaceae","Typhaceae"]],"Ranunculales":[[[[["Ranunculaceae","Berberidaceae"],"Menispermaceae"],["Lardizabalaceae","Circaeasteraceae"]],"Papaveraceae"],"Eupteleaceae"],"Proteales":[[["Proteaceae","Platanaceae"],"Nelumbonaceae"],"Sabiaceae"],"Saxifragales":[[[[["Daphniphyllaceae",[["Altingiaceae","Cercidiphyllaceae"],"Hamamelidaceae"]],"Paeoniaceae"],"Peridiscaceae"],[["Crassulaceae",[[["Haloragaceae","Penthoraceae"],"Tetracarpaeaceae"],"Aphanopetalaceae"]],[["Saxifragaceae","Grossulariaceae"],"Iteaceae"]]],"Cynomoriaceae"],"Fabales":[[["Fabaceae","Quillajaceae"],"Surianaceae"],"Polygalaceae"],"Rosales":[[[[["Moraceae","Urticaceae"],"Cannabaceae"],"Ulmaceae"],["Rhamnaceae",[["Elaeagnaceae","Barbeyaceae"],"Dirachmaceae"]]],"Rosaceae"],"Fagales":[[[["Casuarinaceae",["Betulaceae","Ticodendraceae"]],["Myricaceae","Juglandaceae"]],"Fagaceae"],"Nothofagaceae"],"Cucurbitales":[["Apodanthaceae",[[[["Begoniaceae",["Datiscaceae","Tetramelaceae"]],"Coriariaceae"],"Anisophylleaceae"],"Corynocarpaceae"]],"Cucurbitaceae"],"Oxalidales":[[[[["Elaeocarpaceae","Brunelliaceae"],"Cunoniaceae"],"Cephalotaceae"],["Oxalidaceae","Connaraceae"]],"Huaceae"],"Malpighiales":[[[[[[["Euphorbiaceae","Peraceae"],[[[[[[["Lacistemataceae",["Passifloraceae","Violaceae"]],["Achariaceae","Goupiaceae"],"Salicaceae"],[["Pandaceae","Humiriaceae"],"Ctenolophonaceae"]],["Putranjivaceae","Lophopyxidaceae"]],"Centroplacaceae"],[[[["Dichapetalaceae","Trigoniaceae"],"Chrysobalanaceae"],"Balanopaceae"],["Erythroxylaceae","Rhizophoraceae"]]],["Linaceae","Irvingiaceae"]]],[["Phyllanthaceae","Picrodendraceae"],"Caryocaraceae"]],["Malpighiaceae","Elatinaceae"]],["Rafflesiaceae","Euphroniaceae"]],[[[[["Podostemaceae","Hypericaceae"],"Calophyllaceae"],"Clusiaceae"],"Bonnetiaceae"],"Ochnaceae"]],"Ixonanthaceae"],"Myrtales":[[[["Melastomataceae",[["Penaeaceae","Alzateaceae"],"Crypteroniaceae"]],["Myrtaceae","Vochysiaceae"]],["Onagraceae","Lythraceae"]],"Combretaceae"],"Crossosomatales":[[[["Stachyuraceae","Crossosomataceae"],"Staphyleaceae"],"Guamatelaceae"],[["Geissolomataceae","Strasburgeriaceae"],"Aphloiaceae"]],"Huerteales":[[["Tapisciaceae","Dipentodontaceae"],"Petenaeaceae"],"Gerrardinaceae"],"Sapindales":[[[[["Burseraceae","Anacardiaceae"],["Meliaceae","Simaroubaceae"],"Rutaceae"],"Sapindaceae"],"Biebersteiniaceae"],"Nitrariaceae"],"Malvales":[[["Thymelaeaceae",["Malvaceae",[[[["Cistaceae",["Dipterocarpaceae","Sarcolaenaceae"]],"Bixaceae"],"Sphaerosepalaceae"],"Muntingiaceae"]]],"Neuradaceae"],"Cytinaceae"],"Brassicales":[[[[[[[[["Brassicaceae","Cleomaceae"],"Capparaceae"],[["Resedaceae","Gyrostemonaceae"],["Tovariaceae","Pentadiplandraceae"]]],"Emblingiaceae"],"Koeberliniaceae"],["Salvadoraceae","Bataceae"]],"Limnanthaceae"],"Setchellanthaceae"],[["Caricaceae","Moringaceae"],["Tropaeolaceae","Akaniaceae"]]],"Santalales":[[[["Loranthaceae",["Schoepfiaceae","Misodendraceae"]],["Santalaceae","Opiliaceae"]],"Balanophoraceae"],"Olacaceae"],"Caryophyllales":[[[[[[[["Caryophyllaceae",["Amaranthaceae","Achatocarpaceae"]],[[[[[[[[["Cactaceae",["Anacampserotaceae","Portulacaceae"]],"Talinaceae"],"Didiereaceae"],"Basellaceae"],"Montiaceae"],"Halophytaceae"],"Molluginaceae"],[[[["Aizoaceae",[[["Nyctaginaceae","Petiveriaceae"],["Phytolaccaceae","Sarcobataceae"]],"Gisekiaceae"]],"Kewaceae"],"Barbeuiaceae"],"Lophiocarpaceae"]],["Limeaceae","Macarthuriaceae"]]],"Stegnospermataceae"],"Microteaceae"],["Asteropeiaceae","Physenaceae"]],"Simmondsiaceae"],"Rhabdodendraceae"],[[["Polygonaceae","Plumbaginaceae"],["Tamaricaceae","Frankeniaceae"]],[["Nepenthaceae",[["Dioncophyllaceae","Ancistrocladaceae"],"Drosophyllaceae"]],"Droseraceae"]]],"Cornales":[[["Hydrangeaceae","Loasaceae"],["Cornaceae",["Nyssaceae",["Grubbiaceae","Curtisiaceae"]]]],"Hydrostachyaceae"],"Ericales":[[[[[[["Primulaceae","Ebenaceae"],["Polemoniaceae","Fouquieriaceae"]],[[["Pentaphylacaceae","Sladeniaceae"],"Sapotaceae"],[[[["Diapensiaceae","Styracaceae"],"Symplocaceae"],"Theaceae"],[[["Actinidiaceae","Roridulaceae"],["Cyrillaceae","Clethraceae"]],"Sarraceniaceae"]]]],"Lecythidaceae"],["Balsaminaceae",["Tetrameristaceae","Marcgraviaceae"]]],"Mitrastemonaceae"],"Ericaceae"],"Gentianales":["Rubiaceae",[["Apocynaceae","Loganiaceae"],["Gentianaceae","Gelsemiaceae"]]],"Solanales":[["Solanaceae",[["Hydroleaceae","Sphenocleaceae"],"Montiniaceae"]],"Convolvulaceae"],"Lamiales":[[[[["Plantaginaceae",[[[[[[[[["Bignoniaceae","Martyniaceae"],"Verbenaceae"],"Schlegeliaceae"],[[["Orobanchaceae","Paulowniaceae"],"Lamiaceae"],"Phrymaceae"]],[["Acanthaceae","Pedaliaceae"],"Thomandersiaceae"]],"Lentibulariaceae"],"Stilbaceae"],["Scrophulariaceae","Linderniaceae"]],"Byblidaceae"]],"Calceolariaceae","Gesneriaceae"],"Tetrachondraceae"],["Oleaceae","Carlemanniaceae"]],"Plocospermataceae"],"Aquifoliales":[["Aquifoliaceae",["Phyllonomaceae","Helwingiaceae"]],["Stemonuraceae","Cardiopteridaceae"]],"Asterales":[[[[[["Calyceraceae","Goodeniaceae"],"Menyanthaceae"],[[["Alseuosmiaceae","Argophyllaceae"],"Phellinaceae"],"Stylidiaceae"]],"Campanulaceae"],"Pentaphragmataceae"],"Rousseaceae","Asteraceae"],"Apiales":[[[[[["Apiaceae","Myodocarpaceae"],"Araliaceae"],"Pittosporaceae"],"Griseliniaceae"],"Torricelliaceae"],"Pennantiaceae"]}};
   const ANGL = PT.CL.find(c => /^Angiospermae/.test(c.name)), APGFAM = {}, apgSet = new Set();
   const inAng = c => { for (let q = c; q; q = PT.C[q.parent]) if (q === ANGL) return true; return false; };
   if (ANGL && plantTree && typeof plantTree !== "string") {
@@ -2821,8 +2858,23 @@ function drawGenus(){
     const kidsOf = {}; PT.CL.forEach(c => { if (c.parent && PT.C[c.parent]) (kidsOf[c.parent] ||= []).push(c); });
     const tipAgeA = x => x.startsWith("FM|") ? APGFAM[x].drawn : GR[x] ? GR[x].fad : 0;
     const oldestA = n => Math.max(0, ...(n.items || []).map(tipAgeA), ...(n.kids || []).map(oldestA));
+    const ageOfT = x => typeof x === "string" ? tipAgeA(x) : ((VIEWS.clades[x[2]] || {}).age ?? 0);
+    const tipsOfT = t => typeof t === "string" ? [t] : t.flatMap(tipsOfT);
     const build = c => {
-      const ch = (kidsOf[c.id] || []).map(build).filter(Boolean), items = at.get(c.id) || [], all = [...ch, ...items.slice().sort((a, b) => tipAgeA(b) - tipAgeA(a))];
+      const nmC = c.name.split(" (")[0], kidPairs = (kidsOf[c.id] || []).map(k => [k.name.split(" (")[0], build(k)]).filter(p => p[1]);
+      let ch = kidPairs.map(p => p[1]);
+      const topo = c.rank === "order" ? FAMTOPO.orders[nmC] : null;
+      if (topo && kidPairs.length > 2) {   /* nest the order's families as the synthesis does; families it does not place stay at the order */
+        const byFam = new Map(kidPairs), used = new Set();
+        const nestT = t => { if (typeof t === "string") { if (!byFam.has(t)) return null; used.add(t); return byFam.get(t); }
+          const parts = t.map(nestT).filter(Boolean); if (!parts.length) return null; if (parts.length === 1) return parts[0];
+          const fams = tipsOfT(t).filter(f => byFam.has(f)), key = "otl:" + nmC + ":" + fams.join("+");
+          VIEWS.clades[key] = {label: fams.length <= 2 ? fams.join(" + ") : `${fams[0]} + ${fams.length - 1} other families`, status: "consensus", sources: [FAMTOPO.source],
+            age: Math.max(0, ...parts.map(ageOfT)), note: "Families grouped as in the Open Tree of Life synthetic tree."};
+          return ["", parts, key]; };
+        const nested = nestT(topo), rest = kidPairs.filter(([f]) => !used.has(f)).map(p => p[1]);
+        if (nested) ch = (typeof nested !== "string" && !rest.length ? nested[1] : [nested]).concat(rest); }
+      const items = at.get(c.id) || [], all = [...ch, ...items.slice().sort((a, b) => tipAgeA(b) - tipAgeA(a))];
       if (!all.length) return null; if (all.length === 1) return all[0];
       const isF = c.rank === "family", nm = c.name.split(" (")[0], k = (isF ? "fam:" : "apg:") + nm, a = numA(c.crown?.ma) ?? numA(c.stem?.ma);
       const old = Math.max(0, ...all.map(x => typeof x === "string" ? tipAgeA(x) : ((VIEWS.clades[x[2]] || {}).age ?? 0)));
@@ -2877,14 +2929,16 @@ function drawGenus(){
     return null; };
   const chainIds = g => { const a = []; for (let c = PT.C[g.clade]; c; c = PT.C[c.parent]) a.push(c.id); return a; };
   /* place every spore genus: beside its parent plant; beside its living family's genus; on the charophyte tree; or in a cluster at the right */
-  const attached = {}, clusters = {}, chFam = {}, bryoSp = [];   /* bryophyte-like spores and cryptospores sit beside the bryophyte branch */
+  const attached = {}, clusters = {}, chFam = {}, bryoSp = [], clusterClade = {};   /* bryophyte-like spores and cryptospores sit beside the bryophyte branch */
   const toCluster = (k, g) => (clusters[k] ||= []).push(g);
   PT.GN.filter(g => inSel(g.f, g.l)).forEach(g => {
     const names = chainNames(g), ids = chainIds(g), leaf = PT.C[g.clade];
     if (ids.some(i => /^(charophyceae|zygnematophyceae|coleochaetophyceae)$/.test(i)) || g.morph?.gyro) {
       const fam = (g.fam ? g.fam.replace(/ \(.*\)$/, "") : null) || names.find(n => /aceae|ales/.test(n) && !/phyceae/.test(n)) || (ids.includes("charophyceae") || g.morph?.gyro ? "Charophytes, family unplaced" : "Other streptophyte algae");
       g._grp = "charo"; (chFam[fam] ||= []).push(g); return; }
-    if (/Fungi|Prasinophyt|Other palynomorphs|acritarch|dinoflag/i.test(names.join("|") + " " + (g.aff || ""))) { g._grp = "other"; return toCluster("Fungi and non-streptophyte algae", g); }
+    if (/Fungi|fungal/i.test(names.join("|") + " " + (g.aff || ""))) { g._grp = "fungi"; return toCluster("Fungi", g); }
+    if (/Prasinophyt|acritarch|dinoflag|Chlorophyt|alga/i.test(names.join("|") + " " + (g.aff || ""))) { g._grp = "algae"; return toCluster("Algae other than charophytes", g); }
+    if (/Other palynomorphs/i.test(names.join("|"))) { g._grp = "other"; return toCluster("No parent group", g); }
     const lt = [...(LK[g.g] || [])].filter(x => tipSet.has(x)).sort((a, b) => tipOrder.indexOf(a) - tipOrder.indexOf(b));
     if (lt.length) { (attached[lt[0]] ||= []).push(g); g._others = lt.slice(1); g._why = "found in situ in this plant (or its organs)"; g._grp = grpOfIds(ttAnc()[lt[0]] || []); return; }
     if (leaf && leaf.rank === "family" && famTip[names[0]]) { (attached[famTip[names[0]]] ||= []).push(g); g._why = "pollen of this living family"; g._grp = grpOfIds(ttAnc()[famTip[names[0]]] || []); return; }
@@ -2895,7 +2949,8 @@ function drawGenus(){
     let hit = null; for (const n of names) { hit = TTKEY.find(([re]) => re.test(n)); if (hit) break; }
     if (!hit) hit = TTKEY.find(([re]) => re.test(g.aff || ""));
     g._grp = hit ? grpOfIds(ttAnc()["clade:" + hit[1]] || [hit[1]]) : "other";
-    toCluster(hit ? ((VIEWS.clades[hit[1]] || {}).label || "Placed to a group").replace(/ \(.*\)$/, "") : "No parent group", g); });
+    const ck = hit ? ((VIEWS.clades[hit[1]] || {}).label || "Placed to a group").replace(/ \(.*\)$/, "") : "No parent group";
+    if (hit) clusterClade[ck] = hit[1]; toCluster(ck, g); });
   /* every living family when "Living plants" is open: a tip from crown (else stem) age to the present, under its order's clade */
   const numv = v => typeof v === "number" && isFinite(v) ? v : null, FAMT = {}, bryoFams = [];
   if (sel.includes("modern")) {
@@ -2961,8 +3016,11 @@ function drawGenus(){
   const nBryoRows = bryoSp.length ? pack(bryoSp) : 0;
   tips.forEach(id => { if (!bryoColDone && bryoTips.has(id) && nBryoRows) { X0.SPB = x + 6; x += nBryoRows * SW + 18; bryoColDone = true; } if (id.startsWith("CG|")) { X[id] = x + CW / 2; x += CW + 2; return; } if (id.startsWith("FM|")) { const nf = attached[id] ? pack(attached[id]) : 0; X[id] = x + 6; X0[id] = x + 13; x += 13 + (nf ? nf * SW + 6 : 0); return; } if (id.startsWith("CL|")) { X[id] = x + 8; x += 22; return; }
     const n = attached[id] ? pack(attached[id]) : 0; X[id] = x + CW / 2; X0[id] = x + CW + 2; x += CW + (n ? n * SW + 6 : 0); });
-  const APART = ["No parent group", "Fungi and non-streptophyte algae"];
-  const clusterKeys = [...Object.keys(clusters).filter(k => !APART.includes(k)).sort((a, b) => clusters[b].length - clusters[a].length), ...APART.filter(k => clusters[k])];
+  /* the right-hand block: algae first, then groups named only above order level in the same left-to-right order as the tree,
+     then spores with no parent group, and fungi at the far right */
+  const APART = ["No parent group", "Fungi"], LEFTMOST = ["Algae other than charophytes"];
+  const treePos = k => { const id = clusterClade[k]; if (!id) return 1e9; const i = tipOrder.findIndex(t => (ttAnc()[t] || []).includes("clade:" + id) || (ttAnc()[t] || []).includes(id)); return i < 0 ? 1e8 : i; };
+  const clusterKeys = [...LEFTMOST.filter(k => clusters[k]), ...Object.keys(clusters).filter(k => !APART.includes(k) && !LEFTMOST.includes(k)).sort((a, b) => treePos(a) - treePos(b) || clusters[b].length - clusters[a].length), ...APART.filter(k => clusters[k])];
   x += 60; const CX = {}; let apartX = null; clusterKeys.forEach(k => { if (APART.includes(k) && apartX == null) { x += 70; apartX = x; } const n = pack(clusters[k]); CX[k] = x + 4; x += Math.max(24, n * SW) + 34; });
   const W = x + 40, {bands, Y, H} = bandsFor(220, 26, TOP);
   svg.attr("viewBox", `0 0 ${W} ${H}`).attr("width", W).attr("height", H);
@@ -3028,11 +3086,13 @@ function drawGenus(){
   if (X0.SPB != null) { bryoSp.forEach(sg => spore(sg, X0.SPB + sg._r * SW));
     g.append("text").attr("class", "tt-ma").attr("transform", `translate(${X0.SPB - 7},${yc(Math.max(...bryoSp.map(s => s.f))) + 4}) rotate(-90)`).attr("text-anchor", "end").text(`bryophyte-like spores and cryptospores (${bryoSp.length})`); }
   /* clusters at the right: spores identified only to a broad group (not branches) */
-  const broad = clusterKeys.filter(k => !APART.includes(k));
+  const broad = clusterKeys.filter(k => !APART.includes(k) && !LEFTMOST.includes(k));
   if (broad.length) { const t1 = g.append("text").attr("class", "tt-band").attr("x", CX[broad[0]] - 10).attr("y", TOP - 132).text("Identified only to a group above order level");
     g.append("text").attr("class", "tt-ma").attr("x", CX[broad[0]] - 10).attr("y", TOP - 116).text("too broad to sit beside any one family or order on the tree, so grouped here by that group"); }
   if (apartX != null) { g.append("text").attr("class", "tt-band").attr("x", apartX - 10).attr("y", TOP - 132).text("No parent group");
-    g.append("text").attr("class", "tt-ma").attr("x", apartX - 10).attr("y", TOP - 116).text("affinity unknown, or not land plants (fungi, other algae)"); }
+    g.append("text").attr("class", "tt-ma").attr("x", apartX - 10).attr("y", TOP - 116).text("affinity unknown; fungi at the far right"); }
+  const algK = LEFTMOST.find(k => clusters[k]); if (algK) { g.append("text").attr("class", "tt-band").attr("x", CX[algK] - 10).attr("y", TOP - 160).text("Algae");
+    g.append("text").attr("class", "tt-ma").attr("x", CX[algK] - 10).attr("y", TOP - 144).text("not charophytes"); }
   clusterKeys.forEach(k => { clusters[k].forEach(sg => spore(sg, CX[k] + sg._r * SW));
     g.append("text").attr("class", "tt-ma").attr("transform", `translate(${CX[k] - 8},${TOP - 4}) rotate(-90)`).attr("text-anchor", "end").text(`${k} (${clusters[k].length})`); });
 }
@@ -3383,6 +3443,8 @@ try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorag
 .tour-card button.lnk{border:0; background:none; color:var(--muted); padding:5px 4px}
 .tour-card button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .tour-welcome{left:max(12px, env(safe-area-inset-left, 0px)); bottom:max(12px, env(safe-area-inset-bottom, 0px))}
+#contribBtn{font:500 13px var(--body); margin:10px 0 0 8px; padding:5px 12px; border-radius:999px; border:1px solid var(--accent); color:#fff; background:var(--accent); cursor:pointer}
+#contribBtn:hover{filter:brightness(1.08)} body.gaming #contribBtn{display:none}
 #tourBtn{font:500 13px var(--body); margin-top:10px; padding:5px 12px; border-radius:999px; border:1px solid var(--accent); color:var(--accent); background:var(--panel); cursor:pointer}
 #tourBtn:hover{background:color-mix(in srgb, var(--accent) 10%, var(--panel))}
 @media print{.tour-hole, .tour-card, #tourBtn{display:none}}
@@ -3473,6 +3535,9 @@ try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorag
   function addButton(){
     const h = document.querySelector("header"); if (!h || document.getElementById("tourBtn")) return;
     const b = document.createElement("button"); b.type = "button"; b.id = "tourBtn"; b.textContent = "Take the tour"; b.onclick = start; h.appendChild(b);
+    const c = document.createElement("button"); c.type = "button"; c.id = "contribBtn"; c.textContent = "Contribute";
+    c.title = "Send a document or photo that fills a gap"; c.onclick = () => { const s = document.getElementById("contribute"); if (s) { s.scrollIntoView({behavior: "smooth", block: "start"}); setTimeout(() => s.querySelector("input, textarea, a, button")?.focus({preventScroll: true}), 600); } };
+    h.appendChild(c);
   }
   const boot = () => { addButton(); if (!store.get()) setTimeout(welcome, 1200); };
   if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
