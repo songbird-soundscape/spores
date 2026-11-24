@@ -1329,11 +1329,30 @@ function drawOrgan(g, type, R){
   const c = "var(--plant)", f = "var(--faint)", w = Math.max(0.8, R*0.12), k = R/22;
   const P = (d, extra={}) => { const e = g.append("path").attr("d", d).attr("fill", extra.fill || "none").attr("stroke", c).attr("stroke-width", extra.w || w).attr("transform", `scale(${k})`); return e; };
   if (type==="leaf") { P("M0,22 L0,-22", {w:w/k*1.2}); for (let i=-3;i<=3;i++) P(`M0,${i*6} q-12,-3 -16,-9 M0,${i*6} q12,-3 16,-9`, {w:w/k}); }
-  else if (type==="root") { P("M-22,-6 Q0,-12 22,-6", {w:w/k*2.2}); for (let i=-3;i<=3;i++) P(`M${i*6},-8 L${i*6+(i%2?3:-3)},14`, {w:w/k*0.8}); }
-  else if (type==="cone") { P("M0,-22 C12,-22 12,22 0,22 C-12,22 -12,-22 0,-22Z", {fill:f, w:w/k}); for (let i=-3;i<=3;i++) P(`M-9,${i*6} q9,4 18,0`, {w:w/k*0.7}); }
+  else if (type==="root") {   /* a root system: a short stem base, a tapering main root, laterals curving down and splitting into fine rootlets */
+    P("M-9,-19 H9", {w:w/k*0.7}).attr("stroke-opacity", 0.5);
+    P("M0,-22 C0.6,-14 -0.6,-6 0,0", {w:w/k*1.7}); P("M0,0 C0.8,6 -0.6,12 0.4,20", {w:w/k*1});
+    [[-1,-13,-12,-4,-17,4],[1,-13,12,-4,17,4],[-1,-5,-9,2,-13,12],[1,-5,9,2,13,12],[-1,3,-5,9,-7,18],[1,3,5,9,7,18]].forEach(([s,y0,cx,cy,x1,y1], j) => {
+      P(`M0,${y0} Q${cx},${cy} ${x1},${y1}`, {w:w/k*(j < 2 ? 0.85 : 0.7)});
+      P(`M${(cx+x1)/2},${(cy+y1)/2} q${s*3},1 ${s*4},6`, {w:w/k*0.4}); P(`M${x1},${y1} q${s*-1},3 ${s*0.5},5`, {w:w/k*0.35}); }); }
+  else if (type==="cone") {   /* a cone with its scales in Fibonacci spirals: golden-angle placement, front scales drawn last */
+    P("M0,-22 C13,-21 13,21 0,22 C-13,21 -13,-21 0,-22Z", {fill:f, w:w/k*0.7});
+    const GA = 2.39996323, sc = [];
+    for (let i = 0; i < 46; i++) { const y = -18 + 36*(i + 0.5)/46, th = i*GA, rx = 11*Math.sqrt(Math.max(0, 1 - (y/21)**2)), front = Math.cos(th);
+      if (front > -0.15) sc.push({x: rx*Math.sin(th), y, d: front, s: 2.3 + 1.6*front}); }
+    sc.sort((a, b) => a.d - b.d).forEach(q => P(`M${q.x - q.s},${q.y} L${q.x},${q.y - q.s*0.7} L${q.x + q.s},${q.y} L${q.x},${q.y + q.s*0.9}Z`, {fill:f, w:w/k*(0.25 + 0.25*q.d)})); }
   else if (type==="seed") { P("M0,-22 C14,-10 14,14 0,22 C-14,14 -14,-10 0,-22Z", {fill:f, w:w/k}); for (const x of [-5,0,5]) P(`M${x},-16 L${x},16`, {w:w/k*0.6}); }
-  else if (type==="synangium") { for (let i=0;i<5;i++){ const a=i*72; P(`M0,-4 C6,-6 6,-20 0,-20 C-6,-20 -6,-6 0,-4Z`, {fill:f, w:w/k}).attr("transform", `scale(${k}) rotate(${a})`); } }
-  else if (type==="pollenorgan") { P("M-16,-12 Q0,-22 16,-12 L10,18 L-10,18Z", {fill:f, w:w/k}); for (const x of [-6,0,6]) P(`M${x},-12 L${x*0.7},16`, {w:w/k*0.6}); }
+  else if (type==="synangium") {   /* Scolecopteris: elongate, beaked sporangia joined at the base on a short stalk, seen from the side */
+    P("M0,9 L0,21", {w:w/k*1.2}); P("M-9,21 Q0,17 9,21", {w:w/k*0.9}).attr("stroke-opacity", 0.6);
+    [[-19, 0.5], [19, 0.5], [-8, 0.8], [8, 0.8], [0, 1]].forEach(([a, op]) => {
+      P("M0,9 C-4,6 -4.2,-9 -1,-17 Q0,-21 0.8,-22.5 Q0.5,-19 1.1,-16 C4.2,-9 4,6 0,9Z", {fill:f, w:w/k*0.7}).attr("transform", `scale(${k}) rotate(${a} 0 9)`).attr("stroke-opacity", op);
+      P("M0,7 C0.4,-2 0.3,-9 0.5,-15", {w:w/k*0.5}).attr("transform", `scale(${k}) rotate(${a} 0 9)`).attr("stroke-opacity", op*0.7); }); }
+  else if (type==="pollenorgan") {   /* an anther: two pollen sacs side by side on a slender filament, a groove between them, pollen escaping at the top */
+    P("M0,22 C-0.8,14 0.8,8 0,2", {w:w/k*0.85});
+    P("M-0.6,3 C-9,3 -10,-15 -2.2,-19 C-0.8,-19.6 -0.4,-17 -0.6,-14Z", {fill:f, w:w/k*0.75});
+    P("M0.6,3 C9,3 10,-15 2.2,-19 C0.8,-19.6 0.4,-17 0.6,-14Z", {fill:f, w:w/k*0.75});
+    P("M-4.6,-15 C-6,-8 -5.4,-2 -3.4,1 M4.6,-15 C6,-8 5.4,-2 3.4,1", {w:w/k*0.5}).attr("stroke-opacity", 0.7);
+    for (const [x, y] of [[-3,-21.5],[0.5,-22.5],[3.6,-21],[-5.5,-20],[6.2,-19]]) g.append("circle").attr("cx", x*k).attr("cy", y*k).attr("r", Math.max(0.35, 0.9*k)).attr("fill", c); }
   else if (type==="tree") { P("M0,22 L0,-6", {w:w/k*2.4}); P("M0,-6 l-10,-10 M0,-6 l10,-10 M-10,-16 l-5,-6 M-10,-16 l4,-7 M10,-16 l5,-6 M10,-16 l-4,-7", {w:w/k*1.3}); }
   else if (type==="small") { P("M0,22 L0,-4", {w:w/k*1.6}); P("M0,-4 q-10,-6 -14,-16 M0,-4 q10,-6 14,-16 M0,4 q-8,-3 -12,-9 M0,4 q8,-3 12,-9", {w:w/k*1.1}); }
   else g.append("circle").attr("r", R).attr("fill", c);
@@ -2305,7 +2324,7 @@ setTimeout(syncDiscoveryUI, 0);
   const box = document.querySelector(".main > aside h2 + .legend")?.closest(".box"); if (!box) return;
   box.id = "keyBar"; box.classList.add("keybar"); box.querySelector("h2").textContent = "Key";
   const leg = box.querySelector(".legend");
-  const parts = [["cone","Cone (strobilus): bears the sporangia"],["synangium","Synangium: fused sporangia, as in marattialean ferns"],["pollenorgan","Pollen organ of a seed plant"],
+  const parts = [["cone","Cone (strobilus): scales in spirals, bearing the sporangia"],["synangium","Synangium: fused sporangia, as in Scolecopteris (marattialean ferns)"],["pollenorgan","Pollen organ of a seed plant"],
     ["seed","Seed or ovule"],["leaf","Leaf or frond"],["root","Root or rooting organ (e.g. Stigmaria)"],["tree","Whole plant: tree"],["small","Whole plant: herb, shrub or climber"]];
   const used = new Set(Object.values(organOf)); used.add("small");
   const wrap = document.createElement("div"); wrap.className = "keyparts";
