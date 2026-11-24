@@ -3593,6 +3593,9 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
 #buildBoard .bbdone{padding:8px 14px; border-top:1px solid var(--rule); font-size:13px; max-height:30%; overflow:auto}
 #buildBoard .bbdone ul{margin:4px 0 0; padding-left:18px} #buildBoard .bbdone li{margin:3px 0}
 #buildBoard .bbdone a{color:var(--accent)}
+#buildBoard .bbdone .sub{color:var(--muted); font-size:12px; margin-left:6px} #buildBoard .bbdone div.sub{margin:6px 0 0}
+#buildBoard .bbdone li.part{color:var(--muted)}
+#buildBoard .bbdone button{font:inherit; font-size:11px; background:none; border:0; color:var(--accent); text-decoration:underline; cursor:pointer; padding:0}
 </style>
 <script>
 /* Match game, rebuilt as "build the plants". Each round deals five spore genera at random (from the browser's cryptographic
@@ -3648,9 +3651,9 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
     /* any further true links among the pieces also count */
     spores.forEach(s => W0.ins[s].forEach(o => { if (pieces.has(o)) req(s, o, "insitu"); }));
     pieces.forEach(o => (W0.asm[o] || []).forEach(p => { if (pieces.has(p)) req(o, p, "assembly"); }));
-    round = {spores, pieces, need, wrong: 0, hints: 0, built: new Set()}; sel = null; doneBox.hidden = true; doneBox.innerHTML = "";
+    round = {spores, pieces, need, wrong: 0, hints: 0, built: new Set()}; sel = null;
     msg.innerHTML = `Join each spore to the organ or plant it was found inside, then build up to the whole plant: organ to organ (a fertile organ to its foliage, say) and organ to plant. Drag a piece onto the piece it belongs with (or tap one, then the other).`;
-    draw();
+    draw(); renderDone();
   }
   const col = id => { const k = kindOf(id); return k === "spore" || k === "mega" ? 0 : k === "organ" ? 1 : 2; };
   function draw(){
@@ -3711,15 +3714,31 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
     return `<li><b><i>${esc(p)}</i></b> built. <a href="${sch(`"${p}" whole-plant reconstruction`)}" target="_blank" rel="noopener">Papers reconstructing <i>${esc(p)}</i> ↗</a>` +
       (uniq.length ? ` · the studies that joined its parts: ${uniq.map(c => `<a href="${sch((citeFull?.(c)) || `${c.who} ${c.year} ${p}`)}" target="_blank" rel="noopener">${esc(c.who)} ${c.year} ↗</a>`).join(", ")}` : "") + `</li>`;
   }
+  /* plants put together stay listed across rounds (and visits); the plants on this board show how far along they are */
+  let collected = new Map(); try { collected = new Map(JSON.parse(localStorage.getItem("sd-built") || "[]")); } catch(e) {}
+  const saveCollected = () => { try { localStorage.setItem("sd-built", JSON.stringify([...collected])); } catch(e) {} };
+  function upstream(p){ const up = new Set([p]); let grew = true;
+    while (grew) { grew = false; round.need.forEach(e => { if (up.has(e.b) && !up.has(e.a)) { up.add(e.a); grew = true; } }); }
+    return [...round.need.values()].filter(e => up.has(e.b) && up.has(e.a)); }
+  function renderDone(){
+    if (!round) return;
+    const plants = [...round.pieces].filter(id => col(id) === 2);
+    const now = plants.map(p => { const ed = upstream(p), d = ed.filter(e => e.done).length;
+      return round.built.has(p) ? plantCard(p) : `<li class="part"><i>${esc(p)}</i>: ${d} of ${ed.length} link${ed.length === 1 ? "" : "s"} joined so far</li>`; }).join("");
+    const earlier = [...collected].filter(([p]) => !plants.includes(p)).map(([, h]) => h).join("");
+    doneBox.hidden = false;
+    doneBox.innerHTML = `<b>Plants you have put together</b> <span class="sub">${collected.size} so far${collected.size ? ` · <button type="button" data-clear>clear list</button>` : ""}</span>` +
+      `<ul>${now}</ul>` + (earlier ? `<div class="sub">Earlier rounds</div><ul>${earlier}</ul>` : "");
+  }
+  doneBox.addEventListener("click", e => { if (e.target.closest("[data-clear]")) { collected.clear(); saveCollected(); renderDone(); } });
   function checkBuilt(){
     const plants = [...round.pieces].filter(id => col(id) === 2), newly = [];
     plants.forEach(p => { if (round.built.has(p)) return;
       /* everything upstream of p on the board: organs joined to it, their organs, and the spores in them */
-      const up = new Set([p]); let grew = true;
-      while (grew) { grew = false; round.need.forEach(e => { if (up.has(e.b) && !up.has(e.a)) { up.add(e.a); grew = true; } }); }
-      const edges = [...round.need.values()].filter(e => up.has(e.b) && up.has(e.a));
-      if (edges.length && edges.every(e => e.done)) { round.built.add(p); newly.push(p); } });
-    if (newly.length) { doneBox.hidden = false; doneBox.innerHTML = (doneBox.innerHTML ? doneBox.innerHTML.replace(/<\/ul>$/, "") : `<b>Plants you have put together</b><ul>`) + newly.map(plantCard).join("") + `</ul>`; }
+      const edges = upstream(p);
+      if (edges.length && edges.every(e => e.done)) { round.built.add(p); newly.push(p); collected.set(p, plantCard(p)); } });
+    if (newly.length) saveCollected();
+    renderDone();
     return newly;
   }
   function pick(id){
