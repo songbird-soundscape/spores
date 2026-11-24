@@ -218,7 +218,7 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
 .kick{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin:0 0 4px}
 .timeline{background:var(--panel); border:1px solid var(--rule); border-radius:8px; padding:12px 16px}
 .tl-scroll{overflow-x:auto}
-#tl{display:block; min-width:760px; width:100%; height:120px}
+#tl{display:block; min-width:760px; width:100%; height:204px}
 #tl text{font-family:var(--body); font-size:11px; fill:var(--muted)}
 #tl .yr{font-family:var(--mono); fill:var(--ink)}
 .sizegrid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px}
@@ -581,7 +581,7 @@ body.ttfull-open{overflow:hidden}
 
   <section class="timeline" aria-labelledby="tlTitle">
     <h2 id="tlTitle">Milestones</h2>
-    <div class="tl-scroll"><svg id="tl" viewBox="0 0 1000 120" preserveAspectRatio="none" role="img" aria-label="Timeline of milestones in naming and linking Pennsylvanian spores"></svg></div>
+    <div class="tl-scroll"><svg id="tl" viewBox="0 0 1000 204" preserveAspectRatio="none" role="img" aria-label="Timeline of milestones in naming and linking Pennsylvanian spores"></svg></div>
   </section>
 
   <section class="wme" aria-labelledby="wmeTitle" id="where-more">
@@ -2005,17 +2005,36 @@ document.getElementById("refList").innerHTML = Object.entries(REF).sort((a,b) =>
 
 /* ---------- timeline ---------- */
 const tl = d3.select("#tl"), tx = d3.scaleLinear().domain([YMIN,YMAX]).range([20,980]);
-tl.append("line").attr("x1",20).attr("x2",980).attr("y1",62).attr("y2",62).attr("stroke",css("--rule")).attr("stroke-width",2);
-d3.range(Math.ceil((YMIN+1)/50)*50, YMAX, 50).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",114).attr("text-anchor","middle").text(y));
-(DATA.milestones || []).forEach(([y,t],i) => {
-  const up = i%2===0, x = tx(y);
-  tl.append("line").attr("x1",x).attr("x2",x).attr("y1",62).attr("y2",up?30:94).attr("stroke",css("--muted")).attr("stroke-width",0.8);
-  tl.append("circle").attr("cx",x).attr("cy",62).attr("r",3.5).attr("fill",css("--accent")).style("cursor","pointer")
-    .on("click",()=>{ state.year=y; document.getElementById("year").value=y; render(); }).append("title").text(`${y}: ${t}`);
-  tl.append("text").attr("x",x).attr("y",up?24:104).attr("text-anchor", x>880?"end":x<120?"start":"middle").text(`${y} ${t.length>38?t.slice(0,36)+"…":t}`).append("title").text(t);
-});
-const marker = tl.append("line").attr("y1",40).attr("y2",84).attr("stroke",css("--ink")).attr("stroke-width",2);
+const TLY = 100;   /* the axis; labels sit in three rows above it and three below, so they do not overlap */
+tl.append("line").attr("x1",20).attr("x2",980).attr("y1",TLY).attr("y2",TLY).attr("stroke",css("--rule")).attr("stroke-width",2);
+d3.range(Math.ceil((YMIN+1)/50)*50, YMAX, 50).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY+18).attr("text-anchor","middle").text(y));
+(function placeMilestones(){
+  const sx = Math.max(0.6, (document.getElementById("tl").getBoundingClientRect().width || 1300) / 1000);
+  const LANES = [[22, 1], [44, 1], [66, 1], [152, 0], [172, 0], [192, 0]], ends = LANES.map(() => -Infinity);   /* [label y, above?] */
+  (DATA.milestones || []).slice().sort((a, b) => a[0] - b[0]).forEach(([y, t]) => {
+    const x = tx(y), lab = `${y} ${t.length > 30 ? t.slice(0, 28).trimEnd() + "…" : t}`;
+    const anchor = x > 860 ? "end" : x < 140 ? "start" : "middle";
+    const txt = tl.append("text").attr("x",x).attr("y",-50).attr("text-anchor",anchor).text(lab);
+    txt.append("title").text(`${y}: ${t}`);
+    const w = txt.node().getComputedTextLength() || lab.length * 6 / sx, x0 = anchor === "end" ? x - w : anchor === "start" ? x : x - w / 2;
+    let li = ends.findIndex(e => e + 22 / sx < x0); if (li < 0) li = ends.indexOf(Math.min(...ends));
+    ends[li] = x0 + w; const [ly, up] = LANES[li];
+    txt.attr("y", ly);
+    tl.insert("line", "text").attr("x1",x).attr("x2",x).attr("y1",TLY).attr("y2",up ? ly + 4 : ly - 12).attr("stroke",css("--muted")).attr("stroke-width",0.8).attr("opacity",0.7);
+    /* each milestone is marked with a Reinschospora glyph (counter-scaled, as the strip stretches only sideways) */
+    const mk = tl.append("g").attr("class","msg").attr("data-x",x).style("cursor","pointer")
+      .on("click",()=>{ state.year=y; document.getElementById("year").value=y; document.getElementById("yearOut").textContent=y; render(); });
+    mk.append("circle").attr("r",14).attr("fill","transparent");
+    if (typeof drawSpore === "function" && MG.Reinschospora) drawSpore(mk.append("g"), MG.Reinschospora, 12, true);
+    else mk.append("circle").attr("r",4).attr("fill",css("--accent"));
+    mk.append("title").text(`${y}: ${t}`);
+  });
+})();
+const marker = tl.append("line").attr("y1",TLY-24).attr("y2",TLY+24).attr("stroke",css("--ink")).attr("stroke-width",2);
 function drawTimelineMarker(){ marker.attr("x1",tx(state.year)).attr("x2",tx(state.year)); }
+function placeMilestoneGlyphs(){ const el = document.getElementById("tl"), w = el.getBoundingClientRect().width; if (!w) return;
+  const sx = w / 1000; tl.selectAll("g.msg").attr("transform", function(){ return `translate(${this.dataset.x},${TLY}) scale(${(1/sx).toFixed(4)},1)`; }); }
+placeMilestoneGlyphs(); new ResizeObserver(placeMilestoneGlyphs).observe(document.getElementById("tl"));
 
 /* ---------- period switch and interval-specific page text ---------- */
 (function setupPeriod(){
