@@ -433,10 +433,14 @@ body.ttfull-open{overflow:hidden}
 .occrefs ul{margin:4px 0 0; padding-left:18px; font-size:12.5px} .occrefs li{margin:2px 0}
 .schrow{font-size:12px; color:var(--muted)} a.schol{font-size:12px; white-space:nowrap; margin-right:6px; color:var(--accent); text-decoration:none} a.schol:hover{text-decoration:underline}
 .occrefs summary{cursor:pointer; font-size:12.5px; color:var(--accent); margin-top:4px}
-/* the two find maps always sit side by side, the same size; only on phones (under 520 px) do they stack */
-.geomaps{grid-template-columns:repeat(2, minmax(0,1fr)) !important; gap:10px}
-.geomaps figcaption{min-height:3em; display:flex; align-items:flex-end}
-@media (max-width:520px){ .geomaps{grid-template-columns:minmax(0,1fr) !important} .geomaps figcaption{min-height:0} }
+/* the two find maps: one above the other, each at the panel's full width; side by side, the same size, once the panel
+   is wide enough (drag its edge, or on tablets where it runs full width) */
+.geo{container-type:inline-size}
+.geomaps{grid-template-columns:minmax(0,1fr); gap:10px}
+@container (min-width:560px){
+  .geomaps{grid-template-columns:repeat(2, minmax(0,1fr))}
+  .geomaps figcaption{min-height:3em; display:flex; align-items:flex-end}
+}
 /* semantic zoom: world lines keep their width and world labels their size */
 #stage line, .hull path, .clad path, .band ellipse, .band rect{vector-effect:non-scaling-stroke}
 .hull text{font-size:calc(12px / var(--k, 1)); stroke-width:calc(3px / var(--k, 1))}
@@ -3266,6 +3270,118 @@ document.getElementById("wmeLoad")?.addEventListener("click", () => { const b = 
 
 /* arriving from the time tree: open the genus it asked for */
 try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorage.removeItem("selAfter"); setTimeout(() => { if (byId[want]) { select(want); document.getElementById("detail").scrollIntoView({block: "start"}); } }, 700); } } catch (e) {}
+</script>
+
+<style>
+/* the guided tour: a spotlight over one part of the page and a small card beside it */
+.tour-hole{position:fixed; z-index:90; border-radius:10px; box-shadow:0 0 0 9999px rgba(10,14,12,.5); outline:2px solid var(--accent); outline-offset:2px;
+  pointer-events:none; transition:top .25s, left .25s, width .25s, height .25s}
+.tour-card{position:fixed; z-index:91; width:min(360px, calc(100vw - 24px)); background:var(--panel); color:var(--ink); border:1px solid var(--rule);
+  border-radius:10px; padding:14px 16px 12px; box-shadow:0 8px 30px rgba(0,0,0,.25); font-size:14px; line-height:1.5}
+.tour-card h3{margin:0 0 6px; font-family:var(--display); font-size:1.05rem}
+.tour-card p{margin:0 0 10px}
+.tour-card .tour-row{display:flex; align-items:center; gap:8px; justify-content:flex-end}
+.tour-card .tour-n{margin-right:auto; font-size:12px; color:var(--muted)}
+.tour-card button{font:500 13px var(--body); border-radius:6px; padding:5px 12px; cursor:pointer; border:1px solid var(--rule); background:var(--panel); color:var(--ink)}
+.tour-card button.go{background:var(--accent); border-color:var(--accent); color:#fff}
+.tour-card button.lnk{border:0; background:none; color:var(--muted); padding:5px 4px}
+.tour-card button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.tour-welcome{left:max(12px, env(safe-area-inset-left, 0px)); bottom:max(12px, env(safe-area-inset-bottom, 0px))}
+#tourBtn{font:500 13px var(--body); margin-top:10px; padding:5px 12px; border-radius:999px; border:1px solid var(--accent); color:var(--accent); background:var(--panel); cursor:pointer}
+#tourBtn:hover{background:color-mix(in srgb, var(--accent) 10%, var(--panel))}
+@media print{.tour-hole, .tour-card, #tourBtn{display:none}}
+</style>
+<script>
+/* A short pop-up tour. First-time visitors are asked once whether they want it; the choice is remembered in this browser.
+   "Take the tour" under the title starts it again at any time. */
+(function(){
+  const KEY = "sd-tour";
+  const store = { get(){ try { return localStorage.getItem(KEY) } catch(e){ return null } }, set(v){ try { localStorage.setItem(KEY, v) } catch(e){} } };
+  const vis = el => el && el.getClientRects().length && getComputedStyle(el).visibility !== "hidden";
+  const goView = m => { const b = document.querySelector(`.seg button[data-mode="${m}"]`); if (b && b.getAttribute("aria-pressed") !== "true") b.click(); };
+  const STEPS = [
+    {sel: "#periodSeg", title: "Pick a slice of time",
+     text: "Each interval, from the Silurian–Devonian to the Cenozoic, has its own network of dispersed spores and pollen, the plant organs they were found in, and the whole plants those organs make up."},
+    {sel: '.seg[aria-label="Layout"]', up: true, title: "Five ways to look",
+     text: "<b>Discovery</b> replays when each name and link was made. <b>Phylogeny</b> arranges the same network by relationship, <b>Habitat</b> by where the plants grew, <b>Time tree</b> through geologic time, and <b>Diversity</b> counts genera through time."},
+    {sel: "#discBar .dbtime", before: () => goView("discovery"), title: "Move through the history of the science",
+     text: "Drag the slider or press <b>Play</b> to watch names appear and links form, year by year, from Sternberg in 1820 to now."},
+    {sel: "#tl", title: "Milestones and the papers behind them",
+     text: "The <i>Reinschospora</i> glyphs mark major milestones: click one to jump there. The small dots are the publications that supplied this page's names and links. Click any dot or milestone to search for it on Google Scholar."},
+    {sel: "#statsBox", title: "How much was known, and when",
+     text: "For the year on the slider: how many genera had been named, how many were traced to a plant or organ, assigned only to a broad group, or still have no known parent."},
+    {sel: "#stage", title: "The network",
+     text: "Amber spores, green plant organs and whole plants, joined by the studies that linked them. Click any circle to select it. Drag to pan; Ctrl + scroll (or pinch) to zoom."},
+    {sel: "#detail", left: true, title: "The selected taxon",
+     text: "Its photomicrograph and glyph, how to recognise it, maps of where it has been found (today and on the ancient globe), and the references: first the studies that tied it to its plants, then those that recorded where it occurs."},
+    {sel: ".main > aside > .sidegrip", left: true, title: "Make room",
+     text: "Drag this edge to give the selected taxon more room or the network more space. With enough room the two maps sit side by side. Double-click to reset."},
+    {sel: "#keyBar", up: true, title: "The key",
+     text: "What the colours, lines and plant-part symbols mean."},
+    {sel: "#themeBtn", up: true, title: "Day and night",
+     text: "The page turns to its night colours about half an hour before your local sunset, with a reminder that it might be a good moment to look outside. Click to choose day or night yourself."},
+  ];
+  let i = 0, hole = null, card = null, onKey = null, onMove = null;
+  const avail = () => STEPS.map((s, k) => k).filter(k => k === i || [...document.querySelectorAll(STEPS[k].sel)].some(vis));
+  function close(done){
+    hole?.remove(); card?.remove(); hole = card = null;
+    document.removeEventListener("keydown", onKey); window.removeEventListener("resize", onMove); window.removeEventListener("scroll", onMove, true);
+    store.set(done ? "done" : "skipped");
+  }
+  function place(){
+    const st = STEPS[i], el = [...document.querySelectorAll(st.sel)].find(vis); if (!el || !hole) return;
+    const r = el.getBoundingClientRect(), pad = 6, vw = innerWidth, vh = innerHeight;
+    const top = Math.max(4, r.top - pad), left = Math.max(4, r.left - pad), h = Math.min(vh - 8, r.height + pad*2), w = Math.min(vw - 8, r.width + pad*2);
+    Object.assign(hole.style, {top: top + "px", left: left + "px", width: w + "px", height: h + "px"});
+    const cw = card.offsetWidth, ch = card.offsetHeight; let cx, cy;
+    if (st.left && r.left - cw - 16 > 8) { cx = r.left - cw - 16; cy = Math.min(Math.max(8, r.top), vh - ch - 8); }
+    else if (!st.up && r.bottom + ch + 16 < vh) { cy = r.bottom + 14; cx = r.left; }
+    else if (r.top - ch - 16 > 8) { cy = r.top - ch - 14; cx = r.left; }
+    else { cy = vh - ch - 12; cx = r.left; }
+    cx = Math.min(Math.max(8, cx), vw - cw - 8);
+    Object.assign(card.style, {left: cx + "px", top: cy + "px", bottom: "auto"});
+  }
+  function show(k){
+    /* skip stops whose part is not on screen in this layout (the panel edge is desktop-only) */
+    const dir = k >= i ? 1 : -1; i = k;
+    while (i >= 0 && i < STEPS.length) { STEPS[i].before?.(); if ([...document.querySelectorAll(STEPS[i].sel)].some(vis)) break; i += dir; }
+    if (i < 0) i = 0; if (i >= STEPS.length) return close(true);
+    const st = STEPS[i], el = [...document.querySelectorAll(st.sel)].find(vis);
+    const last = !STEPS.slice(i + 1).some(s => [...document.querySelectorAll(s.sel)].some(vis));
+    card.innerHTML = `<h3 id="tourT">${st.title}</h3><p>${st.text}</p><div class="tour-row"><span class="tour-n">${avail().indexOf(i) + 1} of ${avail().length}</span>` +
+      `<button type="button" class="lnk" data-a="skip">${last ? "Close" : "Skip tour"}</button>${i ? `<button type="button" data-a="back">Back</button>` : ""}<button type="button" class="go" data-a="next">${last ? "Done" : "Next"}</button></div>`;
+    card.setAttribute("aria-labelledby", "tourT");
+    card.querySelectorAll("button").forEach(b => b.onclick = () => b.dataset.a === "next" ? (last ? close(true) : show(i + 1)) : b.dataset.a === "back" ? show(i - 1) : close(last));
+    el.scrollIntoView({block: st.sel === "#themeBtn" ? "nearest" : "center", behavior: "smooth"});
+    setTimeout(place, 380); place();
+    card.querySelector(".go").focus({preventScroll: true});
+  }
+  function start(){
+    document.querySelector(".tour-welcome")?.remove(); if (card) close(false);
+    hole = document.createElement("div"); hole.className = "tour-hole";
+    card = document.createElement("div"); card.className = "tour-card"; card.setAttribute("role", "dialog"); card.setAttribute("aria-modal", "false");
+    document.body.append(hole, card);
+    onKey = e => { if (e.key === "Escape") close(false); else if (e.key === "ArrowRight") show(i + 1); else if (e.key === "ArrowLeft" && i) show(i - 1); };
+    onMove = () => place();
+    document.addEventListener("keydown", onKey); window.addEventListener("resize", onMove); window.addEventListener("scroll", onMove, true);
+    show(0);
+  }
+  function welcome(){
+    const w = document.createElement("div"); w.className = "tour-card tour-welcome"; w.setAttribute("role", "dialog"); w.setAttribute("aria-labelledby", "tourW");
+    w.innerHTML = `<h3 id="tourW">New to Sporae Dispersae?</h3><p>A short tour of ${avail().length} stops shows what each part of the page does. You can leave it at any time.</p>` +
+      `<div class="tour-row"><button type="button" class="lnk" data-a="no">No thanks</button><button type="button" class="go" data-a="yes">Take the tour</button></div>`;
+    w.querySelector('[data-a="yes"]').onclick = () => { w.remove(); start(); };
+    w.querySelector('[data-a="no"]').onclick = () => { w.remove(); store.set("skipped"); };
+    document.body.appendChild(w);
+  }
+  function addButton(){
+    const h = document.querySelector("header"); if (!h || document.getElementById("tourBtn")) return;
+    const b = document.createElement("button"); b.type = "button"; b.id = "tourBtn"; b.textContent = "Take the tour"; b.onclick = start; h.appendChild(b);
+  }
+  const boot = () => { addButton(); if (!store.get()) setTimeout(welcome, 1200); };
+  if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
+  window.SD_TOUR = {start};
+})();
 </script>
 
 </body></html>
