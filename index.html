@@ -2094,8 +2094,7 @@ function sporeCard(gen, fromSpecies){
       (pg.reg && pg.reg.length ? `<p><b>Recorded in.</b> ${pg.reg.map(esc).join(", ")}</p>` : "") +
       `<p><b>Parent plant.</b> ${esc(pg.aff || "unknown")}${pg.affb ? ` <span class="meta">(${esc(pg.affb)})</span>` : ""}</p>` +
       `<div class="geo" data-geo="${esc(gen)}"><p class="meta">Loading where it has been found…</p></div>` +
-      (IS_PENN ? `<div class="lit" data-lit="${esc(gen)}"><p class="meta">Loading further records from the literature…</p></div>` : "") +
-      `<p><a href="${PT_URL}#g-${encodeURIComponent(gen).replace(/%20/g, "-")}" target="_blank" rel="noopener">Open ${esc(gen)} on Plants Through Time</a>, with its lineage, range bar and sources.</p></div>`);
+      (IS_PENN ? `<div class="lit" data-lit="${esc(gen)}"><p class="meta">Loading further records from the literature…</p></div>` : "") + `</div>`);
   }
   if (!dg) return out.join("") + (fromSpecies ? "" : `<p class="nophoto">Diagnostic table not compiled yet.</p>`);
   const row = (k, v) => v ? `<tr><th>${k}</th><td>${esc(typeof v === "object" ? Object.values(v).filter(Boolean).join("; ") : v)}</td></tr>` : "";
@@ -2868,13 +2867,13 @@ function drawBranch(){
     det.innerHTML = `<div class="ttdn">${esc(c.name)}</div><p class="meta">${esc(c.status || "")}${PT.isCharo(c) ? " · charophyte" : ""}</p>
       <h3>When</h3><p>Branches off about ${age(c.origin)}; first fossil ${age(c.fad)}${c.lad > 0 ? `; last ${age(c.lad)}` : c.status === "extant" ? "; living today" : ""}.</p>
       ${c.stem?.ma != null ? `<p class="meta">Clock stem age ${age(c.stem.ma)}${c.stem.lo != null ? ` (${Math.round(c.stem.lo)}–${Math.round(c.stem.hi)})` : ""}.</p>` : ""}
-      <p><a href="${PT_URL}" target="_blank" rel="noopener">Open Plants Through Time</a> for its synopsis and sources.</p>`; }
+`; }
   function showGen(g, c){ det.hidden = false; const onNet = byId && byId[g.g];
     det.innerHTML = `<div class="ttdn"><i>${esc(g.g)}</i></div><p class="meta">${esc(g.kind || "")}${g.auth ? " · " + esc(g.auth) : ""} · ${esc(c.name.split(" (")[0])}</p>
       <svg class="sglyph" viewBox="-15 -15 30 30" id="ttbGl"></svg>
       <h3>Range</h3><p>${Math.round(g.f)} Ma${g.fs ? " (" + esc(g.fs) + ")" : ""} to ${g.l > 0.5 ? Math.round(g.l) + " Ma" + (g.ls ? " (" + esc(g.ls) + ")" : "") : "the present"}.</p>
       ${g.aff ? `<h3>Parent plant</h3><p>${esc(g.aff)}</p>` : ""}
-      <p>${onNet ? `<a href="#" id="ttbOpen">Open its card in the network</a> · ` : ""}<a href="${PT_URL}#g-${encodeURIComponent(g.g)}" target="_blank" rel="noopener">Open on Plants Through Time</a></p>`;
+      <p>${onNet ? `<a href="#" id="ttbOpen">Open its card in the network</a>` : ""}</p>`;
     try { drawSpore(d3.select("#ttbGl"), g.morph || null, 12, true); } catch (e) {}
     const o = document.getElementById("ttbOpen"); if (o) o.onclick = ev => { ev.preventDefault(); select(g.g); document.getElementById("detail").scrollIntoView({behavior: "smooth", block: "start"}); }; }
 }
@@ -2950,7 +2949,7 @@ function goHabitat(id){
   const per = pers.find(p => SPAN[p] && mid != null && mid <= SPAN[p][0] && mid >= SPAN[p][1]) || pers[0];
   if (per) { try { sessionStorage.setItem("mode", "habitat"); sessionStorage.setItem("selAfter", id); sessionStorage.setItem("ttOpen", "0"); } catch (e) {} location.hash = "period-" + per; location.reload(); return; }
   if (g) { det.hidden = false; det.innerHTML = `<p class="kick">${esc2(g.kind || "spore")}</p><div class="ttdn"><i>${esc2(g.g)}</i></div><svg class="sglyph" viewBox="-15 -15 30 30" id="ttGl"></svg>
-    <p class="dsrc">${Math.round(g.f)} to ${g.l > 0.5 ? Math.round(g.l) + " Ma" : "the present"}${g.aff ? " · " + esc2(g.aff) : ""}.</p><p>Not yet on any interval's network here. <a href="${PT_URL}#g-${encodeURIComponent(g.g)}" target="_blank" rel="noopener">Open it on Plants Through Time</a>.</p>`;
+    <p class="dsrc">${Math.round(g.f)} to ${g.l > 0.5 ? Math.round(g.l) + " Ma" : "the present"}${g.aff ? " · " + esc2(g.aff) : ""}.</p><p>Not yet on any interval's network here.</p>`;
     try { drawSpore(d3.select("#ttGl"), g.morph || null, 12, true); } catch (e) {} }
 }
 let TTFAM = null, ttFamLoading = null;
@@ -2997,7 +2996,7 @@ function showLivingFamily(r){ det.hidden = false; det.dataset.has = 1;
     <p class="dsrc">${r.order ? `Order ${esc2(r.order)}. ` : ""}${r.basis === "none" ? "No published crown or stem age on Plants Through Time; drawn short." : `${r.basis === "crown" ? "Crown" : "Stem"} age about ${Math.round(r.age)} Ma (molecular dating on Plants Through Time)${r.clamped ? `; drawn from ${Math.round(r.drawn)} Ma so that it starts inside its parent clade on this tree` : ""}.`}</p>
     <p>No genus of this family is on the tree yet, and no fossil pollen of it is in the data here.</p>
     ${archHTML(r.f)}
-    <p>${famLinks(r.f)} · <a href="${PT_URL}" target="_blank" rel="noopener">Plants Through Time</a></p>`; }
+    <p>${famLinks(r.f)}</p>`; }
 const famLinks = f => `<a href="https://www.paldat.org/search/taxonomic/$N/${encodeURIComponent(f)}" target="_blank" rel="noopener">PalDat</a> · <a href="https://en.wikipedia.org/wiki/${encodeURIComponent(f)}" target="_blank" rel="noopener">Wikipedia</a>`;
 const famMembers = t => { const out = []; (function w(x){ if (typeof x === "string") { if (GR[x]) out.push(x); } else x[1].forEach(w); })(t); return out; };
 function showFamily(f, members){ const F = TTFAM.family[f] || {}; det.hidden = false; det.dataset.has = 1;
@@ -3554,10 +3553,10 @@ function list(){
   const head = mode === "cum" ? `Genera that had appeared by ${pin} Ma (${p[0]})` : mode === "range" ? `Genera present at ${pin} Ma (${p[0]})` : `Genera first appearing ${hi}–${hi - 10} Ma`;
   el.innerHTML = `<h3>${esc(head)}</h3>` + ALLK.map(k => { const L = GN.filter(g => inSer(g, k, pin)).sort((a, b) => a.g.localeCompare(b.g));
       return `<p>${swatch(k)} <b>${SERS[k].label}</b> (${L.length})${L.length ? ": " : ""}${L.map(g => `<a href="#" data-g="${esc(g.g)}"><i>${esc(g.g)}</i></a>`).join(", ")}</p>`; }).join("") +
-    `<p class="dsrc">Click a name to open it in the Habitat view (photo and map), or on Plants Through Time when it is not yet on a network here.</p>`;
+    `<p class="dsrc">Click a name to open it in the Habitat view (photo and map).</p>`;
   el.querySelectorAll("a[data-g]").forEach(a => a.onclick = e => { e.preventDefault(); const id = a.dataset.g;
     const onNet = NETPERIODS.some(pp => DATASETS[pp].nodes.some(n => n[0] === id));
-    if (onNet && window.__goHabitat) { setDV(false); window.__goHabitat(id); } else window.open(PT_URL + "#g-" + encodeURIComponent(id), "_blank", "noopener"); });
+    if (onNet && window.__goHabitat) { setDV(false); window.__goHabitat(id); } });
 }
 function table(S){
   const rows = mode !== "first" ? d3.range(540, -1, -10).map(t => [t + " Ma", ...S.map(s => s.pts[540 - t][1])]) : S[0].pts.map((p, i) => [`${p[0]}–${p[0] - 10} Ma`, ...S.map(s => s.pts[i][1])]);
