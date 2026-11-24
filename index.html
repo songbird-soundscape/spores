@@ -1807,7 +1807,7 @@ const ECO_PERIODS = {"silurian-devonian":["Silurian","Devonian"], mississippian:
 const ECO_CATS = {any:null, feed:["feed"], fungus:["fungus"], bore:["bore"], eaten:["copro","palyn"], palyn:["palyn"], palcop:["palyn"], palgut:["palyn"], gall:["gall"], egg:["egg"], env:["env"]};
 const CAT_WORD = {palyn:"spore and pollen eating", feed:"feeding damage", gall:"galls", egg:"egg-laying scars", bore:"borings and decay", copro:"coprolite contents",
   fungus:"fungi and microbes", shelter:"shelter", plantplant:"plant-plant interactions", encrust:"encrustation", env:"water, salt, fire or soil", cooccur:"co-occurrence", other:"other"};
-const ECO_URL = "https://claude.ai/artifact/U2jxFUFpFL3CatiBiLhnLW";
+const ECO_URL = "/community-paleoecology/";
 const ecoRec = n => { if (!n || n.kind === "hub") return null; const id = String(n.id); return ECO[id] || ECO[id.split(" ")[0]] || null; };
 function ecoMatch(n){
   const r = ecoRec(n); if (!r) return false;
@@ -2216,7 +2216,7 @@ function showDetail(){
   if (rest.length) s.push(`<h3>${built.html ? "Other sources" : "Sources"}</h3><ul>${rest.map(k => `<li><span class="ref" data-ref="${esc(k)}">${esc(k)}</span>${REF[k] ? ` · ${esc(REF[k].role)}` : ""} · <a class="schol" href="${scholarURL(REF[k]?.full || k)}" target="_blank" rel="noopener">Google Scholar ↗</a></li>`).join("")}</ul>`);
   const kids = nodes.filter(m => isSp(m) && m.genus === n.id).sort((a,b) => a.id.localeCompare(b.id));
   if (kids.length) s.push(`<h3>Species (${kids.length})</h3><p>${kids.map(tax).join(", ")}</p>`);
-  s.push(`<p style="color:var(--muted)">Source of this entry: ${n.src==="guide" ? (n.vs === "identification guide (diagnostics pass)" ? "spore identification guides (Paleozoic, and the NAMS Cenozoic guide)" : "an affinity guide, now the Reading the spores tab of <a href=\"https://claude.ai/artifact/U2jxFUFpFL3CatiBiLhnLW\" target=\"_blank\" rel=\"noopener\">Paleoecology of the Freshwater and Estuarine Realms</a>") : n.src==="species-layer" ? "added for the species layer from Ravn's Cherokee counts or Balme (1995)" : SRC_LABEL[n.src] || (n.src && n.src !== "memory" ? esc(n.src) : "added from background knowledge, to verify")}.</p>`);
+  s.push(`<p style="color:var(--muted)">Source of this entry: ${n.src==="guide" ? (n.vs === "identification guide (diagnostics pass)" ? "spore identification guides (Paleozoic, and the NAMS Cenozoic guide)" : "an affinity guide, now the Reading the spores tab of <a href=\"/community-paleoecology/\" target=\"_blank\" rel=\"noopener\">Paleoecology of the Freshwater and Estuarine Realms</a>") : n.src==="species-layer" ? "added for the species layer from Ravn's Cherokee counts or Balme (1995)" : SRC_LABEL[n.src] || (n.src && n.src !== "memory" ? esc(n.src) : "added from background knowledge, to verify")}.</p>`);
   document.getElementById("dBody").innerHTML = s.join("");
 }
 function showZone(){
@@ -4012,7 +4012,7 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
   <button type="button" class="cp-x" aria-label="Close">✕</button>
   <p id="cpPopT"><b>Who lived with these plants?</b></p>
   <p>Insects that ate them, fungi that rotted them, animals that sheltered in them: <b>Community Paleoecology</b> maps the published interactions around the plants of the coal swamps.</p>
-  <p><a href="https://claude.ai/artifact/U2jxFUFpFL3CatiBiLhnLW" target="_blank" rel="noopener">Open Community Paleoecology ↗</a> <button type="button" class="cp-never">Don't show again</button></p>
+  <p><a href="/community-paleoecology/">Open Community Paleoecology →</a> <button type="button" class="cp-never">Don't show again</button></p>
 </div>
 <script>
 /* Cook a spore: heat and time darken sporopollenin from pale yellow to black */
