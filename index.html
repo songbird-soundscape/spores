@@ -190,6 +190,16 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
 .stat dd{margin:2px 0 0; font-family:var(--mono); font-size:20px; font-variant-numeric:tabular-nums}
 .meter{display:flex; height:10px; border-radius:3px; overflow:hidden; margin-top:12px; background:var(--faint)}
 .meter i{display:block; height:100%}
+#statsBox.inset{position:absolute; top:10px; left:10px; z-index:3; width:min(310px, calc(100% - 150px)); padding:10px 12px;
+  box-shadow:0 2px 10px rgba(0,0,0,.14); opacity:.97}
+#statsBox .statshead{display:flex; align-items:center; justify-content:space-between; gap:10px}
+#statsBox .statshead .kick{margin:0}
+#statsToggle{flex:none; width:24px; height:24px; padding:0; border:1px solid var(--rule); border-radius:4px; background:var(--panel);
+  color:var(--ink); font:600 15px/1 var(--mono); cursor:pointer}
+#statsToggle:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+#statsBox.collapsed{width:auto}
+#statsBox.collapsed #statsBody{display:none}
+#statsBox.inset .stat dd{font-size:17px}
 #dName{font-family:var(--display); font-weight:650; font-size:1.3rem; line-height:1.2}
 #dName.taxon{font-style:italic}
 #dMeta{color:var(--muted); font-size:13px; margin:2px 0 8px}
@@ -344,6 +354,24 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
 #ttDetail p{margin:2px 0; font-size:13.5px}
 .ttdn{font-family:var(--display); font-weight:650; font-size:1.2rem; line-height:1.2}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+/* layout tune-up (2026-11-24): a wider panel for the selected taxon; the two find maps always the same size */
+.main{grid-template-columns:minmax(0,1fr) 440px}
+.geomaps{grid-template-columns:minmax(0,1fr); gap:12px}
+.geomaps figure{min-width:0}
+.geomaps figcaption{margin-bottom:3px}
+@media (max-width:1240px){ .main{grid-template-columns:minmax(0,1fr) 400px} }
+/* tablets and narrow windows: network on top, the selected taxon full width below, maps side by side */
+@media (max-width:1020px){ .main{grid-template-columns:minmax(0,1fr)} #stage{height:560px} .geomaps{grid-template-columns:repeat(2, minmax(0,1fr))} }
+/* phones: one column throughout, a shorter network, maps stacked at full width */
+@media (max-width:700px){
+  body{padding-left:max(10px, env(safe-area-inset-left, 0px)); padding-right:max(10px, env(safe-area-inset-right, 0px)); padding-top:12px; font-size:14.5px}
+  #stage{height:min(68vh, 520px)}
+  .bar{padding:10px 12px; gap:10px 14px}
+  .box{padding:12px}
+  .geomaps{grid-template-columns:minmax(0,1fr)}
+  #statsBox.inset{width:calc(100% - 20px)}
+  #statsBox.inset.collapsed{width:auto; max-width:calc(100% - 150px)}
+}
 /* semantic zoom: world lines keep their width and world labels their size */
 #stage line, .hull path, .clad path, .band ellipse, .band rect{vector-effect:non-scaling-stroke}
 .hull text{font-size:calc(12px / var(--k, 1)); stroke-width:calc(3px / var(--k, 1))}
@@ -743,10 +771,10 @@ const habXY = n => { const z = zonesOf[n.id] || []; if (!z.length) { const o = o
 const firstSel = (() => { if (IS_PENN) return "Lycospora";
   const sp = DATA.nodes.filter(n => n[1]==="spore" || n[1]==="mega").map(n => n[0]);
   return sp.find(id => DATA.edges.some(e => e[0]===id && e[2]==="insitu")) || sp[0] || DATA.nodes[0]?.[0]; })();
-/* the year slider spans the dataset's own naming years (the Pennsylvanian keeps 1780 to 2025) */
+/* the year slider (Discovery view only) starts with the first fossil names: Sternberg 1820, the starting point of fossil-plant nomenclature, or the interval's first name if later */
 const ALLYEARS = DATA.nodes.map(n => n[3]).concat((DATA.milestones || []).map(m => m[0])).filter(y => typeof y === "number" && isFinite(y));
-const YMIN = Math.floor(Math.min(...ALLYEARS, 2000) / 10) * 10, YMAX = Math.max(2025, ...ALLYEARS);
-const state = {year:YMAX, region:"all", ghosts:true, labels:true, aff:true, species:IS_PENN, sel:firstSel, selZone:null, mode:"discovery", scale:"form", eco:"all", ecoPer:false};
+const YMIN = Math.max(1820, Math.floor(Math.min(...ALLYEARS, 2000) / 10) * 10), YMAX = Math.max(2025, ...ALLYEARS);
+const state = {year:YMIN, region:"all", ghosts:true, labels:true, aff:true, species:IS_PENN, sel:firstSel, selZone:null, mode:"discovery", scale:"form", eco:"all", ecoPer:false};
 function target(n){
   if (waiting(n) || n.group === "unknown") return state.mode === "habitat" ? (UNKXY || [HW/2, PENY]) : state.mode === "phylo" ? unknownPhy : (arc.unknown ? discXY("unknown") : [WW/2, WH - 70]);
   if (state.mode === "habitat") return habXY(n);
@@ -1688,7 +1716,7 @@ function drawGeo(el){
     <figure class="pfig"><figcaption class="pcap">${near ? `The world about ${T} Ma, its busiest age` : `Its busiest age, about ${Tbin} Ma, is older than the plate model: positions only`}</figcaption><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Continents in the past with the ancient positions of ${esc(gen)} finds"><rect width="${W}" height="${H}" fill="var(--panel, transparent)"/><path class="pland" d="${pland}" fill="var(--faint)" stroke="var(--muted)" stroke-width="0.5"/>${grid}<g class="pdots">${pdots}</g></svg>
       <div class="panim"><button type="button" class="pplay" aria-label="Play the map through time, oldest find to youngest">Play</button><input type="range" class="pslide" step="10" aria-label="Time, millions of years ago (right is younger)"><output class="pout"></output></div></figure></div>
     <div class="georecs" aria-live="polite"><p class="meta">Click a dot to list the records from that site, with links to the Paleobiology Database collection and the published reference.</p></div>
-    <p class="meta">Dots: pale = older finds within this genus's range, dark = younger; outlined dots fall in the ${esc(PLABEL)} interval shown on this page. Solid line: equator; dashed: tropics. Right-hand map: ${near ? `continents about ${T} Ma` : `positions only, as the busiest age (about ${Tbin} Ma) is older than the plate model`}; outlined dots are the 10-million-year span holding most finds (${nBin} of ${pts.length}); every dot sits where its site lay at the age shown, carried with its landmass by the same plate model as the coastlines (sites reconstructed with the GPlates Web Service; where the model has no plate for a site, the Paleobiology Database position is used). Play runs the map from the oldest find to the youngest in 10-million-year steps: finds light up (outlined) while the slider is within their age, then stay on the map (no outline) and ride their landmass as it moves, so every find remains to the end. Coastlines: Golonka plate model from the GPlates Web Service, the same model behind the Paleobiology Database positions used for the dots; simplified, and land outlines, not shorelines of the day. Records are as entered in the database: identifications were not checked, and Europe and North America are sampled far more than elsewhere, so "local" may only mean little studied.</p>`;
+    <p class="meta">Dots: pale = older finds within this genus's range, dark = younger; outlined dots fall in the ${esc(PLABEL)} interval shown on this page. Solid line: equator; dashed: tropics. The past-world map: ${near ? `continents about ${T} Ma` : `positions only, as the busiest age (about ${Tbin} Ma) is older than the plate model`}; outlined dots are the 10-million-year span holding most finds (${nBin} of ${pts.length}); every dot sits where its site lay at the age shown, carried with its landmass by the same plate model as the coastlines (sites reconstructed with the GPlates Web Service; where the model has no plate for a site, the Paleobiology Database position is used). Play runs the map from the oldest find to the youngest in 10-million-year steps: finds light up (outlined) while the slider is within their age, then stay on the map (no outline) and ride their landmass as it moves, so every find remains to the end. Coastlines: Golonka plate model from the GPlates Web Service, the same model behind the Paleobiology Database positions used for the dots; simplified, and land outlines, not shorelines of the day. Records are as entered in the database: identifications were not checked, and Europe and North America are sampled far more than elsewhere, so "local" may only mean little studied.</p>`;
   bindChooser(el, root);
   /* click a dot: every record at that site, with its collection and reference */
   const recBox = el.querySelector(".georecs"), REFS = (rec && rec.refs) || {}, PB = "https://paleobiodb.org/classic/";
@@ -1966,8 +1994,8 @@ function drawTimelineMarker(){ marker.attr("x1",tx(state.year)).attr("x2",tx(sta
     b.setAttribute("aria-pressed", k === PERIOD);
     b.onclick = () => { if (k === PERIOD) return; location.hash = "period-" + k; location.reload(); }; seg.appendChild(b); });
   document.getElementById("pageTitle").textContent = `Sporae Dispersae: ${PLABEL} spores and their parent plants, ${YMIN} to now`;
-  const yi = document.getElementById("year"); yi.min = YMIN; yi.max = YMAX; yi.value = YMAX;
-  document.getElementById("yearOut").textContent = YMAX; document.getElementById("sYear").textContent = YMAX;
+  const yi = document.getElementById("year"); yi.min = YMIN; yi.max = YMAX; yi.value = YMIN;
+  document.getElementById("yearOut").textContent = YMIN; document.getElementById("sYear").textContent = YMIN;
   document.getElementById("tl").setAttribute("aria-label", `Timeline of milestones in naming and linking ${PLABEL} spores`);
   if (IS_PENN) return;
   document.getElementById("pageSub").textContent = `${PLABEL} spore and pollen genera, the plant organs they were found in, and the whole plants those organs were assembled into, mostly from Balme's (1995) catalogue of in situ spores. Move the year to watch names appear and links form. Switch views to arrange the network by when it was learned, by relationships (a simplified cladogram), or by supposed habitat in each region. Click anything for the sources behind it.`;
@@ -1987,6 +2015,7 @@ function drawTimelineMarker(){ marker.attr("x1",tx(state.year)).attr("x2",tx(sta
 
 /* ---------- controls ---------- */
 function setMode(m){
+  modeYear(m);
   state.mode = m;
   document.querySelectorAll(".seg button[data-mode]").forEach(b => b.setAttribute("aria-pressed", b.dataset.mode===m));
   document.getElementById("hint").textContent = m==="habitat" ? "Click a dotted outline for the evidence behind that habitat" : "Drag to pan; Ctrl + scroll or pinch to zoom, which spreads names apart; click a circle for its sources";
@@ -2023,6 +2052,41 @@ document.getElementById("play").onclick = e => {
   timer = setInterval(() => { state.year = Math.min(YMAX, state.year + 1); yr.value = state.year; render();
     if (state.year >= YMAX) { clearInterval(timer); timer=null; e.target.textContent="Play"; } }, 500);  /* 0.5 s per year */
 };
+/* Discovery is the only view with the year slider and the counts by year; the other views show everything named to date.
+   The counts sit in a collapsible inset in the corner of the network. */
+let discYear = null;
+function stopPlay(){ if (timer) { clearInterval(timer); timer = null; document.getElementById("play").textContent = "Play"; } }
+function modeYear(m){
+  if (m !== "discovery" && state.mode === "discovery") { discYear = state.year; stopPlay(); state.year = YMAX; }
+  else if (m === "discovery" && state.mode !== "discovery") state.year = discYear ?? YMIN;
+  document.getElementById("year").value = state.year; document.getElementById("yearOut").textContent = state.year;
+}
+const statsBox = document.getElementById("sYear").closest(".box");
+(function makeStatsInset(){
+  statsBox.id = "statsBox"; statsBox.classList.add("inset");
+  const kick = statsBox.querySelector(".kick"), body = document.createElement("div"); body.id = "statsBody";
+  while (kick.nextSibling) body.appendChild(kick.nextSibling);
+  statsBox.appendChild(body);
+  const head = document.createElement("div"); head.className = "statshead";
+  kick.replaceWith(head); head.appendChild(kick);
+  const tb = document.createElement("button"); tb.type = "button"; tb.id = "statsToggle"; tb.setAttribute("aria-controls", "statsBody");
+  head.appendChild(tb);
+  const setC = c => { statsBox.classList.toggle("collapsed", c); tb.setAttribute("aria-expanded", !c); tb.textContent = c ? "+" : "−";
+    tb.title = c ? "Show the counts" : "Hide the counts"; try { localStorage.setItem("sd-stats-collapsed", c ? "1" : "0"); } catch(e) {} };
+  let c0 = null; try { c0 = localStorage.getItem("sd-stats-collapsed"); } catch(e) {}
+  setC(c0 === "1" || (c0 == null && document.getElementById("stage").clientWidth < 640));
+  tb.onclick = () => setC(!statsBox.classList.contains("collapsed"));
+  document.getElementById("stage").appendChild(statsBox);
+})();
+function syncDiscoveryUI(){
+  const active = document.querySelector('.seg button[data-mode][aria-pressed="true"]')?.dataset.mode || state.mode;
+  const disc = active === "discovery";
+  document.querySelector(".yearbox").style.display = disc ? "" : "none";
+  statsBox.style.display = disc ? "" : "none";
+  if (!disc) stopPlay();
+}
+document.querySelectorAll(".seg button[data-mode]").forEach(b => b.addEventListener("click", () => setTimeout(syncDiscoveryUI, 0)));
+setTimeout(syncDiscoveryUI, 0);
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { drawBack(); render(); });
 new MutationObserver(() => { drawBack(); render(); }).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
 let lastW = stage.clientWidth, lastH = stage.clientHeight;
