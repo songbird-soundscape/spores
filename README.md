@@ -14,7 +14,15 @@ An interactive network linking dispersed fossil spores and pollen to the plant o
 | `modern_referents.json` | Modern relatives used for comparison |
 | `paleopos/`, `paleocoast/` | Site palaeopositions and palaeocoastlines, 5–535 Ma in 10 Myr steps |
 | `spore_photos/` | One photomicrograph per genus |
-| `occurrences.json` | Fossil occurrence records for the maps (not yet added; the page works without it) |
+| `occurrences.json` | Fossil occurrence records behind each taxon's "where it has been found" map, from the Paleobiology Database |
+| `data/pbdb_occurrences.csv` | The same records as a table, one row per occurrence |
+| `data/pbdb_query_log.csv` | One row per genus: records returned, records kept, and any note from PBDB |
+| `data/genera_by_interval.csv` | The dispersed spore and pollen genera on each interval's page |
+| `R/rebuild_occurrences.R` | Rebuilds the three files above: `Rscript R/rebuild_occurrences.R` |
+
+## Occurrence data
+
+Downloaded from the [Paleobiology Database](https://paleobiodb.org) on 24 November 2026 with `R/rebuild_occurrences.R`: 44,021 occurrences for 435 of 503 genera. Only records identified under each genus's own name are kept, because PBDB's synonym handling can pull in unrelated taxa (for example, the pollen genus *Polyporina* brought in the bryozoan *Polypora*). Palaeocoordinates are PBDB's (GPlates). PBDB data are CC BY 4.0.
 
 ## Day and night
 
