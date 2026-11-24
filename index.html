@@ -469,6 +469,62 @@ body.ttfull-open{overflow:hidden}
 .band text{font-size:calc(15px / var(--k, 1))}
 .band text.small{font-size:calc(13px / var(--k, 1))}
 .clad text{font-size:calc(11px / var(--k, 1))}
+
+/* time tree header: short text and controls on the left, the story in brief on the right */
+.tthead{display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,380px); gap:14px; align-items:start; margin-bottom:10px}
+@media (max-width:1020px){ .tthead{grid-template-columns:1fr} }
+.ttshort{font-size:13.5px; margin:4px 0 6px}
+.ttmore{font-size:13px; margin:0 0 8px} .ttmore > summary{cursor:pointer; color:var(--accent); width:max-content}
+.ttmore[open] > summary{margin-bottom:6px}
+.ttglnote{margin:4px 0 0}
+.ttstory{margin:0; padding:12px 14px; font-size:13px; display:flex; flex-direction:column; gap:6px}
+.ttstory p{margin:0}
+.tts-sporo{font-size:12px; color:var(--muted); border-bottom:1px solid var(--rule); padding-bottom:6px}
+.tts-top{display:flex; justify-content:space-between; gap:8px; font-size:11.5px; color:var(--muted)}
+.tts-t{margin:0; font-size:16px}
+.tts-media{display:grid; grid-template-columns:minmax(0,1fr) 92px; gap:8px; align-items:center}
+.tts-photo{width:100%; height:112px; object-fit:cover; border-radius:6px; border:1px solid var(--rule); background:var(--faint, #eee)}
+.tts-photo.none{display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:12px}
+.tts-gl{width:92px; height:92px; overflow:visible}
+.tts-row b{display:inline-block; min-width:6.4em; color:var(--muted); font-weight:600}
+.tts-nav{display:flex; gap:6px; justify-content:space-between; margin-top:4px}
+.tts-nav button{font:inherit; font-size:12.5px; padding:5px 9px; border:1px solid var(--rule); background:var(--panel); color:var(--ink); border-radius:6px; cursor:pointer}
+.tts-nav .tts-go{border-color:var(--accent); color:var(--accent)}
+.tt-sp.tts-hit .tt-sname{font-weight:700; fill:var(--accent)}
+.tt-sp.tts-hit .tt-sbar{stroke:var(--accent); stroke-width:3}
+.tts-ring{fill:none; stroke:var(--accent); stroke-width:2.5; animation:ttsPulse 1.4s ease-out 3}
+@keyframes ttsPulse{0%{stroke-opacity:1; r:8} 100%{stroke-opacity:.15; r:26}}
+@media (prefers-reduced-motion:reduce){.tts-ring{animation:none}}
+#ttWrap.ttfull .tthead{grid-template-columns:minmax(0,1fr) 320px}
+
+/* Cook a spore */
+.cookdlg{border:1px solid var(--rule); border-radius:14px; padding:0; max-width:min(860px, 94vw); background:var(--panel); color:var(--ink)}
+.cookdlg::backdrop{background:rgba(0,0,0,.45)}
+.cook{display:grid; grid-template-columns:minmax(0,300px) minmax(0,1fr); gap:20px; padding:18px}
+@media (max-width:700px){ .cook{grid-template-columns:1fr} }
+.cook-scope{aspect-ratio:1; border-radius:50%; background:#0f1412; padding:12px; max-width:300px; width:100%; margin:0 auto}
+.cook-scope canvas{width:100%; height:100%; border-radius:50%; background:radial-gradient(circle at 45% 40%, #f7f6ef, #d6dbd5); display:block}
+.cook-panel{display:flex; flex-direction:column; gap:9px; min-width:0}
+.cook-panel p{margin:0}
+.cook-head{display:flex; justify-content:space-between; align-items:center} .cook-head h2{margin:0}
+.cook-x, .cp-x{border:0; background:none; font-size:16px; cursor:pointer; color:var(--muted)}
+.cook-row{display:flex; justify-content:space-between; gap:10px; align-items:baseline}
+.cook-mono{font-family:var(--mono); font-variant-numeric:tabular-nums}
+.cook-panel input[type=range]{width:100%; accent-color:var(--spore)}
+.cook-bar{height:12px; border-radius:6px; background:linear-gradient(90deg,#f6f1d6,#f0d66e,#d9a441,#a8662a,#5c3417,#1c140d)}
+.cook-out{border-left:4px solid var(--spore); padding:8px 12px; background:color-mix(in srgb, var(--spore) 12%, transparent); border-radius:0 8px 8px 0}
+.cook-presets{display:flex; flex-wrap:wrap; gap:6px}
+.cook-presets button{font:inherit; font-size:13px; padding:5px 10px; border:1px solid var(--rule); background:var(--panel); color:var(--ink); border-radius:8px; cursor:pointer}
+.cook-note{font-size:12.5px; color:var(--muted)}
+/* Community Paleoecology pop-up */
+.cppop{position:fixed; right:max(16px, env(safe-area-inset-right,0px)); top:90px; z-index:60; width:min(330px, calc(100vw - 32px)); background:var(--panel); color:var(--ink);
+  border:1px solid var(--rule); border-left:4px solid var(--accent); border-radius:10px; padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,.18); font-size:13.5px; animation:cpIn .3s ease-out}
+.cppop p{margin:0 0 7px} .cppop p:last-child{margin:0; display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+.cppop .cp-x{position:absolute; right:6px; top:4px}
+.cppop a{color:var(--accent); font-weight:600}
+.cp-never{border:0; background:none; color:var(--muted); font:inherit; font-size:12px; cursor:pointer; text-decoration:underline}
+@keyframes cpIn{from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){ .cppop{animation:none} }
 </style>
 
 <div class="wrap">
@@ -494,7 +550,7 @@ body.ttfull-open{overflow:hidden}
     <label class="field" for="hypSel"><span>Seed-plant tree</span>
       <select id="hypSel"><option value="molecular">Molecular scaffold</option><option value="anthophyte">Anthophyte hypothesis</option></select></label>
     <div class="field"><span>Play</span>
-      <div class="seg" role="group" aria-label="Match game"><button type="button" id="gameBtn" aria-pressed="false">Match game</button></div></div>
+      <div class="seg" role="group" aria-label="Play"><button type="button" id="gameBtn" aria-pressed="false">Match game</button><button type="button" id="cookBtn" aria-haspopup="dialog">Cook a spore</button></div></div>
     <div class="yearbox">
       <button id="play" type="button" aria-label="Play through the years">Play</button>
       <input type="range" id="year" min="1780" max="2025" step="1" value="2025" aria-label="Year">
@@ -577,7 +633,10 @@ body.ttfull-open{overflow:hidden}
   </div>
 
   <section id="ttWrap" class="box" hidden aria-labelledby="ttTitle">
+    <div class="tthead"><div class="tthead-main">
     <h2 id="ttTitle">Time tree: plants through time</h2>
+    <p class="sub ttshort">Every lineage on the cited, dated tree, with the spores, pollen and gyrogonites placed where they first appear. Time runs upward, oldest at the bottom, drawn to true scale. Click a clade for its sources.</p>
+    <details class="ttmore"><summary>How the tree is built, and the key</summary>
     <p class="sub" style="font-size:13.5px">Time runs upward, oldest at the bottom as in a rock column. Built from the R project's cited trees: every clade carries its status and sources (click a clade), and branch points sit at the clade's dated age (median over 20 random resolutions of the polytomies, dated with paleotree, minimum branch length 1 Myr). <b>Lineages</b> shows each lineage as a stem with the genera of each opened interval on it; <b>Genera</b> shows every whole-plant genus as a range bar on the dated synthesis tree, so alleged ancestors (grades, marked * or "grade") sit below the groups thought to descend from them. By default the bands are not to scale: opened intervals get equal height. Choose <b>True scale</b> to draw geologic time in proportion. Genus ranges and lineage origins are approximate and listed for hand-checking in the R project.</p>
     <p class="dsrc" id="ttHypNote"></p>
     <div class="ttlegend" aria-label="Key to the time tree">
@@ -592,13 +651,19 @@ body.ttfull-open{overflow:hidden}
       <span style="color:var(--g-charo)">Charophytes</span><span style="color:var(--g-bryo)">Bryophytes</span><span style="color:var(--g-early)">Early land plants</span><span style="color:var(--g-lyco)">Lycophytes</span>
       <span style="color:var(--g-spheno)">Sphenopsids</span><span style="color:var(--g-fern)">Ferns</span><span style="color:var(--g-sfern)">Seed ferns, progymnosperms</span><span style="color:var(--g-gymno)">Gymnosperms</span><span style="color:var(--g-angio)">Flowering plants</span><span style="color:var(--g-algae)">Other algae</span><span style="color:var(--g-other)">Unplaced</span><span style="color:var(--g-fungi)">Fungi</span>
     </div>
+    </details>
     <div class="ttctl">
       <div class="field"><span>Show</span><div class="seg" role="group" aria-label="Time tree mode" id="ttModeSeg"><button type="button" data-tm="branch" hidden>Branching (as Plants Through Time)</button><button type="button" data-tm="lineage" hidden>Lineages (R project)</button><button type="button" data-tm="genus">Genera (dated tree)</button></div></div>
-      <div class="field"><span>Intervals shown</span><div class="seg" role="group" aria-label="Intervals in the time tree" id="ttSeg"></div></div>
-      <button type="button" id="ttAll">All intervals</button>
+      <div class="field" hidden><span>Intervals shown</span><div class="seg" role="group" aria-label="Intervals in the time tree" id="ttSeg"></div></div>
+      <button type="button" id="ttAll" hidden>All intervals</button>
       <div class="field"><span>Zoom</span><div class="seg" role="group" aria-label="Time tree zoom"><button type="button" id="ttZoomOut" aria-label="Zoom out">−</button><button type="button" id="ttZoomFit">Fit width</button><button type="button" id="ttZoomIn" aria-label="Zoom in">+</button></div></div>
+      <div class="field"><span>Spores and pollen</span><div class="seg" role="group" aria-label="How to draw spores and pollen" id="ttGlyphSeg"><button type="button" data-tg="form">Form only</button><button type="button" data-tg="size">Relative size</button></div></div>
       <button type="button" id="ttExpand" aria-pressed="false" title="Fill the window with the time tree (Esc to close)">⤢ Expand</button>
       <label class="checks" id="ttSporesBox"><input type="checkbox" id="ttSpores" checked> List spore genera where no plant is known</label>
+    </div>
+    <p class="meta ttglnote" id="ttGlyphNote" hidden>Drawn to relative size. Megaspores and gyrogonites are many times larger than the rest, so they are drawn at <b>1/10</b> of their size; gyrogonites without a recorded size are drawn at a typical 0.6&nbsp;mm.</p>
+    </div>
+    <aside class="ttstory box" id="ttStory" aria-label="The story in brief"></aside>
     </div>
     <div class="ttgrid"><div class="tt-scroll"><svg id="tt" role="img" aria-label="Time tree of plant lineages with genera placed by interval"></svg></div>
       <div id="ttDetail" class="box" hidden aria-live="polite"></div></div>
@@ -2426,6 +2491,7 @@ function syncDiscoveryUI(){
   const active = document.querySelector('.seg button[data-mode][aria-pressed="true"]')?.dataset.mode || state.mode;
   syncTitle(active);
   const disc = active === "discovery";
+  { const pf = document.getElementById("periodSeg")?.closest(".field"); if (pf) pf.style.display = active === "timetree" && !document.body.classList.contains("gaming") ? "none" : ""; }
   discBar.style.display = disc ? "" : "none";
   if (!disc) stopPlay();
   else if (!msNodes.length || Math.abs((document.getElementById("tl").getBoundingClientRect().width || 0) - (+document.getElementById("tl").getAttribute("width") || 0)) > 4) drawMilestones();
@@ -2437,13 +2503,7 @@ setTimeout(syncDiscoveryUI, 0);
   const wrapTT = document.getElementById("ttWrap"), sc = () => document.querySelector(".tt-scroll"); if (!wrapTT) return;
   const ctl = wrapTT.querySelector(".ttctl"); if (ctl) { const p = document.createElement("p"); p.className = "meta ttkeys"; p.style.cssText = "flex-basis:100%; margin:2px 0 0";
     p.innerHTML = "Keyboard: arrow keys move around the tree (Shift for bigger steps); Ctrl + ↑ zooms in, Ctrl + ↓ zooms out."; ctl.appendChild(p);
-    /* time scale: equal bands for each opened interval, or geologic time to true scale */
-    try { window.__ttScale = sessionStorage.getItem("ttScale") || "equal"; } catch(e) { window.__ttScale = "equal"; }
-    const f = document.createElement("div"); f.className = "field";
-    f.innerHTML = `<span>Time scale</span><div class="seg" role="group" aria-label="Time scale"><button type="button" data-ts="equal">Equal bands</button><button type="button" data-ts="true">True scale</button></div>`;
-    const syncTs = () => f.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.ts === window.__ttScale));
-    f.querySelectorAll("button").forEach(b => b.onclick = () => { window.__ttScale = b.dataset.ts; try { sessionStorage.setItem("ttScale", b.dataset.ts); } catch(e) {} syncTs(); window.__tt?.draw?.(); });
-    syncTs(); ctl.insertBefore(f, p); }
+    window.__ttScale = "true"; }   /* geologic time is always drawn to true scale */
   window.addEventListener("keydown", e => {
     if (wrapTT.hidden || !sc()) return;
     if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.classList?.contains("sidegrip")) return;
@@ -2618,7 +2678,7 @@ const occ = {}; Object.entries(DATASETS).forEach(([per, D]) => D.nodes.forEach(n
 
 /* ---- DOM ---- */
 let sel, mode; try { sel = JSON.parse(sessionStorage.getItem("ttSel") || "null"); mode = sessionStorage.getItem("ttMode"); } catch(e) { sel = null; }
-if (!Array.isArray(sel)) sel = TT_INTERVALS.filter(i => i[4]).map(i => i[0]);
+sel = TT_INTERVALS.filter(i => i[4]).map(i => i[0]);   /* the time tree always shows every interval */
 mode = "genus";   /* one tree: the dated genus tree (other modes hidden) */
 const wrap = document.getElementById("ttWrap"), segTT = document.getElementById("ttSeg"), det = document.getElementById("ttDetail");
 TT_INTERVALS.filter(i => i[4]).forEach(([k, lab]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = lab; b.dataset.k = k;
@@ -2643,6 +2703,17 @@ document.querySelector(".tt-scroll").addEventListener("wheel", e => { if (!(e.ct
 function save(){ try { sessionStorage.setItem("ttSel", JSON.stringify(sel)); sessionStorage.setItem("ttMode", mode); } catch(e) {} }
 
 /* shared vertical scale: opened intervals tall, others thin; oldest at the bottom */
+/* spores and pollen in the tree: one size for every form, or to relative size (megaspores and gyrogonites at 1/10) */
+let ttGlyph = "form"; try { ttGlyph = sessionStorage.getItem("ttGlyph") || "form"; } catch(e) {}
+function glyphR(m, base){
+  if (ttGlyph !== "size") return base;
+  const big = !!(m && (m.mega || m.gyro)), um = m && m.size ? (m.size[0] + m.size[1]) / 2 : (m && m.gyro ? 600 : 44);
+  return Math.max(1.2, um * 0.11 * (big ? 0.1 : 1));
+}
+(function(){ const seg = document.getElementById("ttGlyphSeg"), note = document.getElementById("ttGlyphNote"); if (!seg) return;
+  const sync = () => { seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tg === ttGlyph)); if (note) note.hidden = ttGlyph !== "size"; };
+  seg.querySelectorAll("button").forEach(b => b.onclick = () => { ttGlyph = b.dataset.tg; try { sessionStorage.setItem("ttGlyph", ttGlyph); } catch(e) {} sync(); draw(); });
+  sync(); })();
 function bandsFor(BH, BT, TOP){
   const bands = []; let y = TOP;
   /* equal bands (each opened interval the same height) or true scale (height proportional to its duration) */
@@ -2760,7 +2831,7 @@ function drawBranch(){
       const gg = gG.append("g").attr("class", "ttb-gen").on("click", e => { e.stopPropagation(); showGen(g, c); });
       gg.append("line").attr("x1", gx).attr("x2", gx).attr("y1", y0).attr("y2", y1).attr("stroke", alive ? "#4f9a5f" : "#9a6a45");
       const gs = gg.append("g").attr("transform", `translate(${gx},${y0})`);
-      try { drawSpore(gs, g.morph || null, 5.6, false); } catch (e) { gs.append("circle").attr("r", 3.5).attr("fill", css("--spore")); }
+      try { drawSpore(gs, g.morph || null, glyphR(g.morph, 5.6), false); } catch (e) { gs.append("circle").attr("r", 3.5).attr("fill", css("--spore")); }
       if (g.l > 0.5) gg.append("text").attr("class", "ttb-dag").attr("x", gx - 2.5).attr("y", y1 - 2).text("†");
       gg.append("title").text(`${g.g}: ${Math.round(g.f)}–${g.l > 0.5 ? Math.round(g.l) : 0} Ma${g.aff ? " · " + g.aff : ""}`); }); });
   function toggle(c){ if (!c.all.length) return; if (PT.isOpen(c)) { PT.OPEN.delete(c.id); PT.SHUT.add(c.id); } else { PT.SHUT.delete(c.id); PT.OPEN.add(c.id); } showLin(c); draw(); }
@@ -3107,7 +3178,7 @@ function drawGenus(){
     const c = gS.append("g").attr("class", "tt-sp").attr("tabindex", 0).attr("role", "button").style("cursor", "pointer").attr("aria-label", `${sg.g}: open in the Habitat view`)
       .on("click", () => goHabitat(sg.g)).on("keydown", e => { if (e.key === "Enter") goHabitat(sg.g); });
     c.append("line").attr("class", "tt-sbar").attr("x1", xx).attr("x2", xx).attr("y1", y0).attr("y2", y1);
-    const gl = c.append("g").attr("transform", `translate(${xx},${y0})`); try { drawSpore(gl, sg.morph || null, sg.morph?.gyro ? 6 : 5, false); } catch (e) { gl.append("circle").attr("r", 3.5).attr("fill", css("--muted")); }
+    const gl = c.append("g").attr("transform", `translate(${xx},${y0})`); try { drawSpore(gl, sg.morph || null, glyphR(sg.morph, sg.morph?.gyro ? 6 : 5), false); } catch (e) { gl.append("circle").attr("r", 3.5).attr("fill", css("--muted")); }
     c.append("text").attr("class", "tt-sname grp-" + (sg._grp || "other")).attr("transform", `translate(${xx + 2},${y1 - 3}) rotate(-60)`).text((sg.l > 0.5 ? "† " : "") + sg.g);
     c.append("title").text(`${sg.g} (${sg.kind || "spore"}): ${Math.round(sg.f)}–${sg.l > 0.5 ? Math.round(sg.l) : 0} Ma${sg.aff ? " · " + sg.aff : ""}${sg._why ? " · " + sg._why : ""}${extra || ""} · click to open in the Habitat view`); }
   tips.forEach(id => {
@@ -3236,7 +3307,80 @@ document.querySelectorAll(".seg button[data-mode]").forEach(b => b.onclick = () 
   if (b.dataset.mode === "timetree") setTT(true); else { setTT(false); setMode(b.dataset.mode); try { sessionStorage.setItem("mode", b.dataset.mode); } catch(e) {} } });
 let reopen = false, m0 = null; try { reopen = sessionStorage.getItem("ttOpen") === "1"; m0 = sessionStorage.getItem("mode"); } catch(e) {}
 if (reopen) setTT(true); else if (m0 && m0 !== "discovery" && m0 !== state.mode && document.querySelector(`.seg button[data-mode="${m0}"]`)?.offsetParent !== null) setMode(m0);
-window.__tt = {L, CELL, draw}; window.__goHabitat = goHabitat;
+
+/* ---------- The story in brief: a guided walk up the time tree, stop by stop ---------- */
+(function ttStory(){
+  const box = document.getElementById("ttStory"); if (!box) return;
+  const PH = new Set(["Acanthotriletes", "Aequitriradites", "Afropollis", "Alisporites", "Alnipollenites", "Ambitisporites", "Anapiculatisporites", "Ancyrospora", "Aneurospora", "Angulisporites", "Apiculatasporites", "Apiculatisporis", "Apiculatisporites", "Apiculiretusispora", "Appendicisporites", "Aratrisporites", "Araucariacites", "Arcellites", "Archaeoperisaccus", "Archaeozonotriletes", "Arecipites", "Asteropollis", "Aulisporites", "Auroraspora", "Austroclavatidites", "Baculatisporites", "Banksisporites", "Botryococcus", "Breconisporites", "Brochotriletes", "Cadiospora", "Calamospora", "Callialasporites", "Callimothallus", "Calyptosporites", "Camarozonotriletes", "Camptotriletes", "Candidispora", "Cappasporites", "Caprifoliipites", "Casuarinidites", "Catinipollis", "Cheileidonites", "Chelinospora", "Cicatricosisporites", "Cingulizonates", "Cirratriradites", "Classopollis", "Clavatipollenites", "Clavatricolpites", "Claytonispora", "Contagisporites", "Converrucosisporites", "Convolutispora", "Corbulispora", "Crassispora", "Crassosphaera", "Cribrosporites", "Cristatisporites", "Cupressacites", "Cupuliferoidaepollenites", "Cyathidites", "Cycadopites", "Cyclogranisporites", "Cymatiosphaera", "Cymbosporites", "Cyrtospora", "Deltoidospora", "Densoisporites", "Densosporites", "Desmidiospora", "Diaphanospora", "Diatomozonotriletes", "Dibolisporites", "Dicellaeporisporites", "Dicellaesporites", "Dicolpopollis", "Dictyophyllidites", "Dictyotriletes", "Diducites", "Dijkstraisporites", "Diporisporites", "Elaterites", "Emphanisporites", "Endosporites", "Ephedripites", "Ericipites", "Eucommiidites", "Falcisporites", "Felixites", "Florinites", "Fraxinoipollenites", "Fusiformisporites", "Geminospora", "Gleicheniidites", "Graminidites", "Granasporites", "Grandispora", "Granulatisporites", "Grumosisporites", "Hiatipites", "Horniella", "Horriditriletes", "Hymenozonotriletes", "Hypoxylonites", "Hystricosporites", "Ilexpollenites", "Illinites", "Inapertisporites", "Inaperturopollenites", "Indotriradites", "Insulapollenites", "Ischyosporites", "Kewaneesporites", "Knoxisporites", "Kraeuselisporites", "Kurtzipites", "Lacrimasporonites", "Laevigatosporites", "Latosporites", "Leiotriletes", "Liliacidites", "Lophotriletes", "Lophozonotriletes", "Lunatisporites", "Lundbladispora", "Lycospora", "Matonisporites", "Microreticulatisporites", "Microsporonites", "Minerisporites", "Momipites", "Monilospora", "Monocolpopollenites", "Monoletes", "Monoporisporites", "Mooreisporites", "Multicellites", "Nathorstisporites", "Neurospora", "Normapolles", "Nothofagidites", "Ovoidites", "Parvisaccites", "Pediastrum", "Perinopollenites", "Perotrilites", "Pesavis", "Phragmothyrites", "Pityosporites", "Platysaccus", "Plicapollis", "Plicatispora", "Podocarpidites", "Podosporites", "Polyadosporites", "Polycolpites", "Potonieisporites", "Proprisporites", "Protohaploxypinus", "Proxapertites", "Pseudoschizaea", "Psilatricolpites", "Pterospermopsis", "Punctatisporites", "Punctatosporites", "Punctatricolpites", "Quercoidites", "Radiizonates", "Raistrickia", "Reinschospora", "Remysporites", "Reticulatisporites", "Retipollenites", "Retitrescolpites", "Retitricolpites", "Retitricolporites", "Retitriletes", "Retusotriletes", "Rhabdosporites", "Rhoipites", "Rotaspora", "Samarisporites", "Savitrisporites", "Scabratricolpites", "Schizocystia", "Schopfites", "Schulzospora", "Secarisporites", "Sequoiapollenites", "Setosisporites", "Spelaeotriletes", "Spinizonocolpites", "Spinosporites", "Stenozonotriletes", "Stereisporites", "Stigmozygodites", "Streelispora", "Striatoabietites", "Striatopodocarpites", "Striatopollis", "Synorisporites", "Tasmanites", "Teichertospora", "Tenellisporites", "Tetrahedraletes", "Tetraploa", "Tetraporina", "Tholisporites", "Thymospora", "Tiliaepollenites", "Todisporites", "Torispora", "Triadispora", "Triatriopollenites", "Tricolpites", "Tricolporites", "Trileites", "Tripartites", "Triporopollenites", "Tripunctisporis", "Triquitrites", "Trivestibulopollenites", "Trudopollis", "Tuberculatosporites", "Tumulispora", "Vallatisporites", "Verrucosisporites", "Verrutricolpites", "Vesicaspora", "Vestispora", "Waltzispora", "Westphalensisporites", "Wilsonites", "Zonalosporites", "Zonotriletes"]);
+  const S = [
+   {ma:470, when:"Middle Ordovician, about 470 Ma", t:"Cryptospore tetrads", g:"Tetrahedraletes",
+    what:"The oldest spores from land plants come as four cells that never separated. Their walls are built in thin layers, like the spores of living liverworts.",
+    know:"Four spores fused in a permanent tetrad; no trilete mark.", plants:"Early land plants of bryophyte grade, liverwort-like."},
+   {ma:450, when:"Late Ordovician", t:"Dyads", g:"Dyadospora",
+    what:"Cryptospores also come in fused pairs, and as single spores split from them. They turn up even in marine rocks, blown out to sea from land.",
+    know:"Two spores joined along one face.", plants:"Unresolved; early land plants."},
+   {ma:430, when:"Silurian, about 430 Ma", t:"The trilete mark arrives", g:"Ambitisporites",
+    what:"Single spores with a Y-shaped mark spread through the Silurian and take over spore assemblages.",
+    know:"A Y-shaped scar (trilete mark) where the four sister spores touched inside the tetrad.", plants:"Early vascular plants, such as Cooksonia."},
+   {ma:410, when:"Early Devonian, about 410 Ma", t:"Rhynie chert", g:"Retusotriletes",
+    what:"Hot springs at Rhynie, Scotland, petrified a whole ecosystem, plants with their spores still in the sporangia.",
+    know:"Trilete spores with arcs (curvaturae) joining the tips of the mark.", plants:"Rhyniophytes and their kin, such as Aglaophyton and Rhynia."},
+   {ma:385, when:"Middle to Late Devonian", t:"Ornament and giant megaspores", g:"Ancyrospora",
+    what:"Spines, cones and grapnel-tipped processes spread over spore walls. Some plants made small and large spores: heterospory, a step toward the seed.",
+    know:"Ornamented trilete spores; megaspores over 200 µm, big enough to see by eye.", plants:"Lycopsids and progymnosperms such as Archaeopteris."},
+   {ma:310, when:"Pennsylvanian, about 310 Ma", t:"Coal-swamp Lycospora", g:"Lycospora",
+    what:"Scale trees dominated the great coal swamps, and their tiny flanged spores fill many coal seams. Coal balls keep the swamps cell by cell.",
+    know:"Small trilete spore with an equatorial flange (cingulum).", plants:"Lepidodendrid scale trees, shed from Lepidostrobus cones."},
+   {ma:300, when:"Late Pennsylvanian", t:"Pollen with air sacs", g:"Florinites",
+    what:"Cordaites trees shed pollen wrapped in a single air sac, a design conifers still use to ride the wind.",
+    know:"One body inside one sac (monosaccate).", plants:"Cordaitaleans, relatives of the first conifers."},
+   {ma:255, when:"Late Permian", t:"Striped bisaccates", g:"Protohaploxypinus",
+    what:"Late Permian assemblages worldwide are often dominated by pollen with two sacs and a striped body.",
+    know:"Two air sacs; the body crossed by parallel ribs (taeniae).", plants:"Glossopterids and early conifers."},
+   {ma:200, when:"Triassic to Jurassic", t:"Classopollis world", g:"Classopollis",
+    what:"One extinct conifer family shed so much pollen that in places it makes up nearly all of a sample.",
+    know:"A thick band around the equator, a small pore at one pole, often found in tetrads.", plants:"Cheirolepidiaceae, an extinct conifer family."},
+   {ma:130, when:"Early Cretaceous, about 130 Ma", t:"First flowering-plant pollen", g:"Clavatipollenites",
+    what:"Among the oldest flowering-plant pollen, matched to grains inside fossil stamens.",
+    know:"One furrow (monosulcate) and a club-studded surface.", plants:"Chloranthaceae."},
+   {ma:110, when:"mid-Cretaceous", t:"Three furrows: eudicots", g:"Tricolpites",
+    what:"Three furrows mark the eudicots, today the largest group of flowering plants. The type spreads quickly from the Aptian–Albian.",
+    know:"Three furrows (tricolpate) that let the grain fold as it dries.", plants:"Eudicots."},
+   {ma:80, when:"Late Cretaceous", t:"Normapolles", g:"Normapolles",
+    what:"A burst of pollen types with elaborate pores, so quick to change that they date Late Cretaceous rocks well. Gone by the end of the Eocene.",
+    know:"Usually three pores, each with a complex, thickened rim.", plants:"Early relatives of the beech and walnut order (Fagales)."},
+   {ma:0, when:"Today", t:"Lycopodium: still here", g:"Retitriletes",
+    what:"Club mosses still shed trilete spores, a design more than 400 million years old. Palynologists add Lycopodium spores to samples as a counting standard.",
+    know:"Trilete spore with a net-like (reticulate) surface.", plants:"Club mosses (Lycopodiaceae)."}
+  ];
+  let i = 0; try { i = Math.min(S.length - 1, +(sessionStorage.getItem("ttStory") || 0)); } catch(e) {}
+  function show(k){ i = (k + S.length) % S.length; try { sessionStorage.setItem("ttStory", i); } catch(e) {}
+    const st = S[i], photo = PH.has(st.g) ? `<img class="tts-photo" src="spore_photos/${st.g}.jpg" alt="${st.g}, photographed under the microscope" loading="lazy">` : `<div class="tts-photo none">No photo yet</div>`;
+    box.innerHTML = `<p class="tts-sporo"><b>Every grain here is sporopollenin</b>, the toughest material plants make, and every one was shed by a living plant.</p>
+      <div class="tts-top"><span class="tts-n">${i + 1} of ${S.length}</span><span class="tts-when">${st.when}</span></div>
+      <h3 class="tts-t">${st.t}</h3>
+      <div class="tts-media">${photo}<svg class="tts-gl" viewBox="-30 -30 60 60" aria-label="Diagram of ${st.g}"></svg></div>
+      <p class="tts-what">${st.what}</p>
+      <p class="tts-row"><b>How to know it</b> ${st.know}</p>
+      <p class="tts-row"><b>Plants</b> ${st.plants}</p>
+      <p class="tts-row"><b>Example</b> <i>${st.g}</i></p>
+      <div class="tts-nav"><button type="button" data-d="-1" aria-label="Earlier">‹ Earlier</button><button type="button" class="tts-go">Find it on the tree</button><button type="button" data-d="1" aria-label="Later">Later ›</button></div>`;
+    try { drawSpore(d3.select(box.querySelector(".tts-gl")), MG[st.g] || null, 24, true); } catch(e) {}
+    box.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { show(i + +b.dataset.d); go(); });
+    box.querySelector(".tts-go").onclick = go;
+  }
+  /* zoom in on the example genus in the tree and mark it */
+  function go(){ const st = S[i], sc = document.querySelector(".tt-scroll"), svg = document.getElementById("tt"); if (!sc || !svg) return;
+    const el = [...svg.querySelectorAll(".tt-sp")].find(e => (e.getAttribute("aria-label") || "").split(":")[0] === st.g); if (!el) return;
+    window.__tt?.zoomTo?.(1.1);
+    requestAnimationFrame(() => { const r = el.getBoundingClientRect(), R = sc.getBoundingClientRect();
+      sc.scrollBy({left: r.left + r.width / 2 - R.left - sc.clientWidth / 2, top: r.top + r.height / 2 - R.top - sc.clientHeight / 2, behavior: "smooth"});
+      svg.querySelectorAll(".tt-sp.tts-hit").forEach(e => e.classList.remove("tts-hit")); svg.querySelectorAll(".tts-ring").forEach(e => e.remove()); el.classList.add("tts-hit");
+      const gl = el.querySelector("g"); if (gl) d3.select(gl).insert("circle", ":first-child").attr("class", "tts-ring").attr("r", 16);
+      sc.scrollIntoView({block: "nearest", behavior: "smooth"}); }); }
+  show(i);
+})();
+window.__tt = {L, CELL, draw, zoomTo: k => { ttK = Math.min(3, Math.max(0.12, k)); ttApplyZoom(false); }, k: () => ttK}; window.__goHabitat = goHabitat;
 })();
 /* ---------- Diversity view: fossil genera through time by parent group, and living species today ---------- */
 (function(){
@@ -3826,4 +3970,75 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
 })();
 </script>
 
+
+<dialog id="cookDlg" class="cookdlg" aria-labelledby="cookTitle">
+  <div class="cook">
+    <div class="cook-scope"><canvas id="cookCv" width="520" height="520" aria-label="A spore at the chosen heat"></canvas></div>
+    <div class="cook-panel">
+      <div class="cook-head"><h2 id="cookTitle">Cook a spore</h2><button type="button" class="cook-x" aria-label="Close">✕</button></div>
+      <p>Sporopollenin is the toughest material plants make, but heat during burial slowly chars it. Set how hot the rock got and how long it stayed there.</p>
+      <label class="cook-row" for="cookTemp"><span>Peak burial temperature</span><span class="cook-mono" id="cookTempOut">60 °C</span></label>
+      <input type="range" id="cookTemp" min="20" max="260" step="5" value="60">
+      <label class="cook-row" for="cookTime"><span>Time held there</span><span class="cook-mono" id="cookTimeOut">10 My</span></label>
+      <input type="range" id="cookTime" min="0" max="100" step="1" value="50">
+      <div class="cook-bar" aria-hidden="true"></div>
+      <div class="cook-row"><b id="cookClass">Yellow</b><span class="cook-mono" id="cookScore">score 3 / 7</span></div>
+      <p class="cook-out" id="cookMeaning"></p>
+      <div class="cook-presets"><button type="button" data-preset="20,0">Fresh pollen</button><button type="button" data-preset="45,100">Ancient but shallow</button><button type="button" data-preset="110,40">Oil-window basin</button><button type="button" data-preset="230,70">Overcooked</button></div>
+      <p class="cook-note">An illustration, not a calibrated model: peak heat matters most, and long time at modest heat adds a little. Palynologists read this darkening on a colour scale (the spore colour index) to judge how hot a rock has been.</p>
+    </div>
+  </div>
+</dialog>
+<div id="cpPop" class="cppop" role="dialog" aria-labelledby="cpPopT" hidden>
+  <button type="button" class="cp-x" aria-label="Close">✕</button>
+  <p id="cpPopT"><b>Who lived with these plants?</b></p>
+  <p>Insects that ate them, fungi that rotted them, animals that sheltered in them: <b>Community Paleoecology</b> maps the published interactions around the plants of the coal swamps.</p>
+  <p><a href="https://claude.ai/artifact/U2jxFUFpFL3CatiBiLhnLW" target="_blank" rel="noopener">Open Community Paleoecology ↗</a> <button type="button" class="cp-never">Don't show again</button></p>
+</div>
+<script>
+/* Cook a spore: heat and time darken sporopollenin from pale yellow to black */
+(function(){
+  const dlg = document.getElementById("cookDlg"), btn = document.getElementById("cookBtn"); if (!dlg || !btn) return;
+  const STOPS = [[246,241,214],[240,214,110],[217,164,65],[168,102,42],[92,52,23],[28,20,13]];
+  const tone = x => { x = Math.max(0, Math.min(1, x)); const p = x * (STOPS.length - 1), i = Math.min(STOPS.length - 2, Math.floor(p)), f = p - i; return STOPS[i].map((v, k) => Math.round(v + (STOPS[i + 1][k] - v) * f)); };
+  const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`, shade = (c, m) => c.map(v => Math.max(0, Math.round(v * m)));
+  function draw(x){ const cv = document.getElementById("cookCv"), ctx = cv.getContext("2d"), W = cv.width, cx = W / 2, R = W * .36, c = tone(x);
+    ctx.clearRect(0, 0, W, W);
+    ctx.beginPath(); ctx.arc(cx, cx, R * .74, 0, Math.PI * 2); ctx.fillStyle = rgb(c, .85); ctx.fill(); ctx.lineWidth = R * .05; ctx.strokeStyle = rgb(shade(c, .55)); ctx.stroke();
+    ctx.save(); ctx.beginPath(); ctx.arc(cx, cx, R * .72, 0, Math.PI * 2); ctx.clip(); ctx.strokeStyle = rgb(shade(c, .55)); ctx.lineWidth = R * .025;
+    const st = R * .2; for (let x0 = -R; x0 <= R; x0 += st) for (let y0 = -R; y0 <= R; y0 += st * .87) { const ox = (Math.round(y0 / (st * .87)) % 2) ? st / 2 : 0; ctx.beginPath(); ctx.arc(cx + x0 + ox, cx + y0, st * .42, 0, Math.PI * 2); ctx.stroke(); }
+    ctx.restore(); ctx.strokeStyle = rgb(shade(c, .4)); ctx.lineWidth = R * .045; ctx.lineCap = "round";
+    for (const a of [-90, 30, 150]) { const t = a * Math.PI / 180; ctx.beginPath(); ctx.moveTo(cx, cx); ctx.lineTo(cx + Math.cos(t) * R * .4, cx + Math.sin(t) * R * .4); ctx.stroke(); } }
+  const CL = ["Clear / colorless","Pale yellow","Yellow","Golden brown","Brown","Dark brown","Black / opaque"];
+  const ME = ["Unheated. Fresh pollen, or a grain that was never buried deeply. Every detail shows.",
+    "Barely warmed. Typical of shallow, cool basins even when the rock is very old.",
+    "Mildly heated. Still easy to identify; the organic matter is not yet mature enough for oil.",
+    "Warm burial. Roughly where source rocks start to generate oil. Ornament still readable.",
+    "Hot burial. Detail starts to fade; palynologists squint and use better light.",
+    "Very hot. Grains are hard to identify; gas territory.",
+    "Overcooked. Opaque or destroyed. The spore is still there, but you cannot tell what it was."];
+  const T = document.getElementById("cookTemp"), M = document.getElementById("cookTime"), myrs = v => Math.pow(10, -2 + v / 100 * 4.5);
+  function cook(){ const t = +T.value, m = myrs(+M.value);
+    let x = (t - 35) / 200 + 0.06 * Math.log10(Math.max(m, .01) / 0.01) / 4.5; x = Math.max(0, Math.min(1, x));
+    const sc = Math.min(7, 1 + Math.floor(x * 6.999));
+    document.getElementById("cookTempOut").textContent = t + " °C";
+    document.getElementById("cookTimeOut").textContent = (m < 1 ? m.toFixed(2) : m < 10 ? m.toFixed(1) : Math.round(m)) + " My";
+    document.getElementById("cookClass").textContent = CL[sc - 1]; document.getElementById("cookScore").textContent = "score " + sc + " / 7";
+    document.getElementById("cookMeaning").textContent = ME[sc - 1]; draw(x); }
+  [T, M].forEach(e => e.addEventListener("input", cook));
+  dlg.querySelectorAll("[data-preset]").forEach(b => b.onclick = () => { const [t, v] = b.dataset.preset.split(",").map(Number); T.value = t; M.value = v; cook(); });
+  btn.onclick = () => { cook(); dlg.showModal(); };
+  dlg.querySelector(".cook-x").onclick = () => dlg.close();
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+})();
+/* Habitat view: point to Community Paleoecology */
+(function(){
+  const pop = document.getElementById("cpPop"), hb = document.querySelector('.seg button[data-mode="habitat"]'); if (!pop || !hb) return;
+  const never = () => { try { return localStorage.getItem("sd-cp-never") === "1"; } catch(e) { return false; } };
+  hb.addEventListener("click", () => { if (!never()) setTimeout(() => { pop.hidden = false; }, 300); });
+  document.querySelectorAll('.seg button[data-mode]:not([data-mode="habitat"])').forEach(b => b.addEventListener("click", () => { pop.hidden = true; }));
+  pop.querySelector(".cp-x").onclick = () => { pop.hidden = true; };
+  pop.querySelector(".cp-never").onclick = () => { try { localStorage.setItem("sd-cp-never", "1"); } catch(e) {} pop.hidden = true; };
+})();
+</script>
 </body></html>
