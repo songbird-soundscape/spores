@@ -405,6 +405,18 @@ body.ttfull-open{overflow:hidden}
 #tl .mslab{font-size:12.5px; fill:var(--ink); opacity:.9}
 #tl a:hover .mslab{text-decoration:underline; fill:var(--accent)}
 #tl .pubdot circle{cursor:pointer} #tl .pubdot:hover circle{stroke:var(--ink); stroke-width:1.2}
+.msdetails{grid-column:2; min-width:0; font-size:12.5px; margin:0 0 2px} .msdetails summary{cursor:pointer; color:var(--muted); width:max-content} .msdetails summary:hover{color:var(--accent)}
+.mstoasts{position:absolute; top:10px; right:10px; z-index:6; display:flex; flex-direction:column; gap:8px; width:min(330px, calc(100% - 20px)); pointer-events:none}
+.mstoast{pointer-events:auto; display:grid; grid-template-columns:30px 1fr auto; gap:4px 9px; align-items:start; padding:9px 10px 9px 9px; border-radius:12px;
+  background:color-mix(in srgb, var(--panel) 92%, transparent); backdrop-filter:blur(6px); border:1px solid var(--rule); box-shadow:0 6px 18px rgba(0,0,0,.18);
+  font-size:12.5px; line-height:1.35; color:var(--ink); animation:msIn .35s ease-out}
+.mstoast.out{animation:msOut .4s ease-in forwards}
+.mstoast svg{width:30px; height:30px; overflow:visible} .mstoast .mh{font-size:11px; color:var(--muted); font-family:var(--mono)} .mstoast .mh b{color:var(--ink)}
+.mstoast .mx{all:unset; cursor:pointer; color:var(--muted); font-size:15px; line-height:1; padding:0 2px} .mstoast .mx:hover{color:var(--accent)}
+.mstoast a{color:var(--accent); white-space:nowrap}
+@keyframes msIn{from{opacity:0; transform:translateY(-10px) scale(.97)} to{opacity:1; transform:none}}
+@keyframes msOut{to{opacity:0; transform:translateX(24px)}}
+@media (prefers-reduced-motion:reduce){ .mstoast, .mstoast.out{animation:none} }
 .mslist{grid-column:2; list-style:none; margin:2px 0 4px; padding:0; columns:3 250px; column-gap:22px; font-size:12.5px}
 .mslist li{break-inside:avoid; display:flex; align-items:baseline; gap:4px; margin:0 0 3px}
 .mslist .msgo{all:unset; cursor:pointer; color:var(--ink); line-height:1.35} .mslist .msgo:hover{color:var(--accent)} .mslist .msgo:focus-visible{outline:2px solid var(--accent)}
@@ -2207,7 +2219,11 @@ const discBar = (function makeDiscBar(){
   const pleg = document.createElement("p"); pleg.id = "pubLegend"; pleg.className = "publeg";
   const msl = document.createElement("ol"); msl.id = "msList"; msl.className = "mslist"; msl.setAttribute("aria-label", "Milestones");
   [play, yin, yout].forEach(e => time.appendChild(e));
-  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); time.appendChild(msl); time.appendChild(now); time.appendChild(pleg);
+  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); const msd = document.createElement("details"); msd.className = "msdetails"; msd.innerHTML = `<summary>All milestones</summary>`; msd.appendChild(msl);
+  time.appendChild(msd); time.appendChild(now); time.appendChild(pleg); now.hidden = true;
+  /* milestones pop up over the network as the slider passes them, like notifications, so the bar stays slim */
+  const toasts = document.createElement("div"); toasts.id = "msToasts"; toasts.className = "mstoasts"; toasts.setAttribute("aria-live", "polite");
+  document.getElementById("stage").appendChild(toasts);
   yb.style.display = "none";
   const oldTl = document.querySelector("section.timeline"); if (oldTl) oldTl.style.display = "none";
   statsBox.id = "statsBox"; statsBox.classList.add("dbcounts");
@@ -2282,6 +2298,26 @@ function drawMilestones(){
     `<span><i style="background:var(--spore)"></i>named genera or species</span><span><i style="background:var(--insitu)"></i>found spores inside a plant organ</span><span><i style="background:var(--plant)"></i>joined organs into a whole plant</span>`;
   drawTimelineMarker();
 }
+/* notifications: when the year moves forward past milestones, each one pops up over the network for a few seconds */
+let msPrevYear = null;
+function notifyMilestones(){
+  const y = state.year, prev = msPrevYear; msPrevYear = y;
+  const box = document.getElementById("msToasts"); if (!box) return;
+  const active = document.querySelector('.seg button[data-mode][aria-pressed="true"]')?.dataset.mode || state.mode;
+  if (active !== "discovery" || document.body.classList.contains("gaming")) { box.innerHTML = ""; return; }
+  if (prev === null || y <= prev) return;
+  const sorted = msNodes.slice().sort((a, b) => a.y - b.y), passed = sorted.filter(m => m.y > prev && m.y <= y).slice(-3);
+  passed.forEach(m => {
+    const num = sorted.indexOf(m) + 1, el = document.createElement("div"); el.className = "mstoast";
+    el.innerHTML = `<svg viewBox="-15 -15 30 30" aria-hidden="true"></svg><div><div class="mh">Milestone ${num} · <b>${m.y}</b></div>${esc(m.t)} <a href="${scholarURL(m.t)}" target="_blank" rel="noopener" title="Search Google Scholar">Scholar ↗</a></div><button type="button" class="mx" aria-label="Dismiss">×</button>`;
+    if (typeof drawSpore === "function" && MG.Reinschospora) drawSpore(d3.select(el.querySelector("svg")), MG.Reinschospora, 12, true);
+    let t = null; const close = () => { clearTimeout(t); el.classList.add("out"); setTimeout(() => el.remove(), 400); };
+    const arm = () => { clearTimeout(t); t = setTimeout(close, 7000); };
+    el.querySelector(".mx").onclick = close; el.onmouseenter = () => clearTimeout(t); el.onmouseleave = arm;
+    box.prepend(el); arm();
+  });
+  while (box.children.length > 3) box.lastElementChild.remove();
+}
 /* milestones follow the slider: those still to come fade, the latest one reached is picked out and spelled out in full */
 function drawTimelineMarker(){
   if (!marker) return;
@@ -2290,6 +2326,7 @@ function drawTimelineMarker(){
     m.mk.style("opacity", done ? 1 : 0.3); m.txt.style("opacity", done ? 1 : 0.4).classed("cur", false); m.tick.style("opacity", done ? 0.7 : 0.25); });
   pubNodes.forEach(p => p.a.style("opacity", p.y <= state.year ? 1 : 0.22));
   if (last) last.txt.classed("cur", true);
+  notifyMilestones();
   const now = document.getElementById("msNow");
   if (now) now.innerHTML = last ? `<b>Latest milestone by ${state.year}:</b> ${last.y}, ${esc(last.t)}` : `No milestones yet by ${state.year}. Press Play or drag the slider to move through time.`;
 }
