@@ -402,7 +402,11 @@ body.ttfull-open{overflow:hidden}
 .dbtl, .msnow{grid-column:2; min-width:0}
 .dbtl{overflow:hidden}
 #tl{display:block; width:100%; min-width:0}
-#tl .mslab{font-size:11.5px}
+#tl .mslab{font-size:12.5px; fill:var(--ink); opacity:.9}
+#tl a:hover .mslab{text-decoration:underline; fill:var(--accent)}
+#tl .pubdot circle{cursor:pointer} #tl .pubdot:hover circle{stroke:var(--ink); stroke-width:1.2}
+.publeg{grid-column:2; margin:2px 0 0; font-size:12px; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 14px; align-items:center}
+.publeg span{display:inline-flex; align-items:center; gap:5px} .publeg i{display:inline-block; width:8px; height:8px; border-radius:50%}
 #tl .mslab.cur{fill:var(--ink); font-weight:600}
 .msnow{margin:4px 0 0; font-size:13px; color:var(--muted); min-height:1.4em}
 .msnow b{color:var(--ink); font-weight:600}
@@ -427,6 +431,7 @@ body.ttfull-open{overflow:hidden}
 .buildlist li.bin .btag{color:var(--insitu); font-weight:600}
 .buildlist .bref{font-size:12.5px; color:var(--muted)}
 .occrefs ul{margin:4px 0 0; padding-left:18px; font-size:12.5px} .occrefs li{margin:2px 0}
+.schrow{font-size:12px; color:var(--muted)} a.schol{font-size:12px; white-space:nowrap; margin-right:6px; color:var(--accent); text-decoration:none} a.schol:hover{text-decoration:underline}
 .occrefs summary{cursor:pointer; font-size:12.5px; color:var(--accent); margin-top:4px}
 /* the two find maps always sit side by side, the same size; only on phones (under 520 px) do they stack */
 .geomaps{grid-template-columns:repeat(2, minmax(0,1fr)) !important; gap:10px}
@@ -1109,7 +1114,7 @@ function drawSporeFlat(g, s, R, detail){
        the laesura between raised lips; and a pale, radially folded flange (lamellae) joined all round the body, widest between
        the arms, narrow at the apices, ragged at its margin. Drab, olive-brown body grading to a pale, translucent flange. */
     let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-    const h = R*0.19, Lc = R*0.65, arms = [0, 1, 2].map(i => -Math.PI/2 + i*2*Math.PI/3);
+    const h = R*0.235, Lc = R*0.64, arms = [0, 1, 2].map(i => -Math.PI/2 + i*2*Math.PI/3);
     /* each arm's outline along a ray, then a smooth maximum of the three so the inner bends between arms are rounded, not angular */
     const armAt = (t, a) => { const d = Math.atan2(Math.sin(t - a), Math.cos(t - a)), sd = Math.abs(Math.sin(d)), cd = Math.cos(d);
       if (cd <= 0) return h*0.6; return Lc*sd <= h ? Lc*cd + Math.sqrt(h*h - (Lc*sd)**2) : h / sd; };
@@ -1121,9 +1126,9 @@ function drawSporeFlat(g, s, R, detail){
     const inner = [], outer = [];
     for (let i = 0; i <= N; i++) { const t = i*2*Math.PI/N, ri = bodyAt(t)*0.98, ro = outerAt(t, i); inner.push([ri*Math.cos(t), ri*Math.sin(t)]); outer.push([ro*Math.cos(t), ro*Math.sin(t)]); }
     const gid = "rfr" + (++clipN), defs = g.append("defs"), rg = defs.append("radialGradient").attr("id", gid).attr("gradientUnits", "userSpaceOnUse").attr("cx", 0).attr("cy", 0).attr("r", R*0.93);
-    [[0, "#58462E"], [0.24, "#6E583A"], [0.42, "#957F58"], [0.62, "#BFB194"], [0.84, "#DDD6C5"], [1, "#E9E3D5"]].forEach(([o, c]) => rg.append("stop").attr("offset", o).attr("stop-color", c));
+    [[0, "#6B4B21"], [0.24, "#80602F"], [0.42, "#A6864F"], [0.62, "#CBB68B"], [0.84, "#E4D9BF"], [1, "#EFE7D4"]].forEach(([o, c]) => rg.append("stop").attr("offset", o).attr("stop-color", c));
     drabBody = "rbd" + clipN; const bg = defs.append("radialGradient").attr("id", drabBody).attr("cx", 0.4).attr("cy", 0.36).attr("r", 0.8);
-    [[0, "#A48450"], [0.55, "#7B6340"], [1, "#58462E"]].forEach(([o, c]) => bg.append("stop").attr("offset", o).attr("stop-color", c));
+    [[0, "#C99A4C"], [0.55, "#9A6E31"], [1, "#6B4B21"]].forEach(([o, c]) => bg.append("stop").attr("offset", o).attr("stop-color", c));
     /* the flange */
     g.append("path").attr("d", d3.line().curve(d3.curveCatmullRomClosed.alpha(0.5))(outer.slice(0, -1)) + d3.line()(inner.slice().reverse()) + "Z").attr("fill-rule", "evenodd")
       .attr("fill", `url(#${gid})`).attr("fill-opacity", 0.96).attr("stroke", "#8F8269").attr("stroke-width", sw*0.45).attr("stroke-opacity", 0.75);
@@ -1134,12 +1139,12 @@ function drawSporeFlat(g, s, R, detail){
         .attr("fill", "none").attr("stroke", "#3E3324").attr("stroke-opacity", (detail ? 0.22 : 0.18) + rnd()*0.12).attr("stroke-width", Math.max(0.15, sw*(0.22 + rnd()*0.2))); } }
     /* the body: one outline for the three arms, darker at its edge */
     const bp = []; for (let i = 0; i < N; i++) { const t = i*2*Math.PI/N, r = bodyAt(t); bp.push([r*Math.cos(t), r*Math.sin(t)]); }
-    g.append("path").attr("d", d3.line().curve(d3.curveCatmullRomClosed)(bp)).attr("fill", `url(#${drabBody})`).attr("stroke", "#4A3C2A").attr("stroke-width", sw*0.45);
+    g.append("path").attr("d", d3.line().curve(d3.curveCatmullRomClosed)(bp)).attr("fill", `url(#${drabBody})`).attr("stroke", "#553A17").attr("stroke-width", sw*0.5);
     /* each arm: the laesura down its middle between two raised lips */
     if (R > 2.5) arms.forEach(a => { const ux = Math.cos(a), uy = Math.sin(a), px = -uy, py = ux, L = Lc*0.97;
       for (const k of [-0.5, 0.5]) g.append("line").attr("x1", px*h*k + ux*h*0.5).attr("y1", py*h*k + uy*h*0.5).attr("x2", px*h*k*0.9 + ux*L).attr("y2", py*h*k*0.9 + uy*L)
-        .attr("stroke", "#A89572").attr("stroke-opacity", 0.55).attr("stroke-width", Math.max(0.2, sw*0.6));
-      g.append("line").attr("x1", 0).attr("y1", 0).attr("x2", ux*L).attr("y2", uy*L).attr("stroke", "#33291C").attr("stroke-opacity", 0.75).attr("stroke-width", Math.max(0.3, sw*0.65)); });
+        .attr("stroke", "#E0BE7A").attr("stroke-opacity", 0.6).attr("stroke-width", Math.max(0.2, sw*0.6));
+      g.append("line").attr("x1", 0).attr("y1", 0).attr("x2", ux*L).attr("y2", uy*L).attr("stroke", "#3A2610").attr("stroke-opacity", 0.8).attr("stroke-width", Math.max(0.3, sw*0.65)); });
     return;
   }
   const rb = s.zona ? R*(1-s.zona) : s.cav ? R*(1-s.cav) : s.pseudosac ? R*0.6 : s.peri ? R*0.6 : R;
@@ -1772,7 +1777,7 @@ function occRefsHTML(pts, refs){
   const ids = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a] || String(refs[a] || "").localeCompare(String(refs[b] || "")));
   if (!ids.length) return "";
   const PB = "https://paleobiodb.org/classic/displayRefResults?reference_no=";
-  const li = r => `<li><a href="${PB}${r}" target="_blank" rel="noopener">${esc(refs[r] || "reference " + r)}</a> <span class="meta">${cnt[r]} record${cnt[r] === 1 ? "" : "s"}</span></li>`;
+  const li = r => `<li><a href="${PB}${r}" target="_blank" rel="noopener">${esc(refs[r] || "reference " + r)}</a> <span class="meta">${cnt[r]} record${cnt[r] === 1 ? "" : "s"}</span>${refs[r] ? ` · <a class="schol" href="${scholarURL(refs[r] + " spores")}" target="_blank" rel="noopener">Scholar ↗</a>` : ""}</li>`;
   return `<div class="occrefs"><h3>Occurrence references</h3><p class="meta">The ${ids.length} publication${ids.length === 1 ? "" : "s"} behind these ${pts.length} records in the Paleobiology Database, most records first. These report where the spores were found; the studies that tie them to plants are listed separately.</p>` +
     `<ul>${ids.slice(0, 8).map(li).join("")}</ul>` + (ids.length > 8 ? `<details><summary>All ${ids.length} publications</summary><ul>${ids.slice(8).map(li).join("")}</ul></details>` : "") + `</div>`;
 }
@@ -1981,6 +1986,10 @@ const tax = n => n.kind==="hub" ? esc(n.label) : `<span class="tax" data-id="${e
 
 /* how the parts were put together: every step from the spore to its organs to the whole plant (or from a plant's parts to the plant),
    with its year and reference; the studies that found the spores inside a plant organ are picked out */
+/* a Google Scholar search for every citation in a reference note */
+function schChips(text, about){ const cs = citesIn(text), seen = new Set(); const out = cs.filter(c => { const k = citeKey(c); if (seen.has(k)) return false; seen.add(k); return true; })
+  .map(c => `<a class="schol" href="${scholarURL(citeFull(c) || `${c.who} ${c.year} ${about || ""}`.trim())}" target="_blank" rel="noopener">${esc(c.who)} ${c.year} ↗</a>`);
+  return out.length ? `<br><span class="schrow">Google Scholar: ${out.join(" ")}</span>` : ""; }
 function buildRefs(n){
   const seen = new Set(), steps = [], keys = new Set(), id = n.id;
   const add = l => { const k = l.source.id + ">" + l.target.id + ">" + l.type; if (seen.has(k)) return false; seen.add(k); steps.push(l); return true; };
@@ -1999,7 +2008,7 @@ function buildRefs(n){
   const nIn = steps.filter(l => l.type === "insitu").length, nAs = steps.length - nIn;
   const li = l => { const ins = l.type === "insitu";
     return `<li class="${ins ? "bin" : "bas"}"><span class="by">${yrTxt(l)}</span> ${tax(l.source)} <span class="barrow">${ins ? "found inside" : "joined to"}</span> ${tax(l.target)}` +
-      ` <span class="btag">${ins ? "spore–plant link" : "organ to plant"}</span><br><span class="bref">${l.ref ? linkRefs(l.ref) : "reference not yet recorded"}</span></li>`; };
+      ` <span class="btag">${ins ? "spore–plant link" : "organ to plant"}</span><br><span class="bref">${l.ref ? linkRefs(l.ref) : "reference not yet recorded"}</span>${schChips(l.ref, (l.source.id ?? l.source) + " " + (l.target.id ?? l.target))}</li>`; };
   const head = isSpore(n) ? `How <i>${esc(n.id)}</i> was tied to its plants` : `How ${esc(n.label)} was put together`;
   return {keys, html: `<h3>${head}</h3><p class="meta">${nIn ? `<b>${nIn}</b> spore–plant stud${nIn === 1 ? "y" : "ies"} (highlighted: spores found inside a plant organ)` : "No spores yet found inside these parts"}${nAs ? ` and <b>${nAs}</b> stud${nAs === 1 ? "y" : "ies"} joining organs into the whole plant` : ""}, oldest first.</p><ol class="buildlist">${steps.map(li).join("")}</ol>`};
 }
@@ -2041,7 +2050,7 @@ function showDetail(){
   const built = buildRefs(n);
   if (built.html) s.push(built.html);
   const rest = [...used].filter(k => !built.keys.has(k));
-  if (rest.length) s.push(`<h3>${built.html ? "Other sources" : "Sources"}</h3><ul>${rest.map(k => `<li><span class="ref" data-ref="${esc(k)}">${esc(k)}</span>${REF[k] ? ` · ${esc(REF[k].role)}` : ""}</li>`).join("")}</ul>`);
+  if (rest.length) s.push(`<h3>${built.html ? "Other sources" : "Sources"}</h3><ul>${rest.map(k => `<li><span class="ref" data-ref="${esc(k)}">${esc(k)}</span>${REF[k] ? ` · ${esc(REF[k].role)}` : ""} · <a class="schol" href="${scholarURL(REF[k]?.full || k)}" target="_blank" rel="noopener">Google Scholar ↗</a></li>`).join("")}</ul>`);
   const kids = nodes.filter(m => isSp(m) && m.genus === n.id).sort((a,b) => a.id.localeCompare(b.id));
   if (kids.length) s.push(`<h3>Species (${kids.length})</h3><p>${kids.map(tax).join(", ")}</p>`);
   s.push(`<p style="color:var(--muted)">Source of this entry: ${n.src==="guide" ? (n.vs === "user guide (diagnostics pass)" ? "your spore guides (Vann Smith's Paleozoic guide or the NAMS Cenozoic guide), via the identification pass" : "your affinity guide, now the Reading the spores tab of <a href=\"https://claude.ai/artifact/U2jxFUFpFL3CatiBiLhnLW\" target=\"_blank\" rel=\"noopener\">Paleoecology of the Freshwater and Estuarine Realms</a>") : n.src==="species-layer" ? "added for the species layer from Ravn's Cherokee counts or Balme (1995)" : SRC_LABEL[n.src] || (n.src && n.src !== "memory" ? esc(n.src) : "added from background knowledge, to verify")}.</p>`);
@@ -2113,8 +2122,9 @@ const discBar = (function makeDiscBar(){
   const yb = document.querySelector(".yearbox"), play = document.getElementById("play"), yin = document.getElementById("year"), yout = document.getElementById("yearOut");
   const tlsvg = document.getElementById("tl"); tlsvg.removeAttribute("preserveAspectRatio");
   const now = document.createElement("p"); now.id = "msNow"; now.className = "msnow";
+  const pleg = document.createElement("p"); pleg.id = "pubLegend"; pleg.className = "publeg";
   [play, yin, yout].forEach(e => time.appendChild(e));
-  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); time.appendChild(now);
+  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); time.appendChild(now); time.appendChild(pleg);
   yb.style.display = "none";
   const oldTl = document.querySelector("section.timeline"); if (oldTl) oldTl.style.display = "none";
   statsBox.id = "statsBox"; statsBox.classList.add("dbcounts");
@@ -2125,37 +2135,67 @@ const discBar = (function makeDiscBar(){
 const tl = d3.select("#tl");
 let tx = d3.scaleLinear().domain([YMIN,YMAX]).range([9, 991]);
 const TLY = 24;   /* the axis sits just under the slider; label rows hang below it */
-let marker = null, msNodes = [];
+let marker = null, msNodes = [], pubNodes = [];
+/* every publication that supplied data to this page: the papers that named its genera and species, and the studies that
+   found spores inside organs or joined organs into whole plants. Each becomes a dot on the timeline and a Google Scholar search. */
+const scholarURL = q => "https://scholar.google.com/scholar?q=" + encodeURIComponent(q);
+const CITE_RE = /([A-Z][\p{L}'’.\-]+(?:(?:\s+(?:and|&|et al\.|ex|in|de|van|von|du|le))*\s+[A-Z][\p{L}'’.\-]+)*(?:\s+et al\.)?),?\s+((?:1[789]|20)\d\d)/gu;
+function citesIn(text){ const out = []; if (!text) return out; for (const m of String(text).matchAll(CITE_RE)) {
+  const who = m[1].replace(/^(Year from|From|See|After|Cited by|In)\s+/i, "").trim(); if (!who || /^(Upper|Lower|Middle|Late|Early|Year|Page|Fig|Pl)\b/.test(who)) continue; out.push({who, year: +m[2]}); } return out; }
+const citeKey = c => (c.who + " " + c.year).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\band\b/g, "&").replace(/[.,]/g, "").replace(/\s+/g, " ");
+function citeFull(c){ const k = Object.keys(REF).find(r => citeKey({who: r.replace(/\s+\d{4}.*$/, ""), year: +((r.match(/\d{4}/) || [0])[0])}) === citeKey(c)); return k ? REF[k].full : null; }
+const PUBS = (() => { const M = new Map();
+  const put = (c, kind, about) => { const k = citeKey(c); let p = M.get(k); if (!p) { p = {key: k, who: c.who, year: c.year, kinds: new Set(), about: new Set()}; M.set(k, p); }
+    p.kinds.add(kind); if (about) p.about.add(about); };
+  nodes.forEach(n => { if (n.kind === "hub") return; citesIn(n.auth).forEach(c => put(c, "named", isSp(n) ? n.id : n.label)); });
+  links.forEach(l => { if (l.type !== "insitu" && l.type !== "assembly") return; const s = l.source.id ?? l.source, t = l.target.id ?? l.target;
+    citesIn(l.ref).forEach(c => put(c, l.type === "insitu" ? "in situ" : "organ to plant", `${s} → ${t}`)); });
+  return [...M.values()].filter(p => p.year >= YMIN && p.year <= YMAX).map(p => { const full = citeFull(p);
+    return {...p, full, q: full || `${p.who} ${p.year} ${[...p.about][0]?.split(" → ")[0] || ""}`.trim()}; }).sort((a, b) => a.year - b.year || a.who.localeCompare(b.who)); })();
 function drawMilestones(){
   const el = document.getElementById("tl"), W = Math.max(300, Math.round(el.getBoundingClientRect().width || el.parentNode.clientWidth || 1000));
-  tl.selectAll("*").remove(); msNodes = [];
+  tl.selectAll("*").remove(); msNodes = []; pubNodes = [];
   tx = d3.scaleLinear().domain([YMIN, YMAX]).range([9, W - 9]);   /* the slider's thumb travels between these, so marks sit under the same years */
   tl.append("line").attr("x1",9).attr("x2",W-9).attr("y1",TLY).attr("y2",TLY).attr("stroke",css("--rule")).attr("stroke-width",2);
   const step = W < 700 ? 50 : 25;
   d3.range(Math.ceil((YMIN+1)/step)*step, YMAX, step).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY-11).attr("text-anchor","middle").text(y));
-  const ROW = 18, ROW0 = TLY + 26, ends = [];
+  /* publications: small dots stacked beneath the axis, one per paper, coloured by what it contributed */
+  const D = 5.2, stacks = new Map(); let maxStack = 0;
+  const colOf = p => p.kinds.has("in situ") ? css("--insitu") : p.kinds.has("organ to plant") ? css("--plant") : css("--spore");
+  const pubG = tl.append("g").attr("class","pubs");
+  PUBS.forEach(p => { const x = tx(p.year), b = Math.round(x / D); const k = stacks.get(b) || 0; stacks.set(b, k + 1); maxStack = Math.max(maxStack, k + 1);
+    const a = pubG.append("a").attr("href", scholarURL(p.q)).attr("target","_blank").attr("rel","noopener").attr("class","pubdot");
+    const kinds = [...p.kinds].join(", "), about = [...p.about].slice(0, 6).join("; ") + (p.about.size > 6 ? "; …" : "");
+    a.append("title").text(`${p.who} ${p.year} (${kinds})${about ? ": " + about : ""}${p.full ? "\n" + p.full : ""}\nClick to search Google Scholar`);
+    a.append("circle").attr("cx", b * D).attr("cy", TLY + 9 + k * D).attr("r", 2.1).attr("fill", colOf(p)).attr("stroke", css("--panel")).attr("stroke-width", 0.6);
+    pubNodes.push({y: p.year, a}); });
+  const ROW = 19, ROW0 = TLY + 14 + maxStack * D + 14, ends = [];
   (DATA.milestones || []).slice().sort((a, b) => a[0] - b[0]).forEach(([y, t]) => {
-    const x = tx(y), maxc = W < 700 ? 22 : 28, lab = `${y} ${t.length > maxc ? t.slice(0, maxc - 2).trimEnd() + "…" : t}`;
-    const anchor = x > W - 140 ? "end" : x < 140 ? "start" : "middle";
-    const txt = tl.append("text").attr("class","mslab").attr("x",x).attr("y",-50).attr("text-anchor",anchor).text(lab);
-    txt.append("title").text(`${y}: ${t}`);
-    const w = txt.node().getComputedTextLength() || lab.length * 6, x0 = anchor === "end" ? x - w : anchor === "start" ? x : x - w / 2;
-    let li = ends.findIndex(e => e + 14 < x0); if (li < 0) { li = ends.length; ends.push(0); }
+    const x = tx(y), maxc = W < 700 ? 30 : 46, lab = `${y} ${t.length > maxc ? t.slice(0, maxc - 2).trimEnd() + "…" : t}`;
+    const anchor = x > W - 240 ? "end" : "start";
+    const la = tl.append("a").attr("href", scholarURL(t)).attr("target","_blank").attr("rel","noopener");
+    const txt = la.append("text").attr("class","mslab").attr("x",x).attr("y",-50).attr("text-anchor",anchor).text(lab);
+    txt.append("title").text(`${y}: ${t}\nClick to search Google Scholar`);
+    const w = txt.node().getComputedTextLength() || lab.length * 7, x0 = anchor === "end" ? x - w : anchor === "start" ? x : x - w / 2;
+    let li = ends.findIndex(e => e + 12 < x0); if (li < 0) { li = ends.length; ends.push(0); }
     ends[li] = x0 + w; const ly = ROW0 + li * ROW;
     txt.attr("y", ly);
-    const tick = tl.insert("line", "text").attr("x1",x).attr("x2",x).attr("y1",TLY).attr("y2",ly - 11).attr("stroke",css("--muted")).attr("stroke-width",0.8).attr("opacity",0.7);
-    /* each milestone is marked with a Reinschospora glyph */
+    const tick = tl.insert("line", "g.pubs").attr("x1",x).attr("x2",x).attr("y1",TLY).attr("y2",ly - 13).attr("stroke",css("--muted")).attr("stroke-width",0.8).attr("opacity",0.6);
+    /* each milestone is marked with a Reinschospora glyph; clicking it moves the slider there */
     const mk = tl.append("g").attr("class","msg").attr("transform",`translate(${x},${TLY})`).style("cursor","pointer")
       .on("click",()=>{ stopPlay?.(); state.year=y; document.getElementById("year").value=y; document.getElementById("yearOut").textContent=y; render(); });
     mk.append("circle").attr("r",12).attr("fill","transparent");
     if (typeof drawSpore === "function" && MG.Reinschospora) drawSpore(mk.append("g"), MG.Reinschospora, 10, true);
     else mk.append("circle").attr("r",4).attr("fill",css("--accent"));
-    mk.append("title").text(`${y}: ${t}`);
+    mk.append("title").text(`${y}: ${t}\nClick to move the slider to ${y}`);
     msNodes.push({y, t, txt, tick, mk});
   });
-  const H = ROW0 + Math.max(1, ends.length) * ROW - 6;
+  const H = ROW0 + Math.max(1, ends.length) * ROW - 4;
   tl.attr("viewBox", `0 0 ${W} ${H}`).attr("width", W).attr("height", H).style("height", H + "px");
   marker = tl.append("line").attr("y1",TLY-14).attr("y2",TLY+14).attr("stroke",css("--ink")).attr("stroke-width",2).style("pointer-events","none");
+  const leg = document.getElementById("pubLegend");
+  if (leg) leg.innerHTML = `<span><b>${PUBS.length}</b>&nbsp;publications supplied this page's names and links, one dot each; click a dot or a milestone to search Google Scholar.</span>` +
+    `<span><i style="background:var(--spore)"></i>named genera or species</span><span><i style="background:var(--insitu)"></i>found spores inside a plant organ</span><span><i style="background:var(--plant)"></i>joined organs into a whole plant</span>`;
   drawTimelineMarker();
 }
 /* milestones follow the slider: those still to come fade, the latest one reached is picked out and spelled out in full */
@@ -2164,6 +2204,7 @@ function drawTimelineMarker(){
   marker.attr("x1",tx(state.year)).attr("x2",tx(state.year));
   let last = null; msNodes.forEach(m => { const done = m.y <= state.year; if (done) last = m;
     m.mk.style("opacity", done ? 1 : 0.3); m.txt.style("opacity", done ? 1 : 0.4).classed("cur", false); m.tick.style("opacity", done ? 0.7 : 0.25); });
+  pubNodes.forEach(p => p.a.style("opacity", p.y <= state.year ? 1 : 0.22));
   if (last) last.txt.classed("cur", true);
   const now = document.getElementById("msNow");
   if (now) now.innerHTML = last ? `<b>Latest milestone by ${state.year}:</b> ${last.y}, ${esc(last.t)}` : `No milestones yet by ${state.year}. Press Play or drag the slider to move through time.`;
