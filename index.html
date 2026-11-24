@@ -2301,7 +2301,7 @@ function drawTimelineMarker(){
   NETPERIODS.forEach(k => { const b = document.createElement("button"); b.type = "button"; b.textContent = PERIOD_LABEL[k] || k;
     b.setAttribute("aria-pressed", k === PERIOD);
     b.onclick = () => { if (k === PERIOD) return; location.hash = "period-" + k; location.reload(); }; seg.appendChild(b); });
-  document.getElementById("pageTitle").textContent = `Sporae Dispersae: ${PLABEL} spores and their parent plants, ${YMIN} to now`;
+  document.getElementById("pageTitle").textContent = `Sporae Dispersae: ${PLABEL} spores and their parent plants`;
   const yi = document.getElementById("year"); yi.min = YMIN; yi.max = YMAX; yi.value = YMIN;
   document.getElementById("yearOut").textContent = YMIN; document.getElementById("sYear").textContent = YMIN;
   document.getElementById("tl").setAttribute("aria-label", `Timeline of milestones in naming and linking ${PLABEL} spores`);
@@ -2369,8 +2369,23 @@ function modeYear(m){
   else if (m === "discovery" && state.mode !== "discovery") state.year = discYear ?? YMIN;
   document.getElementById("year").value = state.year; document.getElementById("yearOut").textContent = state.year;
 }
+/* the page title follows the view and the interval */
+const BASE_TITLE = document.getElementById("pageTitle")?.textContent || "";
+function syncTitle(active){
+  const t = document.getElementById("pageTitle"); if (!t) return;
+  const intervals = document.body.classList.contains("gaming") ? null : PLABEL;
+  t.textContent = document.body.classList.contains("gaming") ? "Match game: drag each spore onto the organ or plant it was found in, then join the parts into the whole plant"
+    : active === "phylo" ? `Sporae Dispersae: ${intervals} spores and plants by relationship`
+    : active === "habitat" ? `Sporae Dispersae: ${intervals} spores and plants by habitat`
+    : active === "timetree" ? "Sporae Dispersae: plants and their spores through geologic time"
+    : active === "diversity" ? "Sporae Dispersae: fossil spore, pollen and gyrogonite diversity through time"
+    : BASE_TITLE;
+  document.title = document.body.classList.contains("gaming") ? "Sporae Dispersae · Match game" : t.textContent.replace(/^Sporae Dispersae: /, "Sporae Dispersae · ");
+}
+window.__syncTitle = () => syncTitle(document.querySelector('.seg button[data-mode][aria-pressed="true"]')?.dataset.mode || state.mode);
 function syncDiscoveryUI(){
   const active = document.querySelector('.seg button[data-mode][aria-pressed="true"]')?.dataset.mode || state.mode;
+  syncTitle(active);
   const disc = active === "discovery";
   discBar.style.display = disc ? "" : "none";
   if (!disc) stopPlay();
@@ -3571,6 +3586,7 @@ body.gaming .main{grid-template-columns:minmax(0,1fr) !important}
 body.gaming .main > aside{display:none}
 body.gaming #stage{height:min(78vh, 820px)}
 body.gaming #pageSub, body.gaming #tourBtn{display:none}
+body.gaming #pageTitle{font-size:clamp(1.15rem, 2.2vw, 1.6rem); max-width:60ch}
 #intervalBar .gamefield{margin-left:auto}
 body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); color:#fff}
 #gameIvNote{font-size:12.5px; color:var(--muted); margin:6px 0 0; flex-basis:100%}
@@ -3743,6 +3759,7 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
     document.body.classList.toggle("gaming", on); board.hidden = !on; note.hidden = !on; gb.setAttribute("aria-pressed", on);
     stage.querySelector(":scope > svg")?.style.setProperty("visibility", on ? "hidden" : "visible");
     ivButtons().forEach(([x, kk]) => x.setAttribute("aria-pressed", on ? picked.has(kk) : kk === PERIOD));
+    window.__syncTitle?.();
     if (on) { const v = document.querySelector('.seg button[data-mode="discovery"]'); if (v && v.getAttribute("aria-pressed") !== "true") v.click();
       window.scrollTo({top: 0, behavior: "smooth"}); setTimeout(deal, 60); }
   }
