@@ -1,0 +1,43 @@
+"family","n_records","n_sites","n_genera","genera","earliest_bp","latest_bp","contexts","n_high_conf"
+"Asteraceae",46,14,7,"Ambrosia; Artemisia; Cirsium; Helianthus; Iva; Senecio; Solidago",9450,150,"coprolite; floor; grinding_stone; midden; other; vessel",34
+"Poaceae",36,22,1,"Zea",9450,150,"burial; coprolite; floor; grinding_stone; hearth; midden; other; vessel",23
+"Amaranthaceae",16,14,1,"Chenopodium",9450,150,"coprolite; floor; grinding_stone; midden; other; vessel",13
+"Cactaceae",16,13,2,"Cylindropuntia; Opuntia",9450,550,"coprolite; floor; midden; other",8
+"Asparagaceae",15,7,4,"Agave; Dasylirion; Nolina; Yucca",9450,990,"coprolite; floor",5
+"Typhaceae",12,10,1,"Typha",9450,150,"coprolite; floor; grinding_stone; midden; other",9
+"Fabaceae",11,7,5,"Acacia; Dalea; Leucaena; Phaseolus; Prosopis",9450,950,"coprolite",7
+"Fagaceae",9,8,1,"Quercus",9450,300,"coprolite; floor; midden; other; vessel",6
+"Brassicaceae",8,7,0,"",9450,550,"coprolite; floor; grinding_stone",5
+"Salicaceae",8,6,2,"Populus; Salix",9450,650,"coprolite; midden; other",7
+"Cucurbitaceae",7,6,1,"Cucurbita",1350,550,"coprolite; floor; midden; vessel",4
+"Cleomaceae",6,5,1,"Cleome",1260,550,"coprolite; grinding_stone; midden; other; vessel",3
+"Cyperaceae",6,4,0,"",9450,150,"coprolite; floor; grinding_stone; other; vessel",5
+"Juglandaceae",6,4,2,"Carya; Juglans",9450,300,"coprolite; other",2
+"Malvaceae",6,5,2,"Gossypium; Sphaeralcea",9450,550,"burial; coprolite; floor; other",2
+"Apiaceae",5,4,0,"",9450,300,"coprolite; grinding_stone; other; vessel",4
+"Betulaceae",5,4,2,"Alnus; Betula",9450,550,"coprolite; other; vessel",3
+"Onagraceae",5,4,0,"",9450,550,"coprolite; grinding_stone; midden; vessel",4
+"Liliaceae s.l.",4,4,0,"",1750,550,"coprolite; floor",4
+"Zygophyllaceae",4,4,2,"Kallstroemia; Larrea",1750,550,"coprolite; other",3
+"Euphorbiaceae",3,2,2,"Euphorbia; Jatropha",9450,550,"coprolite; grinding_stone; vessel",2
+"Lamiaceae",3,3,0,"",9450,550,"coprolite",2
+"Polygonaceae",3,2,1,"Eriogonum",1210,150,"coprolite; floor; vessel",3
+"Solanaceae",3,3,2,"Lycium; Solanum",9450,1150,"coprolite",1
+"Anacardiaceae",2,2,1,"Rhus",9450,650,"coprolite; midden",1
+"Boraginaceae",2,2,1,"Phacelia",9450,1250,"coprolite",1
+"Cannabaceae",2,2,1,"Celtis",9450,1650,"coprolite",0
+"Nyctaginaceae",2,2,1,"Boerhavia",1700,550,"other; vessel",1
+"Plantaginaceae",2,1,1,"Plantago",650,550,"floor; vessel",1
+"Portulacaceae",2,2,1,"Portulaca",3950,680,"coprolite",1
+"Sarcobataceae",2,2,1,"Sarcobatus",800,550,"midden; vessel",1
+"Berberidaceae",1,1,1,"Berberis",9450,1650,"coprolite",0
+"Caryophyllaceae",1,1,0,"",9450,1650,"coprolite",0
+"Cornaceae",1,1,0,"",1250,1250,"coprolite",1
+"Ebenaceae",1,1,1,"Diospyros",2450,1150,"coprolite",0
+"Polemoniaceae",1,1,1,"Gilia",2450,1150,"coprolite",0
+"Rhamnaceae",1,1,1,"Ceanothus",800,650,"midden",1
+"Rosaceae",1,1,0,"",1350,1150,"coprolite",0
+"Sapindaceae",1,1,1,"Acer",1350,1050,"coprolite",1
+"Scrophulariaceae",1,1,1,"Leucophyllum",7165,6570,"coprolite",0
+"Ulmaceae",1,1,1,"Ulmus",9450,1650,"coprolite",0
+"Verbenaceae",1,1,1,"Verbena",9450,1650,"coprolite",0
