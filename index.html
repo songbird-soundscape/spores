@@ -385,8 +385,6 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
   #statsBox.inset{width:calc(100% - 20px)}
   #statsBox.inset.collapsed{width:auto; max-width:calc(100% - 150px)}
 }
-/* the two find maps sit side by side whenever their panel is at least 400 px wide (desktop and tablet); stacked on phones */
-.geo{container-type:inline-size}
 /* the time tree can fill the whole window */
 #ttWrap.ttfull{position:fixed; inset:0; z-index:60; margin:0; border-radius:0; border:0; overflow:hidden; padding:12px 16px; display:flex; flex-direction:column; gap:8px}
 #ttWrap.ttfull .ttgrid{flex:1 1 auto; min-height:0; grid-template-rows:minmax(0,1fr); align-items:stretch}
@@ -397,10 +395,43 @@ body.ttfull-open{overflow:hidden}
 #ttWrap.ttfull > .sub, #ttWrap.ttfull > .dsrc{display:none}
 /* with nothing selected, the tree takes the full width */
 .ttgrid:has(> #ttDetail[hidden]){grid-template-columns:minmax(0,1fr)}
-@container (min-width:400px){
-  .geomaps{grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px}
-  .geomaps figcaption{min-height:3em; display:flex; align-items:flex-end}
-}
+/* Discovery bar: slider with milestones beneath, counts beside */
+.discbar{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:12px 22px; align-items:start; padding:12px 16px}
+.dbtime{display:grid; grid-template-columns:auto minmax(0,1fr) auto; column-gap:12px; row-gap:0; align-items:center; min-width:0}
+.dbtime #year{width:100%; margin:0; accent-color:var(--accent)}
+.dbtl, .msnow{grid-column:2; min-width:0}
+.dbtl{overflow:hidden}
+#tl{display:block; width:100%; min-width:0}
+#tl .mslab{font-size:11.5px}
+#tl .mslab.cur{fill:var(--ink); font-weight:600}
+.msnow{margin:4px 0 0; font-size:13px; color:var(--muted); min-height:1.4em}
+.msnow b{color:var(--ink); font-weight:600}
+#statsBox.dbcounts{border:0; padding:0 0 0 18px; border-left:1px solid var(--rule); border-radius:0; background:none; box-shadow:none}
+#statsBox.dbcounts .stat dd{font-size:18px}
+@media (max-width:1020px){ .discbar{grid-template-columns:minmax(0,1fr)} #statsBox.dbcounts{border-left:0; border-top:1px solid var(--rule); padding:10px 0 0} }
+@media (max-width:700px){ .dbtime{grid-template-columns:auto minmax(0,1fr) auto} .dbtime #yearOut{font-size:1.4rem} }
+/* key as a wide bar under the network */
+.keybar .legend{display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:6px 18px; margin-top:4px}
+.keyparts{margin-top:12px}
+.partgrid{display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:6px 18px; font-size:13px}
+.partgrid .part{display:flex; align-items:center; gap:8px}
+.partgrid svg{flex:none}
+/* references in the selected taxon */
+.buildlist{margin:6px 0 0; padding-left:20px; font-size:13px}
+.buildlist li{margin:0 0 8px; padding:4px 6px; border-radius:5px}
+.buildlist li.bin{background:color-mix(in srgb, var(--insitu) 13%, transparent); border-left:3px solid var(--insitu)}
+.buildlist li.bas{border-left:3px solid var(--rule)}
+.buildlist .by{font-family:var(--mono); font-size:12px}
+.buildlist .barrow{color:var(--muted)}
+.buildlist .btag{font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); margin-left:4px}
+.buildlist li.bin .btag{color:var(--insitu); font-weight:600}
+.buildlist .bref{font-size:12.5px; color:var(--muted)}
+.occrefs ul{margin:4px 0 0; padding-left:18px; font-size:12.5px} .occrefs li{margin:2px 0}
+.occrefs summary{cursor:pointer; font-size:12.5px; color:var(--accent); margin-top:4px}
+/* the two find maps always sit side by side, the same size; only on phones (under 520 px) do they stack */
+.geomaps{grid-template-columns:repeat(2, minmax(0,1fr)) !important; gap:10px}
+.geomaps figcaption{min-height:3em; display:flex; align-items:flex-end}
+@media (max-width:520px){ .geomaps{grid-template-columns:minmax(0,1fr) !important} .geomaps figcaption{min-height:0} }
 /* semantic zoom: world lines keep their width and world labels their size */
 #stage line, .hull path, .clad path, .band ellipse, .band rect{vector-effect:non-scaling-stroke}
 .hull text{font-size:calc(12px / var(--k, 1)); stroke-width:calc(3px / var(--k, 1))}
@@ -575,6 +606,7 @@ body.ttfull-open{overflow:hidden}
         <h2>Every spore genus: size through time</h2>
         <p class="sub" id="logCap" style="font-size:13px; margin:4px 0 6px">Across: size on a logarithmic scale, so each step of ten takes the same width and 15 µm miospores sit beside 3 mm megaspores. Up: geologic time, oldest at the bottom as in a rock column. Each box is one genus, from its smallest to largest size and from its first to last appearance. The shaded band is the interval this page shows; dots in it are measured species. In the spirit of Chaloner&#39;s (1967) histograms of spore size through time (Fig. 13.2 in Taylor, Taylor &amp; Krings 2009). Click a box or dot to select it.</p>
         <div class="tl-scroll"><svg id="logs" viewBox="0 0 700 520" role="img" aria-label="Spore sizes on a logarithmic axis"></svg></div>
+        <p class="meta" id="logCredit" style="margin:6px 0 0">Chart after Chaloner (1967), who plotted spore diameters on a logarithmic scale through geologic time to show spores growing larger through the Devonian and splitting into micro- and megaspores: W. G. Chaloner, 1967, Spores and land-plant evolution, <i>Review of Palaeobotany and Palynology</i> 1: 83–93.</p>
       </div>
     </div>
   </section>
@@ -1071,19 +1103,51 @@ function drawSporeFlat(g, s, R, detail){
   if (s.cav) g.append("circle").attr("r", R).attr("fill", AM.pale).attr("stroke", AM.mid).attr("stroke-width", sw);
   if (s.peri) { g.append("circle").attr("r", R).attr("fill", AM.pale).attr("stroke", AM.mid).attr("stroke-width", sw);
     if (detail) for (let i=0;i<8;i++) g.append("circle").attr("cx", R*0.82*Math.cos(i*Math.PI/4)).attr("cy", R*0.82*Math.sin(i*Math.PI/4)).attr("r", R*0.07).attr("fill", "var(--panel)").attr("stroke", AM.mid).attr("stroke-width", sw*0.6); }
+  let drabBody = null;
   if (s.fringe) {
-    /* Reinschospora: a radially striate fringe, widest along the concave sides and narrowest at the apices */
-    const n = detail ? 90 : 24, body = R*0.62;
-    for (let i=0;i<n;i++){ const t=i*2*Math.PI/n, phase = t + Math.PI/2, w = 0.25 + 0.75*Math.pow(Math.abs(Math.sin(1.5*phase)), 1.4);
-      const r0 = body*(0.72 + 0.28*Math.abs(Math.cos(1.5*phase))), r1 = r0 + R*0.55*w;
-      g.append("line").attr("x1",r0*Math.cos(t)).attr("y1",r0*Math.sin(t)).attr("x2",r1*Math.cos(t)).attr("y2",r1*Math.sin(t)).attr("stroke",AM.mid).attr("stroke-width",sw*0.45); }
-    R = body; }
+    /* Reinschospora, drawn from photographs: a Y-shaped body whose three broad arms run out to the apices, each arm carrying
+       the laesura between raised lips; and a pale, radially folded flange (lamellae) joined all round the body, widest between
+       the arms, narrow at the apices, ragged at its margin. Drab, olive-brown body grading to a pale, translucent flange. */
+    let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const h = R*0.19, Lc = R*0.65, arms = [0, 1, 2].map(i => -Math.PI/2 + i*2*Math.PI/3);
+    /* each arm's outline along a ray, then a smooth maximum of the three so the inner bends between arms are rounded, not angular */
+    const armAt = (t, a) => { const d = Math.atan2(Math.sin(t - a), Math.cos(t - a)), sd = Math.abs(Math.sin(d)), cd = Math.cos(d);
+      if (cd <= 0) return h*0.6; return Lc*sd <= h ? Lc*cd + Math.sqrt(h*h - (Lc*sd)**2) : h / sd; };
+    const bodyAt = t => { const P = 3; return Math.pow(arms.reduce((s, a) => s + Math.pow(armAt(t, a), P), 0), 1/P) * 0.985; };
+    const N = detail ? 360 : 120, rag = [];
+    for (let i = 0; i <= N; i++) rag.push(1 + (detail ? (rnd() - 0.5)*0.12 - (rnd() < 0.08 ? 0.05 : 0) : 0));
+    for (let k = 0; k < 1; k++) for (let i = 1; i < N; i++) rag[i] = (rag[i-1] + rag[i]*2 + rag[i+1]) / 4;   /* soften into lobes, keep it ragged */
+    const outerAt = (t, i) => { const c = (1 + Math.cos(3*(t + Math.PI/2)))/2; return R*(0.86 + 0.07*c) * (i == null ? 1 : rag[i]); };
+    const inner = [], outer = [];
+    for (let i = 0; i <= N; i++) { const t = i*2*Math.PI/N, ri = bodyAt(t)*0.98, ro = outerAt(t, i); inner.push([ri*Math.cos(t), ri*Math.sin(t)]); outer.push([ro*Math.cos(t), ro*Math.sin(t)]); }
+    const gid = "rfr" + (++clipN), defs = g.append("defs"), rg = defs.append("radialGradient").attr("id", gid).attr("gradientUnits", "userSpaceOnUse").attr("cx", 0).attr("cy", 0).attr("r", R*0.93);
+    [[0, "#58462E"], [0.24, "#6E583A"], [0.42, "#957F58"], [0.62, "#BFB194"], [0.84, "#DDD6C5"], [1, "#E9E3D5"]].forEach(([o, c]) => rg.append("stop").attr("offset", o).attr("stop-color", c));
+    drabBody = "rbd" + clipN; const bg = defs.append("radialGradient").attr("id", drabBody).attr("cx", 0.4).attr("cy", 0.36).attr("r", 0.8);
+    [[0, "#A48450"], [0.55, "#7B6340"], [1, "#58462E"]].forEach(([o, c]) => bg.append("stop").attr("offset", o).attr("stop-color", c));
+    /* the flange */
+    g.append("path").attr("d", d3.line().curve(d3.curveCatmullRomClosed.alpha(0.5))(outer.slice(0, -1)) + d3.line()(inner.slice().reverse()) + "Z").attr("fill-rule", "evenodd")
+      .attr("fill", `url(#${gid})`).attr("fill-opacity", 0.96).attr("stroke", "#8F8269").attr("stroke-width", sw*0.45).attr("stroke-opacity", 0.75);
+    /* radial lamellae: folds of the flange, irregular in spacing and length, slightly waved */
+    if (R > 3) { const n = detail ? 110 : 36; for (let i = 0; i < n; i++) { const t = (i + rnd()*0.5)*2*Math.PI/n, idx = Math.round(t/(2*Math.PI)*N) % N, r0 = bodyAt(t), r1 = outerAt(t, idx)*(0.9 + rnd()*0.09);
+      const bend = (rnd() - 0.5)*R*0.05, mx = (r0 + r1)/2, tt = t + Math.PI/2;
+      g.append("path").attr("d", `M${r0*Math.cos(t)},${r0*Math.sin(t)} Q${mx*Math.cos(t) + bend*Math.cos(tt)},${mx*Math.sin(t) + bend*Math.sin(tt)} ${r1*Math.cos(t)},${r1*Math.sin(t)}`)
+        .attr("fill", "none").attr("stroke", "#3E3324").attr("stroke-opacity", (detail ? 0.22 : 0.18) + rnd()*0.12).attr("stroke-width", Math.max(0.15, sw*(0.22 + rnd()*0.2))); } }
+    /* the body: one outline for the three arms, darker at its edge */
+    const bp = []; for (let i = 0; i < N; i++) { const t = i*2*Math.PI/N, r = bodyAt(t); bp.push([r*Math.cos(t), r*Math.sin(t)]); }
+    g.append("path").attr("d", d3.line().curve(d3.curveCatmullRomClosed)(bp)).attr("fill", `url(#${drabBody})`).attr("stroke", "#4A3C2A").attr("stroke-width", sw*0.45);
+    /* each arm: the laesura down its middle between two raised lips */
+    if (R > 2.5) arms.forEach(a => { const ux = Math.cos(a), uy = Math.sin(a), px = -uy, py = ux, L = Lc*0.97;
+      for (const k of [-0.5, 0.5]) g.append("line").attr("x1", px*h*k + ux*h*0.5).attr("y1", py*h*k + uy*h*0.5).attr("x2", px*h*k*0.9 + ux*L).attr("y2", py*h*k*0.9 + uy*L)
+        .attr("stroke", "#A89572").attr("stroke-opacity", 0.55).attr("stroke-width", Math.max(0.2, sw*0.6));
+      g.append("line").attr("x1", 0).attr("y1", 0).attr("x2", ux*L).attr("y2", uy*L).attr("stroke", "#33291C").attr("stroke-opacity", 0.75).attr("stroke-width", Math.max(0.3, sw*0.65)); });
+    return;
+  }
   const rb = s.zona ? R*(1-s.zona) : s.cav ? R*(1-s.cav) : s.pseudosac ? R*0.6 : s.peri ? R*0.6 : R;
   if (s.cing) { shape(g, s.amb==="circ"?"circ":"rtri", rb, {fill: s.dark?AM.dark:AM.mid, stroke:AM.line, "stroke-width":sw});
     /* a dark cingulum grades paler toward the body, as in Densosporites */
     if (s.dark) shape(g, s.amb==="circ"?"circ":"rtri", rb*(1 - s.cing*0.45), {fill:"#A3651A", stroke:"none"}); }
   const inner = s.cing ? rb*(1-s.cing) : rb;
-  const bodyFill = s.thin ? AM.pale : s.bodydark ? AM.dark : (s.cav||s.pseudosac||s.dark) && !s.cing ? AM.mid : AM.fill;
+  const bodyFill = drabBody ? `url(#${drabBody})` : s.thin ? AM.pale : s.bodydark ? AM.dark : (s.cav||s.pseudosac||s.dark) && !s.cing ? AM.mid : AM.fill;
   if (s.conc) g.append("path").attr("d", triPathC(inner*1.08, s.conc)).attr("fill", bodyFill).attr("stroke", AM.line).attr("stroke-width", sw);
   else shape(g, s.amb==="oval"?"circ":s.amb, inner, {fill: bodyFill, stroke:AM.dark, "stroke-width":sw});
   /* exine: a number is wall thickness; older records give the wall structure as a word (tect, colum), drawn at a standard thickness */
@@ -1248,8 +1312,8 @@ function drawSpore(g, s, R, detail){
     for (let i = 0; i < n; i++) { const a = i * 2.39996, d = rr * Math.sqrt((i + 0.5) / n);
       g.append("circle").attr("cx", d * Math.cos(a)).attr("cy", d * Math.sin(a)).attr("r", br).attr("fill", "url(#spMid)").attr("stroke", SOFT[AM.line]).attr("stroke-width", Math.max(0.15, R * 0.009)); }
   }
-  if (R > 2.5) g.append("ellipse").attr("cx", -R * 0.3).attr("cy", -R * 0.36).attr("rx", R * 0.42).attr("ry", R * 0.27).attr("fill", "url(#spHi)").style("pointer-events", "none");
-  if (R > 6) g.append("ellipse").attr("cx", -R * 0.42).attr("cy", -R * 0.46).attr("rx", R * 0.1).attr("ry", R * 0.065).attr("fill", "#fff").attr("fill-opacity", 0.55).style("pointer-events", "none");   /* a small specular glint */
+  if (R > 2.5 && !s.fringe) g.append("ellipse").attr("cx", -R * 0.3).attr("cy", -R * 0.36).attr("rx", R * 0.42).attr("ry", R * 0.27).attr("fill", "url(#spHi)").style("pointer-events", "none");
+  if (R > 6 && !s.fringe) g.append("ellipse").attr("cx", -R * 0.42).attr("cy", -R * 0.46).attr("rx", R * 0.1).attr("ry", R * 0.065).attr("fill", "#fff").attr("fill-opacity", 0.55).style("pointer-events", "none");   /* a small specular glint */
 }
 
 function drawOrgan(g, type, R){
@@ -1702,6 +1766,16 @@ function geoSet(key){
     return {label: groupInfo[gid]?.label || gid, level: "group", members: mem.map(n => n.id).filter(id => OCCS[id] && OCCS[id].n), pts, refs}; }
   const r = OCCS[key] || {}; return {label: key, level: "genus", genus: key, pts: r.pts || [], refs: r.refs || {}, error: r.error};
 }
+/* the publications behind a taxon's occurrence records, kept apart from the studies that tie spores to plants */
+function occRefsHTML(pts, refs){
+  const cnt = {}; pts.forEach(q => { if (q[10] != null) cnt[q[10]] = (cnt[q[10]] || 0) + 1; });
+  const ids = Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a] || String(refs[a] || "").localeCompare(String(refs[b] || "")));
+  if (!ids.length) return "";
+  const PB = "https://paleobiodb.org/classic/displayRefResults?reference_no=";
+  const li = r => `<li><a href="${PB}${r}" target="_blank" rel="noopener">${esc(refs[r] || "reference " + r)}</a> <span class="meta">${cnt[r]} record${cnt[r] === 1 ? "" : "s"}</span></li>`;
+  return `<div class="occrefs"><h3>Occurrence references</h3><p class="meta">The ${ids.length} publication${ids.length === 1 ? "" : "s"} behind these ${pts.length} records in the Paleobiology Database, most records first. These report where the spores were found; the studies that tie them to plants are listed separately.</p>` +
+    `<ul>${ids.slice(0, 8).map(li).join("")}</ul>` + (ids.length > 8 ? `<details><summary>All ${ids.length} publications</summary><ul>${ids.slice(8).map(li).join("")}</ul></details>` : "") + `</div>`;
+}
 function drawGeo(el){
   if (!OCCS) { loadOccs(); return; }
   const GS = geoSet(el.dataset.geo), gen = GS.label, rec = GS, pts = GS.pts;
@@ -1745,7 +1819,7 @@ function drawGeo(el){
     <div class="geomaps"><figure><figcaption>Today</figcaption><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Present-day map of ${esc(gen)} finds"><rect width="${W}" height="${H}" fill="var(--panel, transparent)"/>${grid}<path d="${coast}" fill="none" stroke="var(--muted)" stroke-width="0.5"/>${dots("now")}</svg></figure>
     <figure class="pfig"><figcaption class="pcap">${near ? `The world about ${T} Ma, its busiest age` : `Its busiest age, about ${Tbin} Ma, is older than the plate model: positions only`}</figcaption><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Continents in the past with the ancient positions of ${esc(gen)} finds"><rect width="${W}" height="${H}" fill="var(--panel, transparent)"/><path class="pland" d="${pland}" fill="var(--faint)" stroke="var(--muted)" stroke-width="0.5"/>${grid}<g class="pdots">${pdots}</g></svg>
       <div class="panim"><button type="button" class="pplay" aria-label="Play the map through time, oldest find to youngest">Play</button><input type="range" class="pslide" step="10" aria-label="Time, millions of years ago (right is younger)"><output class="pout"></output></div></figure></div>
-    <div class="georecs" aria-live="polite"><p class="meta">Click a dot to list the records from that site, with links to the Paleobiology Database collection and the published reference.</p></div>
+    <div class="georecs" aria-live="polite"><p class="meta">Click a dot to list the records from that site, with links to the Paleobiology Database collection and the published reference.</p></div>${occRefsHTML(pts, (rec && rec.refs) || {})}
     <p class="meta">Dots: pale = older finds within this genus's range, dark = younger; outlined dots fall in the ${esc(PLABEL)} interval shown on this page. Solid line: equator; dashed: tropics. The past-world map: ${near ? `continents about ${T} Ma` : `positions only, as the busiest age (about ${Tbin} Ma) is older than the plate model`}; outlined dots are the 10-million-year span holding most finds (${nBin} of ${pts.length}); every dot sits where its site lay at the age shown, carried with its landmass by the same plate model as the coastlines (sites reconstructed with the GPlates Web Service; where the model has no plate for a site, the Paleobiology Database position is used). Play runs the map from the oldest find to the youngest in 10-million-year steps: finds light up (outlined) while the slider is within their age, then stay on the map (no outline) and ride their landmass as it moves, so every find remains to the end. Coastlines: Golonka plate model from the GPlates Web Service, the same model behind the Paleobiology Database positions used for the dots; simplified, and land outlines, not shorelines of the day. Records are as entered in the database: identifications were not checked, and Europe and North America are sampled far more than elsewhere, so "local" may only mean little studied.</p>`;
   bindChooser(el, root);
   /* click a dot: every record at that site, with its collection and reference */
@@ -1905,6 +1979,30 @@ const yrTxt = l => l.yc==="bound" ? `by ${l.year}` : l.yc==="approx" ? `c. ${l.y
 const statusPill = s => !s ? "" : /^(Balme|Paleobiology|primary)/.test(s) ? `<span class="pill ok">checked: ${esc(s)}</span>` : `<span class="pill warn">${esc(s)}</span>`;
 const tax = n => n.kind==="hub" ? esc(n.label) : `<span class="tax" data-id="${esc(n.id)}">${esc(isSp(n) ? n.id : n.label)}</span>`;
 
+/* how the parts were put together: every step from the spore to its organs to the whole plant (or from a plant's parts to the plant),
+   with its year and reference; the studies that found the spores inside a plant organ are picked out */
+function buildRefs(n){
+  const seen = new Set(), steps = [], keys = new Set(), id = n.id;
+  const add = l => { const k = l.source.id + ">" + l.target.id + ">" + l.type; if (seen.has(k)) return false; seen.add(k); steps.push(l); return true; };
+  /* one step out only: spore -> its organs and plants -> the plants those organs belong to -> each plant's own parts.
+     Not onward from a shared organ (such as Stigmaria) to other plants. */
+  const L = (t, f) => links.filter(l => l.type === t && f(l));
+  const plants = new Set(), organs = new Set();
+  const take = x => (byId[x]?.kind === "plant" ? plants : organs).add(x);
+  if (isSpore(n)) L("insitu", l => l.source.id === id).forEach(l => { add(l); take(l.target.id); });
+  else { take(id); L("insitu", l => l.target.id === id).forEach(add); }
+  [...organs].forEach(o => L("assembly", l => l.source.id === o).forEach(l => { add(l); plants.add(l.target.id); }));
+  [...plants].forEach(p => L("assembly", l => l.target.id === p).forEach(l => { add(l); if (!isSpore(n)) L("insitu", m => m.target.id === l.source.id).forEach(add); }));
+  if (!steps.length) return {html: "", keys};
+  steps.sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999));
+  steps.forEach(l => refKeys.forEach(k => { if ((l.ref || "").includes(k)) keys.add(k); }));
+  const nIn = steps.filter(l => l.type === "insitu").length, nAs = steps.length - nIn;
+  const li = l => { const ins = l.type === "insitu";
+    return `<li class="${ins ? "bin" : "bas"}"><span class="by">${yrTxt(l)}</span> ${tax(l.source)} <span class="barrow">${ins ? "found inside" : "joined to"}</span> ${tax(l.target)}` +
+      ` <span class="btag">${ins ? "spore–plant link" : "organ to plant"}</span><br><span class="bref">${l.ref ? linkRefs(l.ref) : "reference not yet recorded"}</span></li>`; };
+  const head = isSpore(n) ? `How <i>${esc(n.id)}</i> was tied to its plants` : `How ${esc(n.label)} was put together`;
+  return {keys, html: `<h3>${head}</h3><p class="meta">${nIn ? `<b>${nIn}</b> spore–plant stud${nIn === 1 ? "y" : "ies"} (highlighted: spores found inside a plant organ)` : "No spores yet found inside these parts"}${nAs ? ` and <b>${nAs}</b> stud${nAs === 1 ? "y" : "ies"} joining organs into the whole plant` : ""}, oldest first.</p><ol class="buildlist">${steps.map(li).join("")}</ol>`};
+}
 function showDetail(){
   const n = byId[state.sel]; if (!n) return;
   if (isSp(n)) return showSpecies(n);
@@ -1940,7 +2038,10 @@ function showDetail(){
   if (zs.length) s.push(`<p><b>Habitat reading.</b> ${zs.map(h => `<span class="ref" data-zone="${h.id}">${esc(h.label)}</span> (${esc(h.confidence)})`).join("; ")}${isSpore(n) ? ", inherited from its parent plants" : ""}.</p>`);
   const used = new Set(); [n.note, ...rel.map(l => l.ref), n.vs].forEach(t => refKeys.forEach(k => { if ((t||"").includes(k)) used.add(k); }));
   zs.forEach(h => h.refs.forEach(r => used.add(r)));
-  if (used.size) s.push(`<h3>Sources</h3><ul>${[...used].map(k => `<li><span class="ref" data-ref="${esc(k)}">${esc(k)}</span>${REF[k] ? ` · ${esc(REF[k].role)}` : ""}</li>`).join("")}</ul>`);
+  const built = buildRefs(n);
+  if (built.html) s.push(built.html);
+  const rest = [...used].filter(k => !built.keys.has(k));
+  if (rest.length) s.push(`<h3>${built.html ? "Other sources" : "Sources"}</h3><ul>${rest.map(k => `<li><span class="ref" data-ref="${esc(k)}">${esc(k)}</span>${REF[k] ? ` · ${esc(REF[k].role)}` : ""}</li>`).join("")}</ul>`);
   const kids = nodes.filter(m => isSp(m) && m.genus === n.id).sort((a,b) => a.id.localeCompare(b.id));
   if (kids.length) s.push(`<h3>Species (${kids.length})</h3><p>${kids.map(tax).join(", ")}</p>`);
   s.push(`<p style="color:var(--muted)">Source of this entry: ${n.src==="guide" ? (n.vs === "user guide (diagnostics pass)" ? "your spore guides (Vann Smith's Paleozoic guide or the NAMS Cenozoic guide), via the identification pass" : "your affinity guide, now the Reading the spores tab of <a href=\"https://claude.ai/artifact/U2jxFUFpFL3CatiBiLhnLW\" target=\"_blank\" rel=\"noopener\">Paleoecology of the Freshwater and Estuarine Realms</a>") : n.src==="species-layer" ? "added for the species layer from Ravn's Cherokee counts or Balme (1995)" : SRC_LABEL[n.src] || (n.src && n.src !== "memory" ? esc(n.src) : "added from background knowledge, to verify")}.</p>`);
@@ -2004,37 +2105,70 @@ document.getElementById("refList").innerHTML = Object.entries(REF).sort((a,b) =>
   `<li>Earliest in situ studies (Carruthers 1867, Williamson 1871 and 1888, Renault 1879 and 1896, Zalessky 1908, Mamay 1950 and others) are cited as Balme (1995) cites them; their full references are in Balme's bibliography.<span class="role">Each link's text names the study and notes that Balme is the source.</span></li>`;
 
 /* ---------- timeline ---------- */
-const tl = d3.select("#tl"), tx = d3.scaleLinear().domain([YMIN,YMAX]).range([20,980]);
-const TLY = 100;   /* the axis; labels sit in three rows above it and three below, so they do not overlap */
-tl.append("line").attr("x1",20).attr("x2",980).attr("y1",TLY).attr("y2",TLY).attr("stroke",css("--rule")).attr("stroke-width",2);
-d3.range(Math.ceil((YMIN+1)/50)*50, YMAX, 50).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY+18).attr("text-anchor","middle").text(y));
-(function placeMilestones(){
-  const sx = Math.max(0.6, (document.getElementById("tl").getBoundingClientRect().width || 1300) / 1000);
-  const LANES = [[22, 1], [44, 1], [66, 1], [152, 0], [172, 0], [192, 0]], ends = LANES.map(() => -Infinity);   /* [label y, above?] */
+/* ---------- Discovery bar: year slider, milestones lined up beneath it, and the counts by year ---------- */
+const statsBox = document.getElementById("sYear").closest(".box");
+const discBar = (function makeDiscBar(){
+  const bar = document.createElement("section"); bar.id = "discBar"; bar.className = "box discbar"; bar.setAttribute("aria-label", "Discovery: the year, its milestones and the counts so far");
+  const time = document.createElement("div"); time.className = "dbtime";
+  const yb = document.querySelector(".yearbox"), play = document.getElementById("play"), yin = document.getElementById("year"), yout = document.getElementById("yearOut");
+  const tlsvg = document.getElementById("tl"); tlsvg.removeAttribute("preserveAspectRatio");
+  const now = document.createElement("p"); now.id = "msNow"; now.className = "msnow";
+  [play, yin, yout].forEach(e => time.appendChild(e));
+  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); time.appendChild(now);
+  yb.style.display = "none";
+  const oldTl = document.querySelector("section.timeline"); if (oldTl) oldTl.style.display = "none";
+  statsBox.id = "statsBox"; statsBox.classList.add("dbcounts");
+  bar.appendChild(time); bar.appendChild(statsBox);
+  document.querySelector(".main").before(bar);
+  return bar;
+})();
+const tl = d3.select("#tl");
+let tx = d3.scaleLinear().domain([YMIN,YMAX]).range([9, 991]);
+const TLY = 24;   /* the axis sits just under the slider; label rows hang below it */
+let marker = null, msNodes = [];
+function drawMilestones(){
+  const el = document.getElementById("tl"), W = Math.max(300, Math.round(el.getBoundingClientRect().width || el.parentNode.clientWidth || 1000));
+  tl.selectAll("*").remove(); msNodes = [];
+  tx = d3.scaleLinear().domain([YMIN, YMAX]).range([9, W - 9]);   /* the slider's thumb travels between these, so marks sit under the same years */
+  tl.append("line").attr("x1",9).attr("x2",W-9).attr("y1",TLY).attr("y2",TLY).attr("stroke",css("--rule")).attr("stroke-width",2);
+  const step = W < 700 ? 50 : 25;
+  d3.range(Math.ceil((YMIN+1)/step)*step, YMAX, step).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY-11).attr("text-anchor","middle").text(y));
+  const ROW = 18, ROW0 = TLY + 26, ends = [];
   (DATA.milestones || []).slice().sort((a, b) => a[0] - b[0]).forEach(([y, t]) => {
-    const x = tx(y), lab = `${y} ${t.length > 30 ? t.slice(0, 28).trimEnd() + "…" : t}`;
-    const anchor = x > 860 ? "end" : x < 140 ? "start" : "middle";
-    const txt = tl.append("text").attr("x",x).attr("y",-50).attr("text-anchor",anchor).text(lab);
+    const x = tx(y), maxc = W < 700 ? 22 : 28, lab = `${y} ${t.length > maxc ? t.slice(0, maxc - 2).trimEnd() + "…" : t}`;
+    const anchor = x > W - 140 ? "end" : x < 140 ? "start" : "middle";
+    const txt = tl.append("text").attr("class","mslab").attr("x",x).attr("y",-50).attr("text-anchor",anchor).text(lab);
     txt.append("title").text(`${y}: ${t}`);
-    const w = txt.node().getComputedTextLength() || lab.length * 6 / sx, x0 = anchor === "end" ? x - w : anchor === "start" ? x : x - w / 2;
-    let li = ends.findIndex(e => e + 22 / sx < x0); if (li < 0) li = ends.indexOf(Math.min(...ends));
-    ends[li] = x0 + w; const [ly, up] = LANES[li];
+    const w = txt.node().getComputedTextLength() || lab.length * 6, x0 = anchor === "end" ? x - w : anchor === "start" ? x : x - w / 2;
+    let li = ends.findIndex(e => e + 14 < x0); if (li < 0) { li = ends.length; ends.push(0); }
+    ends[li] = x0 + w; const ly = ROW0 + li * ROW;
     txt.attr("y", ly);
-    tl.insert("line", "text").attr("x1",x).attr("x2",x).attr("y1",TLY).attr("y2",up ? ly + 4 : ly - 12).attr("stroke",css("--muted")).attr("stroke-width",0.8).attr("opacity",0.7);
-    /* each milestone is marked with a Reinschospora glyph (counter-scaled, as the strip stretches only sideways) */
-    const mk = tl.append("g").attr("class","msg").attr("data-x",x).style("cursor","pointer")
-      .on("click",()=>{ state.year=y; document.getElementById("year").value=y; document.getElementById("yearOut").textContent=y; render(); });
-    mk.append("circle").attr("r",14).attr("fill","transparent");
-    if (typeof drawSpore === "function" && MG.Reinschospora) drawSpore(mk.append("g"), MG.Reinschospora, 12, true);
+    const tick = tl.insert("line", "text").attr("x1",x).attr("x2",x).attr("y1",TLY).attr("y2",ly - 11).attr("stroke",css("--muted")).attr("stroke-width",0.8).attr("opacity",0.7);
+    /* each milestone is marked with a Reinschospora glyph */
+    const mk = tl.append("g").attr("class","msg").attr("transform",`translate(${x},${TLY})`).style("cursor","pointer")
+      .on("click",()=>{ stopPlay?.(); state.year=y; document.getElementById("year").value=y; document.getElementById("yearOut").textContent=y; render(); });
+    mk.append("circle").attr("r",12).attr("fill","transparent");
+    if (typeof drawSpore === "function" && MG.Reinschospora) drawSpore(mk.append("g"), MG.Reinschospora, 10, true);
     else mk.append("circle").attr("r",4).attr("fill",css("--accent"));
     mk.append("title").text(`${y}: ${t}`);
+    msNodes.push({y, t, txt, tick, mk});
   });
-})();
-const marker = tl.append("line").attr("y1",TLY-24).attr("y2",TLY+24).attr("stroke",css("--ink")).attr("stroke-width",2);
-function drawTimelineMarker(){ marker.attr("x1",tx(state.year)).attr("x2",tx(state.year)); }
-function placeMilestoneGlyphs(){ const el = document.getElementById("tl"), w = el.getBoundingClientRect().width; if (!w) return;
-  const sx = w / 1000; tl.selectAll("g.msg").attr("transform", function(){ return `translate(${this.dataset.x},${TLY}) scale(${(1/sx).toFixed(4)},1)`; }); }
-placeMilestoneGlyphs(); new ResizeObserver(placeMilestoneGlyphs).observe(document.getElementById("tl"));
+  const H = ROW0 + Math.max(1, ends.length) * ROW - 6;
+  tl.attr("viewBox", `0 0 ${W} ${H}`).attr("width", W).attr("height", H).style("height", H + "px");
+  marker = tl.append("line").attr("y1",TLY-14).attr("y2",TLY+14).attr("stroke",css("--ink")).attr("stroke-width",2).style("pointer-events","none");
+  drawTimelineMarker();
+}
+/* milestones follow the slider: those still to come fade, the latest one reached is picked out and spelled out in full */
+function drawTimelineMarker(){
+  if (!marker) return;
+  marker.attr("x1",tx(state.year)).attr("x2",tx(state.year));
+  let last = null; msNodes.forEach(m => { const done = m.y <= state.year; if (done) last = m;
+    m.mk.style("opacity", done ? 1 : 0.3); m.txt.style("opacity", done ? 1 : 0.4).classed("cur", false); m.tick.style("opacity", done ? 0.7 : 0.25); });
+  if (last) last.txt.classed("cur", true);
+  const now = document.getElementById("msNow");
+  if (now) now.innerHTML = last ? `<b>Latest milestone by ${state.year}:</b> ${last.y}, ${esc(last.t)}` : `No milestones yet by ${state.year}. Press Play or drag the slider to move through time.`;
+}
+
 
 /* ---------- period switch and interval-specific page text ---------- */
 (function setupPeriod(){
@@ -2110,33 +2244,38 @@ function modeYear(m){
   else if (m === "discovery" && state.mode !== "discovery") state.year = discYear ?? YMIN;
   document.getElementById("year").value = state.year; document.getElementById("yearOut").textContent = state.year;
 }
-const statsBox = document.getElementById("sYear").closest(".box");
-(function makeStatsInset(){
-  statsBox.id = "statsBox"; statsBox.classList.add("inset");
-  const kick = statsBox.querySelector(".kick"), body = document.createElement("div"); body.id = "statsBody";
-  while (kick.nextSibling) body.appendChild(kick.nextSibling);
-  statsBox.appendChild(body);
-  const head = document.createElement("div"); head.className = "statshead";
-  kick.replaceWith(head); head.appendChild(kick);
-  const tb = document.createElement("button"); tb.type = "button"; tb.id = "statsToggle"; tb.setAttribute("aria-controls", "statsBody");
-  head.appendChild(tb);
-  const setC = c => { statsBox.classList.toggle("collapsed", c); tb.setAttribute("aria-expanded", !c); tb.textContent = c ? "+" : "−";
-    tb.title = c ? "Show the counts" : "Hide the counts"; try { localStorage.setItem("sd-stats-collapsed", c ? "1" : "0"); } catch(e) {} };
-  let c0 = null; try { c0 = localStorage.getItem("sd-stats-collapsed"); } catch(e) {}
-  setC(c0 === "1" || (c0 == null && document.getElementById("stage").clientWidth < 640));
-  tb.onclick = () => setC(!statsBox.classList.contains("collapsed"));
-  document.getElementById("stage").appendChild(statsBox);
-})();
 function syncDiscoveryUI(){
   const active = document.querySelector('.seg button[data-mode][aria-pressed="true"]')?.dataset.mode || state.mode;
   const disc = active === "discovery";
-  document.querySelector(".yearbox").style.display = disc ? "" : "none";
-  statsBox.style.display = disc ? "" : "none";
-  const ms = document.querySelector("section.timeline"); if (ms) ms.style.display = disc ? "" : "none";
+  discBar.style.display = disc ? "" : "none";
   if (!disc) stopPlay();
+  else if (!msNodes.length || Math.abs((document.getElementById("tl").getBoundingClientRect().width || 0) - (+document.getElementById("tl").getAttribute("width") || 0)) > 4) drawMilestones();
 }
 document.querySelectorAll(".seg button[data-mode]").forEach(b => b.addEventListener("click", () => setTimeout(syncDiscoveryUI, 0)));
 setTimeout(syncDiscoveryUI, 0);
+{ let rmt = null, lastW = 0; new ResizeObserver(() => { const w = document.querySelector(".dbtl")?.clientWidth || 0; if (!w || Math.abs(w - lastW) < 4) return; lastW = w;
+  clearTimeout(rmt); rmt = setTimeout(drawMilestones, 120); }).observe(document.querySelector(".dbtl")); }
+/* the key: a wide bar under the network and the selected taxon, with the plant-part symbols used in the network */
+(function keyBar(){
+  const box = document.querySelector(".main > aside h2 + .legend")?.closest(".box"); if (!box) return;
+  box.id = "keyBar"; box.classList.add("keybar"); box.querySelector("h2").textContent = "Key";
+  const leg = box.querySelector(".legend");
+  const parts = [["cone","Cone (strobilus): bears the sporangia"],["synangium","Synangium: fused sporangia, as in marattialean ferns"],["pollenorgan","Pollen organ of a seed plant"],
+    ["seed","Seed or ovule"],["leaf","Leaf or frond"],["root","Root or rooting organ (e.g. Stigmaria)"],["tree","Whole plant: tree"],["small","Whole plant: herb, shrub or climber"]];
+  const used = new Set(Object.values(organOf)); used.add("small");
+  const wrap = document.createElement("div"); wrap.className = "keyparts";
+  wrap.innerHTML = `<p class="kick">Plant parts and whole plants (the symbols on organ and plant genera in the network)</p><div class="partgrid"></div>`;
+  parts.filter(([k]) => used.has(k)).forEach(([k, label]) => {
+    const it = document.createElement("span"); it.className = "part";
+    it.innerHTML = `<svg viewBox="-14 -14 28 28" width="28" height="28" aria-hidden="true"></svg>${esc(label)}`;
+    const g = d3.select(it.querySelector("svg")); g.append("circle").attr("r", 12).attr("fill", "var(--panel)").attr("stroke", "var(--rule)").attr("stroke-width", 0.8);
+    drawOrgan(g.append("g"), k, 10.5);
+    wrap.querySelector(".partgrid").appendChild(it);
+  });
+  const h = document.createElement("p"); h.className = "kick"; h.textContent = "Spores, plants and links"; leg.before(h);
+  box.appendChild(wrap);
+  document.querySelector(".main").after(box);
+})();
 /* Expand: the time tree fills the window; Esc or the button brings it back */
 (function ttExpand(){
   const btn = document.getElementById("ttExpand"), sec = document.getElementById("ttWrap"); if (!btn || !sec) return;
