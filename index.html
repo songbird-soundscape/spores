@@ -2353,6 +2353,12 @@ function syncDiscoveryUI(){
 }
 document.querySelectorAll(".seg button[data-mode]").forEach(b => b.addEventListener("click", () => setTimeout(syncDiscoveryUI, 0)));
 setTimeout(syncDiscoveryUI, 0);
+/* outside the Pennsylvanian: the call for documents names the era, and the survey-literature section (Pennsylvanian only) is hidden */
+if (!IS_PENN) {
+  const era = {"silurian-devonian": "Paleozoic", mississippian: "Paleozoic", permian: "Paleozoic", "triassic-jurassic": "Mesozoic", cretaceous: "Mesozoic", cenozoic: "Cenozoic"}[PERIOD] || "fossil";
+  const cp = document.querySelector("#contribute .sub"); if (cp) cp.innerHTML = cp.innerHTML.replace("Pennsylvanian spores and plants", era + " spores and plants");
+  const wm = document.getElementById("where-more"); if (wm) wm.style.display = "none";
+}
 { let rmt = null, lastW = 0; new ResizeObserver(() => { const w = document.querySelector(".dbtl")?.clientWidth || 0; if (!w || Math.abs(w - lastW) < 4) return; lastW = w;
   clearTimeout(rmt); rmt = setTimeout(drawMilestones, 120); }).observe(document.querySelector(".dbtl")); }
 /* the key: a wide bar under the network and the selected taxon, with the plant-part symbols used in the network */
