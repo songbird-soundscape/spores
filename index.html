@@ -355,11 +355,24 @@ aside{display:flex; flex-direction:column; gap:14px; min-width:0}
 .ttdn{font-family:var(--display); font-weight:650; font-size:1.2rem; line-height:1.2}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} }
 /* layout tune-up (2026-11-24): a wider panel for the selected taxon; the two find maps always the same size */
-.main{grid-template-columns:minmax(0,1fr) 440px}
+:root{--side:440px}
+@media (min-width:1021px){
+  .main{grid-template-columns:minmax(0,1fr) var(--side)}
+  .ttgrid{grid-template-columns:minmax(0,1fr) var(--side)}
+  aside, #ttDetail{position:relative}
+}
+.sidegrip{display:none}
+@media (min-width:1021px){
+  .sidegrip{display:block; position:absolute; left:-14px; top:0; bottom:0; width:14px; cursor:col-resize; z-index:4; touch-action:none}
+  .sidegrip::after{content:""; position:absolute; left:4px; width:6px; height:56px; margin-top:-28px; top:min(50%, 360px); border-radius:3px;
+    background:var(--rule); transition:background .15s}
+  .sidegrip:hover::after, .sidegrip:focus-visible::after, .sidegrip.drag::after{background:var(--accent)}
+  .sidegrip:focus-visible{outline:none}
+  body.siding{cursor:col-resize; user-select:none}
+}
 .geomaps{grid-template-columns:minmax(0,1fr); gap:12px}
 .geomaps figure{min-width:0}
 .geomaps figcaption{margin-bottom:3px}
-@media (max-width:1240px){ .main{grid-template-columns:minmax(0,1fr) 400px} }
 /* tablets and narrow windows: network on top, the selected taxon full width below, maps side by side */
 @media (max-width:1020px){ .main{grid-template-columns:minmax(0,1fr)} #stage{height:560px} .geomaps{grid-template-columns:repeat(2, minmax(0,1fr))} }
 /* phones: one column throughout, a shorter network, maps stacked at full width */
@@ -2087,6 +2100,37 @@ function syncDiscoveryUI(){
 }
 document.querySelectorAll(".seg button[data-mode]").forEach(b => b.addEventListener("click", () => setTimeout(syncDiscoveryUI, 0)));
 setTimeout(syncDiscoveryUI, 0);
+/* drag the left edge of the Selected Taxon panel (or the time tree's panel) to give it more or less room;
+   double-click the edge to reset; arrow keys work too. The width is kept for next time. */
+(function sidePanelGrip(){
+  const DEF = 440, MIN = 300, root = document.documentElement;
+  const maxW = () => Math.max(MIN, Math.min(820, document.querySelector(".wrap").clientWidth - 440));
+  const clampW = w => Math.round(Math.max(MIN, Math.min(maxW(), w)));
+  let cur = DEF; try { const s = +localStorage.getItem("sd-side-w"); if (s) cur = s; } catch(e) {}
+  const grips = [];
+  const set = (w, keep) => { cur = clampW(w); root.style.setProperty("--side", cur + "px");
+    grips.forEach(g => g.setAttribute("aria-valuenow", cur));
+    if (keep) try { localStorage.setItem("sd-side-w", cur); } catch(e) {} };
+  const done = () => { set(cur, true); window.dispatchEvent(new Event("resize")); };   /* the time tree redraws on resize; the network refits itself */
+  const addGrip = host => {
+    if (!host) return; const g = document.createElement("div");
+    g.className = "sidegrip"; g.tabIndex = 0; g.setAttribute("role", "separator"); g.setAttribute("aria-orientation", "vertical");
+    g.setAttribute("aria-label", "Panel width: drag, or use the arrow keys"); g.setAttribute("aria-valuemin", MIN); g.setAttribute("aria-valuemax", 820);
+    g.title = "Drag to widen or narrow this panel; double-click to reset";
+    g.addEventListener("pointerdown", e => { e.preventDefault(); g.setPointerCapture(e.pointerId); g.classList.add("drag"); document.body.classList.add("siding");
+      const x0 = e.clientX, w0 = cur;
+      const mv = ev => set(w0 + (x0 - ev.clientX));
+      const up = () => { g.removeEventListener("pointermove", mv); g.removeEventListener("pointerup", up); g.removeEventListener("pointercancel", up);
+        g.classList.remove("drag"); document.body.classList.remove("siding"); done(); };
+      g.addEventListener("pointermove", mv); g.addEventListener("pointerup", up); g.addEventListener("pointercancel", up); });
+    g.addEventListener("dblclick", () => { set(DEF); done(); });
+    g.addEventListener("keydown", e => { const d = e.key === "ArrowLeft" ? 20 : e.key === "ArrowRight" ? -20 : 0; if (!d) return; e.preventDefault(); set(cur + d); done(); });
+    host.appendChild(g); grips.push(g);
+  };
+  addGrip(document.querySelector(".main > aside")); addGrip(document.getElementById("ttDetail"));
+  set(cur);
+  window.addEventListener("resize", () => { if (clampW(cur) !== cur) set(cur); });
+})();
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", () => { drawBack(); render(); });
 new MutationObserver(() => { drawBack(); render(); }).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
 let lastW = stage.clientWidth, lastH = stage.clientHeight;
