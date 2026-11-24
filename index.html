@@ -492,6 +492,7 @@ body.ttfull-open{overflow:hidden}
 .tts-nav .tts-go{border-color:var(--accent); color:var(--accent)}
 .tt-sp.tts-hit .tt-sname{font-weight:700; fill:var(--accent)}
 .tt-sp.tts-hit .tt-sbar{stroke:var(--accent); stroke-width:3}
+.tt-scroll{cursor:grab; touch-action:pan-x pan-y} .tt-scroll.grabbing{cursor:grabbing; user-select:none}
 .tts-ring{fill:none; stroke:var(--accent); stroke-width:2.5; animation:ttsPulse 1.4s ease-out 3}
 @keyframes ttsPulse{0%{stroke-opacity:1; r:8} 100%{stroke-opacity:.15; r:26}}
 @media (prefers-reduced-motion:reduce){.tts-ring{animation:none}}
@@ -661,7 +662,7 @@ body.ttfull-open{overflow:hidden}
       <button type="button" id="ttExpand" aria-pressed="false" title="Fill the window with the time tree (Esc to close)">⤢ Expand</button>
       <label class="checks" id="ttSporesBox"><input type="checkbox" id="ttSpores" checked> List spore genera where no plant is known</label>
     </div>
-    <p class="meta ttglnote" id="ttGlyphNote" hidden>Drawn to relative size. Megaspores and gyrogonites are many times larger than the rest, so they are drawn at <b>1/10</b> of their size; gyrogonites without a recorded size are drawn at a typical 0.6&nbsp;mm.</p>
+    <p class="meta ttglnote" id="ttGlyphNote" hidden>Drawn to relative size: a 40&nbsp;µm spore is 20 px across. Megaspores and gyrogonites are many times larger than the rest, so they are drawn at <b>1/20</b> of their size; gyrogonites without a recorded size are drawn at a typical 0.6&nbsp;mm.</p>
     </div>
     <aside class="ttstory box" id="ttStory" aria-label="The story in brief"></aside>
     </div>
@@ -2698,6 +2699,16 @@ function ttZoomBy(f, cx, cy){ const sc = document.querySelector(".tt-scroll"), k
 document.getElementById("ttZoomOut").onclick = () => ttZoomBy(1 / 1.4);
 document.getElementById("ttZoomIn").onclick = () => ttZoomBy(1.4);
 document.getElementById("ttZoomFit").onclick = () => ttApplyZoom(true);
+/* click and drag to pan the tree; a short click still opens what is under it */
+(function(){ const sc = document.querySelector(".tt-scroll"); let st = null, moved = false;
+  sc.addEventListener("pointerdown", e => { if (e.button !== 0) return; st = {x: e.clientX, y: e.clientY, l: sc.scrollLeft, t: sc.scrollTop, id: e.pointerId}; moved = false; });
+  sc.addEventListener("pointermove", e => { if (!st) return; const dx = e.clientX - st.x, dy = e.clientY - st.y;
+    if (!moved && Math.hypot(dx, dy) < 5) return;
+    if (!moved) { moved = true; try { sc.setPointerCapture(st.id); } catch(_) {} sc.classList.add("grabbing"); }
+    sc.scrollLeft = st.l - dx; sc.scrollTop = st.t - dy; });
+  const end = () => { if (!st) return; st = null; sc.classList.remove("grabbing"); };
+  sc.addEventListener("pointerup", end); sc.addEventListener("pointercancel", end);
+  sc.addEventListener("click", e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true); })();
 document.querySelector(".tt-scroll").addEventListener("wheel", e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault();
   const r = e.currentTarget.getBoundingClientRect(); ttZoomBy(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - r.left, e.clientY - r.top); }, {passive: false});
 function save(){ try { sessionStorage.setItem("ttSel", JSON.stringify(sel)); sessionStorage.setItem("ttMode", mode); } catch(e) {} }
@@ -2708,7 +2719,7 @@ let ttGlyph = "form"; try { ttGlyph = sessionStorage.getItem("ttGlyph") || "form
 function glyphR(m, base){
   if (ttGlyph !== "size") return base;
   const big = !!(m && (m.mega || m.gyro)), um = m && m.size ? (m.size[0] + m.size[1]) / 2 : (m && m.gyro ? 600 : 44);
-  return Math.max(1.2, um * 0.11 * (big ? 0.1 : 1));
+  return Math.max(1.4, um * 0.25 * (big ? 0.05 : 1));
 }
 (function(){ const seg = document.getElementById("ttGlyphSeg"), note = document.getElementById("ttGlyphNote"); if (!seg) return;
   const sync = () => { seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.tg === ttGlyph)); if (note) note.hidden = ttGlyph !== "size"; };
