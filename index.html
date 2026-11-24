@@ -663,7 +663,7 @@ body.ttfull-open{overflow:hidden}
       <button type="button" id="ttExpand" aria-pressed="false" title="Fill the window with the time tree (Esc to close)">⤢ Expand</button>
       <label class="checks" id="ttSporesBox"><input type="checkbox" id="ttSpores" checked> List spore genera where no plant is known</label>
     </div>
-    <p class="meta ttglnote" id="ttGlyphNote" hidden>Drawn to relative size: a 40&nbsp;µm spore is 10 px across, a 300&nbsp;µm medullosan prepollen grain 72 px. Grains larger than 1&nbsp;mm (the biggest megaspores) are drawn at <b>1/10</b> of their size inside a dashed ring; gyrogonites without a recorded size are drawn at a typical 0.6&nbsp;mm. Faint glyphs have no size on record yet and are drawn at a typical 44&nbsp;µm.</p>
+    <p class="meta ttglnote" id="ttGlyphNote" hidden>Drawn to relative size: a 40&nbsp;µm spore is 10 px across, a 300&nbsp;µm medullosan prepollen grain 72 px. Grains larger than 1&nbsp;mm (the biggest megaspores) are drawn at <b>1/10</b> of their size inside a dashed ring. <b>Gyrogonites are not to scale</b>: at roughly half a millimetre or more, they keep their usual size here. Faint glyphs have no size on record yet and are drawn at a typical 44&nbsp;µm.</p>
     </div>
     <aside class="ttstory box" id="ttStory" aria-label="The story in brief"></aside>
     </div>
@@ -2725,7 +2725,8 @@ const GENSIZE = (() => { const by = {}; Object.entries(typeof SIZES === "object"
 function glyphSize(m, name){ const z = (name && MG[name] && MG[name].size) || (m && m.size); return z ? (z[0] + z[1]) / 2 : (name && GENSIZE[name]) || null; }
 function glyphR(m, base, name){
   if (ttGlyph !== "size") return base;
-  const mm = (name && MG[name]) || m || {}, big = !!(mm.mega || mm.gyro || (m && (m.mega || m.gyro))), um = glyphSize(m, name) ?? (mm.gyro || (m && m.gyro) ? 600 : 44);
+  const mm = (name && MG[name]) || m || {}; if (mm.gyro || (m && m.gyro)) return base;   /* gyrogonites keep their form size: not to scale */
+  const um = glyphSize(m, name) ?? 44;
   return Math.max(1.2, um * 0.12 * (um > 1000 ? 0.1 : 1));   /* true scale up to 1 mm; anything larger at 1/10, ringed */
 }
 (function(){ const seg = document.getElementById("ttGlyphSeg"), note = document.getElementById("ttGlyphNote"); if (!seg) return;
@@ -2849,7 +2850,7 @@ function drawBranch(){
       const gg = gG.append("g").attr("class", "ttb-gen").on("click", e => { e.stopPropagation(); showGen(g, c); });
       gg.append("line").attr("x1", gx).attr("x2", gx).attr("y1", y0).attr("y2", y1).attr("stroke", alive ? "#4f9a5f" : "#9a6a45");
       const gs = gg.append("g").attr("transform", `translate(${gx},${y0})`);
-      try { drawSpore(gs, g.morph || null, glyphR(g.morph, 5.6, g.g), false); if (ttGlyph === "size") { const z = glyphSize(g.morph, g.g); if (z == null) gs.attr("opacity", .4); else if (z > 1000) gs.append("circle").attr("class", "tt-tenth").attr("r", glyphR(g.morph, 5.6, g.g) + 3); } } catch (e) { gs.append("circle").attr("r", 3.5).attr("fill", css("--spore")); }
+      try { drawSpore(gs, g.morph || null, glyphR(g.morph, 5.6, g.g), false); if (ttGlyph === "size" && !(g.morph && g.morph.gyro)) { const z = glyphSize(g.morph, g.g); if (z == null) gs.attr("opacity", .4); else if (z > 1000) gs.append("circle").attr("class", "tt-tenth").attr("r", glyphR(g.morph, 5.6, g.g) + 3); } } catch (e) { gs.append("circle").attr("r", 3.5).attr("fill", css("--spore")); }
       if (g.l > 0.5) gg.append("text").attr("class", "ttb-dag").attr("x", gx - 2.5).attr("y", y1 - 2).text("†");
       gg.append("title").text(`${g.g}: ${Math.round(g.f)}–${g.l > 0.5 ? Math.round(g.l) : 0} Ma${g.aff ? " · " + g.aff : ""}`); }); });
   function toggle(c){ if (!c.all.length) return; if (PT.isOpen(c)) { PT.OPEN.delete(c.id); PT.SHUT.add(c.id); } else { PT.SHUT.delete(c.id); PT.OPEN.add(c.id); } showLin(c); draw(); }
@@ -3196,7 +3197,7 @@ function drawGenus(){
     const c = gS.append("g").attr("class", "tt-sp").attr("tabindex", 0).attr("role", "button").style("cursor", "pointer").attr("aria-label", `${sg.g}: open in the Habitat view`)
       .on("click", () => goHabitat(sg.g)).on("keydown", e => { if (e.key === "Enter") goHabitat(sg.g); });
     c.append("line").attr("class", "tt-sbar").attr("x1", xx).attr("x2", xx).attr("y1", y0).attr("y2", y1);
-    const gl = c.append("g").attr("transform", `translate(${xx},${y0})`); try { drawSpore(gl, sg.morph || null, glyphR(sg.morph, sg.morph?.gyro ? 6 : 5, sg.g), false); if (ttGlyph === "size") { const z = glyphSize(sg.morph, sg.g); if (z == null) gl.attr("opacity", .4).append("title").text(sg.g + ": size not recorded, drawn at a typical size"); else if (z > 1000) gl.append("circle").attr("class", "tt-tenth").attr("r", glyphR(sg.morph, 5, sg.g) + 3); } } catch (e) { gl.append("circle").attr("r", 3.5).attr("fill", css("--muted")); }
+    const gl = c.append("g").attr("transform", `translate(${xx},${y0})`); try { drawSpore(gl, sg.morph || null, glyphR(sg.morph, sg.morph?.gyro ? 6 : 5, sg.g), false); if (ttGlyph === "size" && !(sg.morph && sg.morph.gyro)) { const z = glyphSize(sg.morph, sg.g); if (z == null) gl.attr("opacity", .4).append("title").text(sg.g + ": size not recorded, drawn at a typical size"); else if (z > 1000) gl.append("circle").attr("class", "tt-tenth").attr("r", glyphR(sg.morph, 5, sg.g) + 3); } } catch (e) { gl.append("circle").attr("r", 3.5).attr("fill", css("--muted")); }
     c.append("text").attr("class", "tt-sname grp-" + (sg._grp || "other")).attr("transform", `translate(${xx + 2},${y1 - 3}) rotate(-60)`).text((sg.l > 0.5 ? "† " : "") + sg.g);
     c.append("title").text(`${sg.g} (${sg.kind || "spore"}): ${Math.round(sg.f)}–${sg.l > 0.5 ? Math.round(sg.l) : 0} Ma${sg.aff ? " · " + sg.aff : ""}${sg._why ? " · " + sg._why : ""}${extra || ""} · click to open in the Habitat view`); }
   tips.forEach(id => {
