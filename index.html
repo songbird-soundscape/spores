@@ -2353,6 +2353,30 @@ function syncDiscoveryUI(){
 }
 document.querySelectorAll(".seg button[data-mode]").forEach(b => b.addEventListener("click", () => setTimeout(syncDiscoveryUI, 0)));
 setTimeout(syncDiscoveryUI, 0);
+/* the time tree by keyboard: arrows move around it (Shift for big steps), Ctrl (or Cmd) + up/down zooms in and out */
+(function ttKeys(){
+  const wrapTT = document.getElementById("ttWrap"), sc = () => document.querySelector(".tt-scroll"); if (!wrapTT) return;
+  const ctl = wrapTT.querySelector(".ttctl"); if (ctl) { const p = document.createElement("p"); p.className = "meta ttkeys"; p.style.cssText = "flex-basis:100%; margin:2px 0 0";
+    p.innerHTML = "Keyboard: arrow keys move around the tree (Shift for bigger steps); Ctrl + ↑ zooms in, Ctrl + ↓ zooms out."; ctl.appendChild(p); }
+  window.addEventListener("keydown", e => {
+    if (wrapTT.hidden || !sc()) return;
+    if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.classList?.contains("sidegrip")) return;
+    if (document.querySelector(".tour-card:not(.tour-welcome)")) return;
+    const k = e.key, zoom = e.ctrlKey || e.metaKey;
+    if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "PageUp", "PageDown", "Home", "End"].includes(k)) return;
+    e.preventDefault(); e.stopPropagation();
+    if (zoom && (k === "ArrowUp" || k === "ArrowDown")) { document.getElementById(k === "ArrowUp" ? "ttZoomIn" : "ttZoomOut")?.click(); return; }
+    const s = sc(), step = e.shiftKey ? 320 : 70;
+    if (k === "ArrowLeft") s.scrollBy({left: -step, behavior: "smooth"});
+    else if (k === "ArrowRight") s.scrollBy({left: step, behavior: "smooth"});
+    else if (k === "ArrowUp") s.scrollBy({top: -step, behavior: "smooth"});
+    else if (k === "ArrowDown") s.scrollBy({top: step, behavior: "smooth"});
+    else if (k === "PageUp") s.scrollBy({top: -s.clientHeight * 0.85, behavior: "smooth"});
+    else if (k === "PageDown") s.scrollBy({top: s.clientHeight * 0.85, behavior: "smooth"});
+    else if (k === "Home") s.scrollTo({top: 0, left: 0, behavior: "smooth"});
+    else if (k === "End") s.scrollTo({top: s.scrollHeight, behavior: "smooth"});
+  }, true);
+})();
 /* outside the Pennsylvanian: the call for documents names the era, and the survey-literature section (Pennsylvanian only) is hidden */
 if (!IS_PENN) {
   const era = {"silurian-devonian": "Paleozoic", mississippian: "Paleozoic", permian: "Paleozoic", "triassic-jurassic": "Mesozoic", cretaceous: "Mesozoic", cenozoic: "Cenozoic"}[PERIOD] || "fossil";
