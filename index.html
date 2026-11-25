@@ -594,8 +594,11 @@ body.ttfull-open{overflow:hidden}
       </div></div>
     <label class="field" for="hypSel"><span>Seed-plant tree</span>
       <select id="hypSel"><option value="molecular">Molecular scaffold</option><option value="anthophyte">Anthophyte hypothesis</option></select></label>
-    <div class="field"><span>Play</span>
-      <div class="seg" role="group" aria-label="Play"><button type="button" id="gameBtn" aria-pressed="false">Match game</button><button type="button" id="cookBtn" aria-haspopup="dialog">Cook a spore</button></div></div>
+    <div class="field playfield"><span>Play</span>
+      <div class="playcards" role="group" aria-label="Play">
+        <button type="button" id="gameBtn" class="playbtn" aria-pressed="false"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 9h6a3 3 0 1 1 6 0h6v6a3 3 0 1 0 0 6v6h-6a3 3 0 1 0-6 0H6v-6a3 3 0 1 1 0-6z" fill="currentColor"/></svg><span><b>Match game</b><small>Build whole plants from their spores</small></span></button>
+        <button type="button" id="cookBtn" class="playbtn" aria-haspopup="dialog"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 4c-1.6 2 1.6 3.4 0 5.6M16 3c-1.6 2 1.6 3.4 0 5.6M21 4c-1.6 2 1.6 3.4 0 5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 13h24v2h-2l-1.6 10.4A3 3 0 0 1 21.4 28H10.6a3 3 0 0 1-3-2.6L6 15H4z" fill="currentColor"/></svg><span><b>Cook a spore</b><small>Heat one and watch it darken</small></span></button>
+      </div></div>
     <div class="yearbox">
       <button id="play" type="button" aria-label="Play through the years">Play</button>
       <input type="range" id="year" min="1780" max="2025" step="1" value="2025" aria-label="Year">
@@ -3876,6 +3879,21 @@ body.gaming #stage{height:min(78vh, 820px)}
 body.gaming #pageSub, body.gaming #tourBtn{display:none}
 body.gaming #pageTitle{font-size:clamp(1.15rem, 2.2vw, 1.6rem); max-width:60ch}
 #intervalBar .gamefield{margin-left:auto}
+/* the two games: warm amber cards so they stand out from the teal controls */
+.playcards{display:flex; gap:8px; flex-wrap:wrap}
+.playbtn{display:flex; align-items:center; gap:10px; text-align:left; font:inherit; cursor:pointer; padding:8px 14px 8px 10px; border-radius:12px;
+  border:1.5px solid #e0a03a; color:var(--ink); background:linear-gradient(135deg, color-mix(in srgb, #f2b84b 26%, var(--panel)), color-mix(in srgb, #e07a3a 14%, var(--panel)));
+  box-shadow:0 2px 0 color-mix(in srgb, #b8701c 55%, transparent), 0 6px 16px rgba(224,140,40,.18); transition:transform .12s ease, box-shadow .12s ease}
+.playbtn svg{width:26px; height:26px; flex:none; color:#d9851c}
+.playbtn b{display:block; font-size:14px; line-height:1.2} .playbtn small{display:block; font-size:11.5px; opacity:.75; line-height:1.25}
+.playbtn:hover{transform:translateY(-1px); box-shadow:0 3px 0 color-mix(in srgb, #b8701c 55%, transparent), 0 10px 22px rgba(224,140,40,.28)}
+.playbtn:active{transform:translateY(1px); box-shadow:0 1px 0 color-mix(in srgb, #b8701c 55%, transparent)}
+.playbtn[aria-pressed="true"]{background:#e8a33a; color:#1d1a12; border-color:#b8701c} .playbtn[aria-pressed="true"] svg{color:#1d1a12}
+.playfield > span{color:#d9851c; font-weight:700}
+@keyframes playNudge{0%,100%{transform:none} 30%{transform:translateY(-3px) rotate(-1.5deg)} 60%{transform:translateY(0) rotate(1deg)}}
+.playbtn.nudge{animation:playNudge .7s ease 2}
+@media (prefers-reduced-motion:reduce){ .playbtn, .playbtn.nudge{transition:none; animation:none} }
+@media (max-width:700px){ .playcards{width:100%} .playbtn{flex:1 1 150px} }
 body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); color:#fff}
 #gameIvNote{font-size:12.5px; color:var(--muted); margin:6px 0 0; flex-basis:100%}
 #buildBoard .bbdone{padding:8px 14px; border-top:1px solid var(--rule); font-size:13px; max-height:30%; overflow:auto}
@@ -4153,6 +4171,9 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
   pop.querySelector(".hub-x").onclick = close; pop.querySelector(".hub-ok").onclick = close; pop.querySelector(".hub-go").addEventListener("click", close);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
 })();
+/* the game cards give one small wiggle on a first visit, once per browser */
+setTimeout(() => { try { if (localStorage.getItem("sd-play-nudged")) return; localStorage.setItem("sd-play-nudged", "1"); } catch(e) { return; }
+  document.querySelectorAll(".playbtn").forEach((b, i) => setTimeout(() => b.classList.add("nudge"), i * 250)); }, 2600);
 /* AI notice at the top of the page: shown on each visit; hiding it lasts until the browser tab is closed */
 (function(){
   const n = document.getElementById("aiNote"); if (!n) return;
