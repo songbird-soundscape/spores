@@ -402,7 +402,10 @@ body.ttfull-open{overflow:hidden}
 .dbtime{display:grid; grid-template-columns:auto minmax(0,1fr) auto; column-gap:12px; row-gap:0; align-items:center; min-width:0}
 .dbtime #year{width:100%; margin:0; accent-color:var(--accent)}
 .dbtl, .msnow, .mslist{grid-column:2; min-width:0}
-.dbtl{overflow:hidden}
+.dbtl{overflow:hidden; position:relative}
+.tlctl{display:flex; gap:4px; justify-content:flex-end; margin:2px 0 0}
+.tlctl button{font:inherit; font-size:12px; min-width:28px; padding:2px 8px; border:1px solid var(--rule); background:var(--panel); color:var(--ink); border-radius:6px; cursor:pointer}
+.tlctl button:hover:not(:disabled){border-color:var(--accent); color:var(--accent)} .tlctl button:disabled{opacity:.4; cursor:default}
 #tl{display:block; width:100%; min-width:0}
 #tl .mslab{font-size:12.5px; fill:var(--ink); opacity:.9}
 #tl a:hover .mslab{text-decoration:underline; fill:var(--accent)}
@@ -961,6 +964,7 @@ const EXTRA_MS = [
   [1967, "AASP, the palynological society, founded", "S-D M P Pm TJ K Cz"],
   [1970, "Peppers: palynology of Illinois coals", "P"],
   [1988, "Traverse: Paleopalynology", "S-D M P Pm TJ K Cz"],
+  [1994, "DiMichele and Phillips: what coal-ball plants and their spores say about how Pennsylvanian peat formed", "P"],
   [1996, "Peppers: palynological correlation of Pennsylvanian boundaries", "P"]];
 { const code = {"silurian-devonian":"S-D", mississippian:"M", pennsylvanian:"P", permian:"Pm", "triassic-jurassic":"TJ", cretaceous:"K", cenozoic:"Cz"}[PERIOD];
   DATA.milestones = (DATA.milestones || []).slice();
@@ -2296,7 +2300,10 @@ const discBar = (function makeDiscBar(){
   const pleg = document.createElement("p"); pleg.id = "pubLegend"; pleg.className = "publeg";
   const msl = document.createElement("ol"); msl.id = "msList"; msl.className = "mslist"; msl.setAttribute("aria-label", "Milestones");
   [play, yin, yout].forEach(e => time.appendChild(e));
-  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg); time.appendChild(tlw); const msd = document.createElement("details"); msd.className = "msdetails"; msd.innerHTML = `<summary>All milestones</summary>`; msd.appendChild(msl);
+  const tlw = document.createElement("div"); tlw.className = "dbtl"; tlw.appendChild(tlsvg);
+  const tc = document.createElement("div"); tc.className = "tlctl"; tc.setAttribute("role", "group"); tc.setAttribute("aria-label", "Timeline view");
+  tc.innerHTML = `<button type="button" id="tlLeft" aria-label="Earlier years">◀</button><button type="button" id="tlZoomOut" aria-label="Zoom out" disabled>−</button><button type="button" id="tlZoomIn" aria-label="Zoom in">+</button><button type="button" id="tlRight" aria-label="Later years">▶</button><button type="button" id="tlReset">All years</button>`;
+  tlw.appendChild(tc); time.appendChild(tlw); const msd = document.createElement("details"); msd.className = "msdetails"; msd.innerHTML = `<summary>All milestones</summary>`; msd.appendChild(msl);
   time.appendChild(msd); time.appendChild(now); time.appendChild(pleg); now.hidden = true;
   /* milestones pop up over the network as the slider passes them, like notifications, so the bar stays slim */
   const toasts = document.createElement("div"); toasts.id = "msToasts"; toasts.className = "mstoasts"; toasts.setAttribute("aria-live", "polite");
@@ -2328,13 +2335,23 @@ const PUBS = (() => { const M = new Map();
     citesIn(l.ref).forEach(c => put(c, l.type === "insitu" ? "in situ" : "organ to plant", `${s} → ${t}`)); });
   return [...M.values()].filter(p => p.year >= YMIN && p.year <= YMAX).map(p => { const full = citeFull(p);
     return {...p, full, q: full || `${p.who} ${p.year} ${[...p.about][0]?.split(" → ")[0] || ""}`.trim()}; }).sort((a, b) => a.year - b.year || a.who.localeCompare(b.who)); })();
+/* the history timeline can zoom in on a stretch of years and pan along it; the year slider follows the same stretch */
+let tlV = [YMIN, YMAX];
+function tlSet(v0, v1){ const minSpan = 12; let a = Math.round(v0), b = Math.round(v1);
+  if (b - a < minSpan) { const c = (a + b) / 2; a = Math.round(c - minSpan / 2); b = a + minSpan; }
+  if (a < YMIN) { b += YMIN - a; a = YMIN; } if (b > YMAX) { a -= b - YMAX; b = YMAX; } a = Math.max(YMIN, a);
+  tlV = [a, b]; const yi = document.getElementById("year"); yi.min = a; yi.max = b;
+  const y = Math.max(a, Math.min(b, state.year)); if (y !== state.year) { state.year = y; yi.value = y; document.getElementById("yearOut").textContent = y; render(); }
+  drawMilestones(); const z = document.getElementById("tlZoomOut"); if (z) z.disabled = a === YMIN && b === YMAX; }
+function tlZoom(f){ const c = Math.max(tlV[0], Math.min(tlV[1], state.year)), h = (tlV[1] - tlV[0]) * f / 2; tlSet(c - h, c + h); }
+function tlPan(d){ const sp = tlV[1] - tlV[0]; tlSet(tlV[0] + d * sp * 0.25, tlV[1] + d * sp * 0.25); }
 function drawMilestones(){
   const el = document.getElementById("tl"), W = Math.max(300, Math.round(el.getBoundingClientRect().width || el.parentNode.clientWidth || 1000));
   tl.selectAll("*").remove(); msNodes = []; pubNodes = [];
-  tx = d3.scaleLinear().domain([YMIN, YMAX]).range([9, W - 9]);   /* the slider's thumb travels between these, so marks sit under the same years */
+  tx = d3.scaleLinear().domain(tlV).range([9, W - 9]);   /* the slider's thumb travels between these, so marks sit under the same years */
   tl.append("line").attr("x1",9).attr("x2",W-9).attr("y1",TLY).attr("y2",TLY).attr("stroke",css("--rule")).attr("stroke-width",2);
-  const step = W < 700 ? 50 : 25;
-  d3.range(Math.ceil((YMIN+1)/step)*step, YMAX, step).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY-11).attr("text-anchor","middle").text(y));
+  const span = tlV[1] - tlV[0], step = [1, 2, 5, 10, 25, 50].find(k => span / k <= (W < 700 ? 5 : 9)) || 50;
+  d3.range(Math.ceil((tlV[0]+1)/step)*step, tlV[1], step).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY-11).attr("text-anchor","middle").text(y));
   /* publications: small dots stacked beneath the axis, one per paper, coloured by what it contributed */
   const D = 5.2, stacks = new Map(); let maxStack = 0;
   const colOf = p => p.kinds.has("in situ") ? css("--insitu") : p.kinds.has("organ to plant") ? css("--plant") : css("--spore");
@@ -2396,6 +2413,9 @@ function notifyMilestones(){
   while (box.children.length > 3) box.lastElementChild.remove();
 }
 /* milestones follow the slider: those still to come fade, the latest one reached is picked out and spelled out in full */
+document.addEventListener("click", e => { const b = e.target.closest(".tlctl button"); if (!b) return;
+  ({tlLeft: () => tlPan(-1), tlRight: () => tlPan(1), tlZoomIn: () => tlZoom(0.5), tlZoomOut: () => tlZoom(2), tlReset: () => tlSet(YMIN, YMAX)})[b.id]?.(); });
+document.getElementById("tl")?.addEventListener("wheel", e => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); tlZoom(e.deltaY < 0 ? 0.8 : 1.25); }, {passive: false});
 function drawTimelineMarker(){
   if (!marker) return;
   marker.attr("x1",tx(state.year)).attr("x2",tx(state.year));
