@@ -532,7 +532,10 @@ body.ttfull-open{overflow:hidden}
 .ainote{display:flex; gap:12px; align-items:center; margin:0 0 14px; padding:9px 12px 9px 10px; border:1px dashed color-mix(in srgb, var(--accent) 60%, var(--rule)); border-radius:10px;
   background:color-mix(in srgb, var(--accent) 7%, var(--panel)); color:var(--ink); font-size:13.5px; line-height:1.45}
 .ainote .mop{flex:none; color:var(--accent)}
-.ainote-icons{flex:none; display:flex; align-items:flex-end; gap:2px} .ainote .cone{flex:none; display:block} .ainote .cone.c2{margin-left:-4px; transform:rotate(9deg)}
+.ainote-icons{flex:none; display:flex; align-items:flex-end; gap:2px}
+.ainote .sig-y{animation:sigBlink 1.6s steps(2, jump-none) infinite} @keyframes sigBlink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){ .ainote .sig-y{animation:none} }
+@media (max-width:560px){ .ainote{flex-wrap:wrap} #aiNote p{flex:1 1 100%} .ainote-x{position:absolute; right:8px; top:12px} } .ainote .cone{flex:none; display:block} .ainote .cone.c2{margin-left:-4px; transform:rotate(9deg)}
 .ainote{position:relative; overflow:hidden; padding-top:15px; border:1px solid color-mix(in srgb, #f26b1d 45%, var(--rule))}
 .ainote::before{content:""; position:absolute; left:0; right:0; top:0; height:7px; background:repeating-linear-gradient(-45deg, #f26b1d 0 9px, #fff4e6 9px 18px); opacity:.9} .ainote p{margin:0; flex:1} .ainote a{color:var(--accent); font-weight:600}
 .ainote-x{flex:none; align-self:flex-start; background:none; border:0; color:inherit; opacity:.6; cursor:pointer; font-size:14px} .ainote-x:hover{opacity:1}
@@ -561,13 +564,36 @@ body.ttfull-open{overflow:hidden}
 
 <div class="wrap">
   <div id="aiNote" class="ainote" role="note">
-    <span class="ainote-icons"><svg class="cone c1" viewBox="0 0 24 30" aria-hidden="true" width="24" height="30"><path d="M10 2.5h4l6 22.5H4z" fill="#f26b1d"/><path d="M8.4 9h7.2l1.1 4.2H7.3zM6.6 15.8h10.8l1.1 4.2H5.5z" fill="#fff8ee"/><rect x="1.5" y="25" width="21" height="3.4" rx="1.2" fill="#d4550f"/><path d="M10 2.5h1.4L6.2 25H4z" fill="#fff" opacity=".18"/></svg><svg class="mop" viewBox="0 0 40 40" aria-hidden="true" width="38" height="38">
-      <line x1="31" y1="3" x2="17" y2="27" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M13.5 25.5 l7 4 l-2.5 4.5 q-1 2-3 1 l-4.5-2.6 q-2-1.2-.8-3.2 z" fill="currentColor"/>
-      <path d="M11.2 33 l-1.6 4.2 M13.4 34.4 l-.6 4.3 M15.6 35.6 l.6 3.8 M9.6 31.4 l-2.6 3.4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M21 25 h15 l-2 13 h-11 z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M22.5 25 q6-6 12 0" fill="none" stroke="currentColor" stroke-width="1.5"/>
-      <path d="M22.2 29 q3 1.6 6.3 0 t6.4 0" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".7"/>
+    <span class="ainote-icons"><svg class="cone c1" viewBox="0 0 24 30" aria-hidden="true" width="24" height="30"><path d="M10 2.5h4l6 22.5H4z" fill="#f26b1d"/><path d="M8.4 9h7.2l1.1 4.2H7.3zM6.6 15.8h10.8l1.1 4.2H5.5z" fill="#fff8ee"/><rect x="1.5" y="25" width="21" height="3.4" rx="1.2" fill="#d4550f"/><path d="M10 2.5h1.4L6.2 25H4z" fill="#fff" opacity=".18"/></svg><svg class="mop" viewBox="0 0 96 48" aria-hidden="true" width="92" height="46">
+      <!-- traffic signal stuck on yellow -->
+      <rect x="84" y="20" width="2.6" height="27" fill="#5b6266"/>
+      <rect x="78.5" y="2" width="13.5" height="27" rx="3" fill="#2b3134" stroke="#5b6266" stroke-width="1"/>
+      <circle cx="85.3" cy="8.3" r="3.2" fill="#5a2320"/>
+      <circle class="sig-y" cx="85.3" cy="15.5" r="6" fill="#ffc83d" opacity=".28"/>
+      <circle class="sig-y" cx="85.3" cy="15.5" r="3.3" fill="#ffc83d"/>
+      <circle cx="85.3" cy="22.7" r="3.2" fill="#1f4a32"/>
+      <!-- bucket -->
+      <path d="M6 33h13l-1.6 13H7.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M7 33q5.5-6 11 0" fill="none" stroke="currentColor" stroke-width="1.3"/>
+      <path d="M7.4 37q2.6 1.3 5 0t5 0" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".7"/>
+      <!-- robot, head tilted up toward the light -->
+      <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+        <rect x="36" y="25" width="17" height="14" rx="3"/>
+        <circle cx="40" cy="44" r="2.6"/><circle cx="49" cy="44" r="2.6"/>
+        <path d="M39 39v2.5M50 39v2.5"/>
+        <g transform="rotate(-18 44.5 22)">
+          <rect x="37" y="11" width="15" height="11" rx="3"/>
+          <path d="M44.5 11V6.5"/>
+        </g>
+        <path d="M53 29l6-3"/>
+      </g>
+      <g transform="rotate(-18 44.5 22)"><circle cx="41.5" cy="15.5" r="1.6" fill="currentColor"/><circle cx="47.8" cy="15.5" r="1.6" fill="currentColor"/><circle cx="44.5" cy="5.5" r="1.7" fill="#ffc83d"/></g>
+      <path d="M38 30l-4 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- mop in the robot's hand -->
+      <line x1="36" y1="22" x2="24" y2="42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M21 40.5l6 3.2-1.6 2.6-6.4-.4z" fill="currentColor"/>
+      <path d="M20 45.6l-1.4 2M22.4 46l-.4 2M24.6 46.2l.6 1.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <text x="63" y="12" font-size="9" font-weight="700" fill="currentColor" opacity=".8">?</text>
     </svg><svg class="cone c2" viewBox="0 0 24 30" aria-hidden="true" width="19" height="24"><path d="M10 2.5h4l6 22.5H4z" fill="#f26b1d"/><path d="M8.4 9h7.2l1.1 4.2H7.3zM6.6 15.8h10.8l1.1 4.2H5.5z" fill="#fff8ee"/><rect x="1.5" y="25" width="21" height="3.4" rx="1.2" fill="#d4550f"/><path d="M10 2.5h1.4L6.2 25H4z" fill="#fff" opacity=".18"/></svg></span>
     <p><b>AI-assisted web reference: still mopping up the slop.</b> Built with help from AI and checked as I go, so some names, dates or links may still be wrong. Please trust the cited papers over this page, and <a href="#contribute">tell me</a> if you spot a mistake.</p>
     <button type="button" class="ainote-x" aria-label="Hide this notice">✕</button>
