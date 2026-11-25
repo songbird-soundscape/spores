@@ -3879,20 +3879,14 @@ body.gaming #stage{height:min(78vh, 820px)}
 body.gaming #pageSub, body.gaming #tourBtn{display:none}
 body.gaming #pageTitle{font-size:clamp(1.15rem, 2.2vw, 1.6rem); max-width:60ch}
 #intervalBar .gamefield{margin-left:auto}
-/* the two games: warm amber cards so they stand out from the teal controls */
+/* the two games: quiet amber outline so they are noticed without shouting */
 .playcards{display:flex; gap:8px; flex-wrap:wrap}
-.playbtn{display:flex; align-items:center; gap:10px; text-align:left; font:inherit; cursor:pointer; padding:8px 14px 8px 10px; border-radius:12px;
-  border:1.5px solid #e0a03a; color:var(--ink); background:linear-gradient(135deg, color-mix(in srgb, #f2b84b 26%, var(--panel)), color-mix(in srgb, #e07a3a 14%, var(--panel)));
-  box-shadow:0 2px 0 color-mix(in srgb, #b8701c 55%, transparent), 0 6px 16px rgba(224,140,40,.18); transition:transform .12s ease, box-shadow .12s ease}
-.playbtn svg{width:26px; height:26px; flex:none; color:#d9851c}
-.playbtn b{display:block; font-size:14px; line-height:1.2} .playbtn small{display:block; font-size:11.5px; opacity:.75; line-height:1.25}
-.playbtn:hover{transform:translateY(-1px); box-shadow:0 3px 0 color-mix(in srgb, #b8701c 55%, transparent), 0 10px 22px rgba(224,140,40,.28)}
-.playbtn:active{transform:translateY(1px); box-shadow:0 1px 0 color-mix(in srgb, #b8701c 55%, transparent)}
-.playbtn[aria-pressed="true"]{background:#e8a33a; color:#1d1a12; border-color:#b8701c} .playbtn[aria-pressed="true"] svg{color:#1d1a12}
-.playfield > span{color:#d9851c; font-weight:700}
-@keyframes playNudge{0%,100%{transform:none} 30%{transform:translateY(-3px) rotate(-1.5deg)} 60%{transform:translateY(0) rotate(1deg)}}
-.playbtn.nudge{animation:playNudge .7s ease 2}
-@media (prefers-reduced-motion:reduce){ .playbtn, .playbtn.nudge{transition:none; animation:none} }
+.playbtn{display:flex; align-items:center; gap:9px; text-align:left; font:inherit; cursor:pointer; padding:6px 12px 6px 9px; border-radius:10px;
+  border:1px solid color-mix(in srgb, #d9922e 60%, var(--rule)); color:var(--ink); background:color-mix(in srgb, #e8a33a 8%, var(--panel))}
+.playbtn svg{width:20px; height:20px; flex:none; color:#c98428}
+.playbtn b{display:block; font-size:13.5px; font-weight:600; line-height:1.2} .playbtn small{display:block; font-size:11.5px; opacity:.7; line-height:1.25}
+.playbtn:hover{border-color:#d9922e; background:color-mix(in srgb, #e8a33a 14%, var(--panel))}
+.playbtn[aria-pressed="true"]{border-color:#c98428; background:color-mix(in srgb, #e8a33a 22%, var(--panel))}
 @media (max-width:700px){ .playcards{width:100%} .playbtn{flex:1 1 150px} }
 body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); color:#fff}
 #gameIvNote{font-size:12.5px; color:var(--muted); margin:6px 0 0; flex-basis:100%}
@@ -4171,9 +4165,6 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
   pop.querySelector(".hub-x").onclick = close; pop.querySelector(".hub-ok").onclick = close; pop.querySelector(".hub-go").addEventListener("click", close);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
 })();
-/* the game cards give one small wiggle on a first visit, once per browser */
-setTimeout(() => { try { if (localStorage.getItem("sd-play-nudged")) return; localStorage.setItem("sd-play-nudged", "1"); } catch(e) { return; }
-  document.querySelectorAll(".playbtn").forEach((b, i) => setTimeout(() => b.classList.add("nudge"), i * 250)); }, 2600);
 /* AI notice at the top of the page: shown on each visit; hiding it lasts until the browser tab is closed */
 (function(){
   const n = document.getElementById("aiNote"); if (!n) return;
