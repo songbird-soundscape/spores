@@ -1961,6 +1961,8 @@ function render(){
 const REF = CTX.references;
 const refKeys = Object.keys(REF).sort((a,b) => b.length - a.length);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+/* a citation that sits inside parentheses: its own parentheses become brackets, so the text never ends "1908))" */
+const inRefs = t => linkRefs(t).replace(/(<[^>]*>)|[()]/g, (m, tag) => tag || (m === "(" ? "[" : "]"));
 function linkRefs(text){
   let out = esc(text);
   refKeys.forEach(k => { const ek = esc(k); if (out.includes(ek)) out = out.split(ek).join(`<span class="ref" data-ref="${esc(k)}">${ek}</span>`); });
@@ -2238,14 +2240,14 @@ function showDetail(){
   let story = "";
   if (isSpore(n)) {
     if (ins.length) story = `Spores of this kind have been found inside ${ins.length===1?"one named organ or plant":ins.length+" named organs or plants"}: ` +
-      ins.map(l => `${tax(other(l))} (${yrTxt(l)}, ${linkRefs(l.ref)})`).join("; ") + ".";
+      ins.map(l => `${tax(other(l))} (${yrTxt(l)}, ${inRefs(l.ref)})`).join("; ") + ".";
     if (ins.length > 1) story += ` Different plants produced this shape, so the genus does not point to a single parent.`;
-    if (aff.length) story += ` ${ins.length ? "It is also" : "It is only"} assigned at group level to ${aff.map(l => `${esc(other(l).label)} (${linkRefs(l.ref || "group assignment")})`).join(", ")}.`;
+    if (aff.length) story += ` ${ins.length ? "It is also" : "It is only"} assigned at group level to ${aff.map(l => `${esc(other(l).label)} (${inRefs(l.ref || "group assignment")})`).join(", ")}.`;
     if (!ins.length && !aff.length) story = "No in situ record and no group assignment: its parent plant is unknown.";
     const o = occOf(n); if (o) story += ` <b>Where recorded.</b> Sorted to ${o.pen==="both" ? "both Euramerica and Gondwana" : o.pen} by occurrence, not by any parent plant: ${esc(o.basis)}${o.verified ? "" : " " + statusPill("needs checking")}`;
   } else {
-    if (asm.length) story = asm.map(l => { const o = other(l); return l.source.id===n.id ? `Linked to ${tax(o)} ${yrTxt(l)}${l.ref?` (${linkRefs(l.ref)})`:""}.` : `${tax(o)} was linked to it ${yrTxt(l)}${l.ref?` (${linkRefs(l.ref)})`:""}.`; }).join(" ");
-    if (ins.length) story += ` Dispersed spores found inside it: ` + ins.map(l => `${tax(other(l))} (${yrTxt(l)}, ${linkRefs(l.ref)})`).join("; ") + ".";
+    if (asm.length) story = asm.map(l => { const o = other(l); return l.source.id===n.id ? `Linked to ${tax(o)} ${yrTxt(l)}${l.ref?` (${inRefs(l.ref)})`:""}.` : `${tax(o)} was linked to it ${yrTxt(l)}${l.ref?` (${inRefs(l.ref)})`:""}.`; }).join(" ");
+    if (ins.length) story += ` Dispersed spores found inside it: ` + ins.map(l => `${tax(other(l))} (${yrTxt(l)}, ${inRefs(l.ref)})`).join("; ") + ".";
     if (asm.some(l => /pending/.test(l.vs || ""))) story += ` <span class="pill warn">organ-to-plant years still being traced</span>`;
   }
   if (story) s.push(`<p><b>How it was tied in.</b> ${story}</p>`);
@@ -4253,6 +4255,109 @@ document.addEventListener("click", e => {
     }
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup); else setup();
+})();
+</script>
+<script>
+/* Italicize genus and species names (genera and specific epithets) wherever they appear in page text.
+   Names come from the page's own data: every non-hub node in every period, the Community Paleoecology
+   records, and abbreviated binomials ("L. granulata") found in the notes. */
+(function(root){
+  const SUPRA = /(aceae|ales|ineae|oideae|opsida|opsidae|phyta|phytina|phytes|idae|inae|atae|ids|eae)$/;
+  const STOP = new Set(("genus species thus plus versus status focus data area idea era taxa flora fauna formula media criteria basis axis " +
+    "analysis analyses thesis this his was is has its also via extra ultra aura sp spp cf aff var subsp sensu lato stricto et al nov gen comb " +
+    "emend ex in situ insitu and the from with for type types forma form vera etc ibid circa ca alia inter minus nexus census bonus campus " +
+    "corpus apparatus stimulus radius fungus fungi hyphae algae larvae nuclei stomata lumina lumen strata stratum spora era tissue nucleus " +
+    "nucleoli cuticula cuticle lamina laminae xylem phloem cortex medulla integument exine intine sexine nexine saccus sacci cappa cappula " +
+    "lycopsid lycopsids conifers ferns sphenopsids cordaites seeds seed pollen spores spore miospore miospores megaspore megaspores " +
+    "cones cone leaves leaf trees tree roots root stems stem plants plant was were are been being said per plus minus alia vs").split(" "));
+  const LATIN = /(ii|ae|um|us|is|ensis|ense|oides|ata|atus|atum|osa|osus|osum|ula|ulus|ulum|ella|ellus|ina|inus|inum|ica|icus|icum|iana|ianus|ianum|ana|anus|alis|aris|ilis|ifera|ifer|iformis|ides|ites|eus|eum|ium|ius|ida|illa|ella)$/;
+  /* informal group names and place names that turn up as node labels */
+  const NOT_GENUS = new Set(("Bennettitaleans Conifers Cordaitaleans Cycads Ferns Gymnosperms Medullosans Peltasperms Zosterophylls " +
+    "Exannulate Flowering Mixed Unidentified Unnamed Early Tree Other Lepidodendrid Oribatid Bernasso Enspel Willershausen").split(" "));
+  function build(DATASETS, ECO){
+    const G = new Set(), EP = new Set();
+    const addG = w => { if (/^[A-Z][a-z]{2,}$/.test(w) && !SUPRA.test(w) && !NOT_GENUS.has(w)) G.add(w); };
+    const texts = [];
+    Object.values(DATASETS || {}).forEach(ds => {
+      (ds.nodes || []).forEach(n => {
+        const [id, kind] = n; if (kind === "hub" || typeof id !== "string") return;
+        const w = id.split(" ");
+        if (w.length === 1) addG(w[0]);
+        else if (/^[A-Z][a-z]+$/.test(w[0]) && /^[a-z][a-z-]+$/.test(w[1])) { addG(w[0]); EP.add(w[1]); }
+        n.forEach(x => { if (typeof x === "string") texts.push(x); });
+      });
+      (ds.edges || []).forEach(e => e.forEach(x => { if (typeof x === "string") texts.push(x); }));
+    });
+    Object.entries(ECO || {}).forEach(([k, v]) => {
+      addG(k.split(" ")[0]);
+      (v.partners || []).forEach(p => {
+        texts.push(p);
+        const m = p.match(/^([A-Z][a-z]{2,})\s+(?:(?:cf|aff)\.\s+)?([a-z][a-z-]{2,})\b/); if (/^[A-Z][a-z]{2,}\s+(?:cf|aff)\.\s/.test(p)) addG(p.split(/\s/)[0]);
+        if (m && !STOP.has(m[2]) && LATIN.test(m[2])) { addG(m[1]); EP.add(m[2]); }
+      });
+    });
+    /* abbreviated binomials in the notes ("L. hallii") are reliable epithets */
+    texts.forEach(s => { for (const m of s.matchAll(/\b[A-Z]\.\s([a-z][a-z-]{2,})\b/g)) if (!STOP.has(m[1])) EP.add(m[1]); });
+    STOP.forEach(w => EP.delete(w));
+    return {G, EP};
+  }
+  const isEp = (w, S) => !!w && !STOP.has(w) && (S.EP.has(w) || (w.length >= 4 && LATIN.test(w)));
+  /* split a string into [text, italic?] pieces */
+  function pieces(s, S){
+    const out = []; let last = 0;
+    const re = /\b([A-Z][a-z]{2,})\b(?:(\s+)((?:cf|aff)\.\s+)?([a-z][a-z-]{2,})\b)?|\b([A-Z])\.(\s)([a-z][a-z-]{2,})\b/g;
+    let m;
+    while ((m = re.exec(s))) {
+      if (m[1]) {
+        if (!S.G.has(m[1])) { if (m[2]) re.lastIndex = m.index + m[1].length; continue; }
+        if (m.index > last) out.push([s.slice(last, m.index), false]);
+        if (m[4] && isEp(m[4], S)) {
+          if (m[3]) { out.push([m[1], true], [m[2] + m[3], false], [m[4], true]); }
+          else out.push([m[1] + m[2] + m[4], true]);
+          last = m.index + m[0].length;
+        } else { out.push([m[1], true]); last = m.index + m[1].length; re.lastIndex = last; }
+      } else {
+        /* abbreviated genus: only with a known epithet */
+        if (!S.EP.has(m[7])) continue;
+        if (m.index > last) out.push([s.slice(last, m.index), false]);
+        out.push([m[0], true]); last = m.index + m[0].length;
+      }
+    }
+    if (!out.length) return null;
+    if (last < s.length) out.push([s.slice(last), false]);
+    return out;
+  }
+  root.TaxItal = {build, pieces};
+})(typeof window !== "undefined" ? window : globalThis);
+/* apply to the page: every text node, now and whenever panels re-render */
+(function(){
+  if (typeof document === "undefined") return;
+  const SKIP = "i,em,svg,script,style,textarea,input,select,option,title,code,pre,[contenteditable],.noital";
+  let S = null;
+  function fix(tn){
+    const p = tn.parentElement; if (!p || !tn.nodeValue || !/[A-Z]/.test(tn.nodeValue) || p.closest(SKIP)) return;
+    const parts = TaxItal.pieces(tn.nodeValue, S); if (!parts) return;
+    const f = document.createDocumentFragment();
+    parts.forEach(([t, it]) => { if (!it) f.appendChild(document.createTextNode(t)); else { const i = document.createElement("i"); i.textContent = t; f.appendChild(i); } });
+    p.replaceChild(f, tn);
+  }
+  function walk(el){
+    if (el.nodeType === 3) { fix(el); return; }
+    if (el.nodeType !== 1 || el.closest(SKIP)) return;
+    const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), list = [];
+    while (w.nextNode()) list.push(w.currentNode);
+    list.forEach(fix);
+  }
+  let queue = new Set(), raf = 0;
+  function flush(){ raf = 0; const q = queue; queue = new Set(); q.forEach(n => { if (n.isConnected) walk(n); }); }
+  function start(){
+    try { S = TaxItal.build(typeof DATASETS !== "undefined" ? DATASETS : null, typeof ECO !== "undefined" ? ECO : null); } catch (e) { return; }
+    if (!S.G.size) return;
+    walk(document.body);
+    new MutationObserver(ms => { ms.forEach(m => m.addedNodes.forEach(n => queue.add(n))); if (!raf) raf = requestAnimationFrame(flush); })
+      .observe(document.body, {childList: true, subtree: true});
+  }
+  if (document.readyState === "complete") start(); else window.addEventListener("load", start);
 })();
 </script>
 </body></html>
