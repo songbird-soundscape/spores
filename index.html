@@ -4143,4 +4143,14 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
 </script>
 <!-- visit counts (GoatCounter: no cookies, no personal data) -->
 <script data-goatcounter="https://songbird-soundscape.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+/* Links that leave this site, whether to another site in this family (the professional page, Sporae Dispersae, Community Paleoecology,
+   Drifting Through Deep Time, Open Commons) or anywhere else on the web, open in a new tab. Links within this site stay in the same tab. */
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("a[href]"); if (!a || a.target || a.hasAttribute("download")) return;
+  let u; try { u = new URL(a.href, location.href); } catch (x) { return; } if (!/^https?:$/.test(u.protocol)) return;
+  const S = ["spores", "community-paleoecology", "drifting-through-deep-time", "open-commons"], key = v => { const s = v.pathname.split("/")[1]; return v.origin + "|" + (S.includes(s) ? s : ""); };
+  if (key(u) !== key(location)) { a.target = "_blank"; a.rel = (a.rel + " noopener").trim(); }
+}, true);
+</script>
 </body></html>
