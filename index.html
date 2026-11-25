@@ -529,6 +529,15 @@ body.ttfull-open{overflow:hidden}
 .cppop p{margin:0 0 7px} .cppop p:last-child{margin:0; display:flex; gap:12px; align-items:center; flex-wrap:wrap}
 .cppop .cp-x{position:absolute; right:6px; top:4px}
 .cppop a{color:var(--accent); font-weight:600}
+.hubpop{position:fixed; left:50%; top:max(70px, 12vh); transform:translateX(-50%); z-index:80; width:min(470px, calc(100vw - 32px)); background:var(--panel); color:var(--ink);
+  border:1px solid var(--accent); border-radius:14px; padding:18px 20px 16px; box-shadow:0 18px 50px rgba(0,0,0,.28); font-size:14px; line-height:1.5; animation:hubIn .35s ease-out}
+.hubpop h3{margin:0 0 8px; font-size:17px} .hubpop p{margin:0 0 10px}
+.hubpop .hub-row{display:flex; gap:10px; justify-content:flex-end; align-items:center; flex-wrap:wrap; margin-top:12px}
+.hubpop .hub-go{background:var(--accent); color:var(--panel); border-radius:999px; padding:6px 14px; font-weight:600; text-decoration:none}
+.hubpop .hub-ok{font:inherit; background:none; border:1px solid var(--rule); color:var(--ink); border-radius:999px; padding:5px 14px; cursor:pointer}
+.hubpop .hub-x{position:absolute; right:8px; top:6px; background:none; border:0; color:var(--muted, inherit); font-size:15px; cursor:pointer}
+@keyframes hubIn{from{opacity:0; transform:translate(-50%, -8px)} to{opacity:1; transform:translate(-50%, 0)}}
+@media (prefers-reduced-motion:reduce){ .hubpop{animation:none} }
 .cp-never{border:0; background:none; color:var(--muted); font:inherit; font-size:12px; cursor:pointer; text-decoration:underline}
 @keyframes cpIn{from{opacity:0; transform:translateY(-8px)} to{opacity:1; transform:none}}
 @media (prefers-reduced-motion:reduce){ .cppop{animation:none} }
@@ -3811,7 +3820,7 @@ try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorag
     c.title = "Send a document or photo that fills a gap"; c.onclick = () => { const s = document.getElementById("contribute"); if (s) { s.scrollIntoView({behavior: "smooth", block: "start"}); setTimeout(() => s.querySelector("input, textarea, a, button")?.focus({preventScroll: true}), 600); } };
     h.appendChild(c);
   }
-  const boot = () => { addButton(); if (!store.get()) setTimeout(welcome, 1200); };
+  const boot = () => { addButton(); if (!store.get()) setTimeout(() => { if (window.__hubOpen) document.addEventListener("sd-hub-closed", () => setTimeout(welcome, 400), {once: true}); else welcome(); }, 1200); };
   if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
   window.SD_TOUR = {start};
 })();
@@ -4063,6 +4072,13 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
     </div>
   </div>
 </dialog>
+<div id="hubPop" class="hubpop" role="dialog" aria-labelledby="hubPopT" hidden>
+  <button type="button" class="hub-x" aria-label="Close">✕</button>
+  <h3 id="hubPopT">A knowledge hub in Open Commons</h3>
+  <p>Sporae Dispersae is one hub in <b>Open Commons</b>, an open network of scholars, students and knowledge hubs that link their work to one another.</p>
+  <p>From the network you can follow its links to <i>Drifting Through Deep Time</i>, to paleoecology and ecology, and on to other hubs.</p>
+  <div class="hub-row"><button type="button" class="hub-ok">Explore Sporae Dispersae</button><a class="hub-go" href="/open-commons/" target="_blank" rel="noopener">Open the network in a new tab ↗</a></div>
+</div>
 <div id="cpPop" class="cppop" role="dialog" aria-labelledby="cpPopT" hidden>
   <button type="button" class="cp-x" aria-label="Close">✕</button>
   <p id="cpPopT"><b>Who lived with these plants?</b></p>
@@ -4104,6 +4120,16 @@ body.gaming #periodSeg button[aria-pressed="true"]{background:var(--accent); col
   btn.onclick = () => { cook(); dlg.showModal(); };
   dlg.querySelector(".cook-x").onclick = () => dlg.close();
   dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+})();
+/* First visit: say that this page is a knowledge hub in Open Commons. The tour offer waits until this is closed. */
+(function(){
+  const pop = document.getElementById("hubPop"); if (!pop) return;
+  let seen = false; try { seen = localStorage.getItem("sd-hub-seen") === "1"; } catch(e) {}
+  if (seen) return;
+  window.__hubOpen = true; setTimeout(() => { pop.hidden = false; pop.querySelector(".hub-ok").focus({preventScroll: true}); }, 600);
+  const close = () => { pop.hidden = true; window.__hubOpen = false; try { localStorage.setItem("sd-hub-seen", "1"); } catch(e) {} document.dispatchEvent(new Event("sd-hub-closed")); };
+  pop.querySelector(".hub-x").onclick = close; pop.querySelector(".hub-ok").onclick = close; pop.querySelector(".hub-go").addEventListener("click", close);
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !pop.hidden) close(); });
 })();
 /* Habitat view: point to Community Paleoecology */
 (function(){
