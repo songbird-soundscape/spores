@@ -540,7 +540,6 @@ body.ttfull-open{overflow:hidden}
 .an-flash{animation:anFlash 1.4s steps(2, jump-none) infinite} @keyframes anFlash{50%{opacity:0}}
 @media (prefers-reduced-motion:reduce){ .an-flash{animation:none} }
 @media (max-width:640px){ .ainote{flex-direction:column; align-items:stretch} .ainote .an-art{width:auto} }
-  background:color-mix(in srgb, var(--accent) 7%, var(--panel)); color:var(--ink); font-size:13.5px; line-height:1.45}
 .hubpop{position:fixed; left:50%; top:max(70px, 12vh); transform:translateX(-50%); z-index:80; width:min(470px, calc(100vw - 32px)); background:var(--panel); color:var(--ink);
   border:1px solid var(--accent); border-radius:14px; padding:18px 20px 16px; box-shadow:0 18px 50px rgba(0,0,0,.28); font-size:14px; line-height:1.5; animation:hubIn .35s ease-out}
 .hubpop h3{margin:0 0 8px; font-size:17px} .hubpop p{margin:0 0 10px}
@@ -576,7 +575,7 @@ body.ttfull-open{overflow:hidden}
   </div>
   <header>
     <h1 id="pageTitle">Sporae Dispersae: spores and their parent plants, 1780 to now</h1>
-    <p class="sub" id="pageSub">Pennsylvanian spore and pollen genera, the plant organs they were found in, and the whole plants those organs were assembled into. Move the year to watch names appear and links form. Switch views to arrange the same network by when it was learned, by relationships, or by supposed habitat in each ecoregion. Click anything for the sources behind it.</p>
+    <p class="sub" id="pageSub">Pennsylvanian spore and pollen genera, the plant organs they were found in, and the whole plants those organs were assembled into. Move the year to watch names appear and links form. Switch views to arrange the same network by when it was learned, by relationships, or by supposed habitat. Click anything for the sources behind it.</p>
   </header>
 
   <div class="bar" role="group" aria-label="Geological interval">
@@ -4182,5 +4181,66 @@ document.addEventListener("click", e => {
   const S = ["spores", "community-paleoecology", "drifting-through-deep-time", "open-commons"], key = v => { const s = v.pathname.split("/")[1]; return v.origin + "|" + (S.includes(s) ? s : ""); };
   if (key(u) !== key(location)) { a.target = "_blank"; a.rel = (a.rel + " noopener").trim(); }
 }, true);
+</script>
+<!-- Phone layout (screens 700px wide or less). Everything here is inside a max-width media query
+     or gated on the same query in script, so wider screens are untouched. -->
+<style>
+.mobfold-btn{display:none}
+@media (max-width:700px){
+  /* theme switch: a small row at the top of the page instead of floating over the content */
+  .themebox.mobtop{position:static; flex-direction:row; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:6px; margin:0 0 8px}
+  .themebox.mobtop button{font-size:12px; padding:4px 10px; box-shadow:none}
+  .themebox.mobtop #themeNote{max-width:none; flex:1 1 100%}
+
+  /* view settings: View and Find stay out; the rest folds under "More options" */
+  .bar.mobfold > .keep{order:0}
+  .bar.mobfold > .mobfold-btn{order:1; display:inline-flex; align-items:center; gap:6px; align-self:flex-end; font:inherit; font-size:13px;
+    padding:6px 12px; border:1px solid var(--rule); border-radius:999px; background:var(--panel); color:var(--ink); cursor:pointer}
+  .bar.mobfold > .mobfold-btn[aria-expanded="true"]{border-color:var(--accent); color:var(--accent)}
+  .bar.mobfold > .mf{order:2}
+  .bar.mobfold:not(.open) > .mf{display:none}
+
+  /* discovery bar: Play and the year on one row, then the slider and the milestone strip at full width */
+  .dbtime{grid-template-columns:auto minmax(0,1fr)}
+  .dbtime #play{grid-row:1; grid-column:1}
+  .dbtime #yearOut{grid-row:1; grid-column:2; justify-self:end}
+  .dbtime #year{grid-row:2; grid-column:1 / -1; margin:6px 0 2px}
+  .dbtime .dbtl, .dbtime .msnow, .dbtime .mslist, .dbtime .msdetails, .dbtime .publeg{grid-column:1 / -1}
+
+  /* size charts: keep their text legible and let them scroll sideways */
+  .sizes .tl-scroll{-webkit-overflow-scrolling:touch}
+  .sizes #logs{min-width:620px}
+  .sizes .tl-scroll:has(#logs)::after{content:"swipe sideways for the rest →"; display:block; font-size:11px; color:var(--muted); margin-top:2px; position:sticky; left:0}
+}
+</style>
+<script>
+(function(){
+  const mq = window.matchMedia("(max-width:700px)");
+  if (!mq.matches) return;   /* phones only; wider screens keep the page as it is */
+  function setup(){
+    /* theme switch to the top of the page */
+    const tb = document.querySelector(".themebox"), wrap = document.querySelector(".wrap");
+    if (tb && wrap && !tb.classList.contains("mobtop")) { tb.classList.add("mobtop"); wrap.prepend(tb); }
+    /* fold the less-used view settings */
+    const bar = document.querySelector('.bar[aria-label="View settings"]');
+    if (bar && !bar.classList.contains("mobfold")) {
+      bar.classList.add("mobfold");
+      [...bar.children].forEach(el => {
+        const keep = el.querySelector('[data-mode]') || el.querySelector('#search');
+        el.classList.add(keep ? "keep" : "mf");
+      });
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "mobfold-btn"; b.setAttribute("aria-expanded", "false");
+      b.textContent = "More options ▾";
+      b.addEventListener("click", () => {
+        const open = bar.classList.toggle("open");
+        b.setAttribute("aria-expanded", String(open));
+        b.textContent = open ? "Fewer options ▴" : "More options ▾";
+      });
+      bar.appendChild(b);
+    }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", setup); else setup();
+})();
 </script>
 </body></html>
