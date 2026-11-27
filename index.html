@@ -13,6 +13,7 @@
 .site-src, .site-todo{margin:0; padding-left:20px} .site-src li, .site-todo li{margin:3px 0}
 .site-foot{color:var(--muted); font-size:13px}
 .site-in a{color:var(--accent)}
+.srcbar{display:inline-block; width:150px; height:8px; border-radius:4px; vertical-align:middle; margin:0 6px} .srcends{font-family:var(--mono); font-size:11.5px}
 .vouchdlg{max-width:min(920px, 96vw)}
 .vouch-asks{margin:4px 0 8px; padding-left:22px} .vouch-asks li{margin:4px 0}
 .vouch-bar{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 4px} .vouch-bar input{flex:1 1 200px}
@@ -634,6 +635,11 @@ body.ttfull-open{overflow:hidden}
         <button type="button" data-scale="form" aria-pressed="true">Form only</button>
         <button type="button" data-scale="true" aria-pressed="false">True scale</button>
       </div></div>
+    <div class="field"><span>Link colours</span>
+      <div class="seg" role="group" aria-label="Link colours">
+        <button type="button" data-lcol="kind" aria-pressed="true">Kind of link</button>
+        <button type="button" data-lcol="src" aria-pressed="false" title="Colour each link by the year of the paper it cites, on the same scale as the timeline">Source year</button>
+      </div></div>
     <label class="field" for="region"><span>Ecoregion</span>
       <select id="region"><option value="all">Both</option><option value="Euramerica">Euramerica (paleoequatorial)</option><option value="Gondwana">Gondwana</option></select></label>
     <label class="field" for="search"><span>Find a taxon</span>
@@ -699,6 +705,7 @@ body.ttfull-open{overflow:hidden}
           <span><i class="sw" style="border-color:var(--assembly)"></i>Organ linked to the whole plant</span>
           <span><i class="sw" style="border-color:var(--affinity); border-top-style:dotted"></i>Assigned to a group only</span>
           <span><i class="sw" style="border-color:var(--insitu); border-top-style:dashed"></i>Dashed: year approximate or a "known by" bound</span>
+          <span id="keySrc" hidden style="flex-basis:100%; grid-column:1/-1; display:block"><b>Source year</b> (Link colours): each link is coloured by the year of the first paper it cites, on the same scale as the milestones timeline. <i class="srcbar" id="srcBar"></i><span class="srcends" id="srcEnds"></span> Grey: no paper cited (from a guide, a database pass or background knowledge).</span>
           <span id="keyHabitat"><i class="sw" style="border-color:var(--hull); border-top-style:dotted"></i>Habitat view: dotted outline marks a supposed habitat; click it</span>
         </div>
       </div>
@@ -1035,7 +1042,7 @@ const EXTRA_MS = [
   DATA.milestones.sort((x, y) => x[0] - y[0]); }
 const ALLYEARS = DATA.nodes.map(n => n[3]).concat((DATA.milestones || []).map(m => m[0])).filter(y => typeof y === "number" && isFinite(y));
 const YMIN = Math.max(1820, Math.floor(Math.min(...ALLYEARS, 2000) / 10) * 10), YMAX = Math.max(2025, ...ALLYEARS);
-const state = {year:YMIN, region:"all", ghosts:true, labels:true, aff:true, species:IS_PENN, sel:firstSel, selZone:null, mode:"discovery", scale:"form", eco:"all", ecoPer:false};
+const state = {year:YMIN, region:"all", ghosts:true, labels:true, aff:true, species:IS_PENN, sel:firstSel, selZone:null, mode:"discovery", scale:"form", eco:"all", ecoPer:false, lcol:"kind"};
 function target(n){
   if (waiting(n) || n.group === "unknown") return state.mode === "habitat" ? (UNKXY || [HW/2, PENY]) : state.mode === "phylo" ? unknownPhy : (arc.unknown ? discXY("unknown") : [WW/2, WH - 70]);
   if (state.mode === "habitat") return habXY(n);
@@ -1931,7 +1938,12 @@ function ecoBlock(n){
     + `<p><a href="${ECO_URL}" target="_blank" rel="noopener">Open in Community Paleoecology</a></p>`;
 }
 function colorOf(d){ return {hub:css("--hub"), plant:css("--plant"), organ:css("--organ"), spore:css("--spore"), mega:css("--mega"), "sp-spore":css("--spore"), "sp-plant":css("--plant")}[d.kind]; }
-const linkColor = l => css(l.type==="insitu"||l.type==="insitu-gen"||l.type==="insitu-sp"||l.type==="compare-sp"?"--insitu":l.type==="affinity"?"--affinity":(l.type==="member"||l.type==="taxon")?"--rule":"--assembly");
+/* "Source year" colouring: one scale shared by the network links and the milestones timeline */
+const SRC_Y0 = 1820, SRC_Y1 = 2026;
+const srcCol = y => (y == null || !isFinite(y)) ? css("--muted") : d3.interpolateTurbo(0.08 + 0.86 * Math.max(0, Math.min(1, (y - SRC_Y0) / (SRC_Y1 - SRC_Y0))));
+const srcYear = l => { if (l._sy !== undefined) return l._sy; const c = (typeof citesIn === "function") ? citesIn(l.ref) : []; return l._sy = c.length ? c[0].year : null; };
+const linkColorKind = l => css(l.type==="insitu"||l.type==="insitu-gen"||l.type==="insitu-sp"||l.type==="compare-sp"?"--insitu":l.type==="affinity"?"--affinity":(l.type==="member"||l.type==="taxon")?"--rule":"--assembly");
+const linkColor = l => state.lcol === "src" && !(l.type==="member"||l.type==="taxon") ? srcCol(srcYear(l)) : linkColorKind(l);
 
 let lastPlaced = null;
 function reaimIfPlaced(){
@@ -2417,7 +2429,10 @@ function drawMilestones(){
   d3.range(Math.ceil((tlV[0]+1)/step)*step, tlV[1], step).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY-11).attr("text-anchor","middle").text(y));
   /* publications: small dots stacked beneath the axis, one per paper, coloured by what it contributed */
   const D = 5.2, stacks = new Map(); let maxStack = 0;
-  const colOf = p => p.kinds.has("in situ") ? css("--insitu") : p.kinds.has("organ to plant") ? css("--plant") : css("--spore");
+  if (state.lcol === "src") { const gid = "srcGrad"; const df = tl.append("defs").append("linearGradient").attr("id", gid).attr("x1", 0).attr("x2", 1);
+    d3.range(0, 1.0001, 0.05).forEach(f => { const y = tlV[0] + f * (tlV[1] - tlV[0]); df.append("stop").attr("offset", f).attr("stop-color", srcCol(y)); });
+    tl.append("rect").attr("x", 9).attr("width", W - 18).attr("y", TLY - 2.5).attr("height", 5).attr("rx", 2.5).attr("fill", `url(#${gid})`); }
+  const colOf = p => state.lcol === "src" ? srcCol(p.year) : p.kinds.has("in situ") ? css("--insitu") : p.kinds.has("organ to plant") ? css("--plant") : css("--spore");
   const pubG = tl.append("g").attr("class","pubs");
   PUBS.forEach(p => { const x = tx(p.year), b = Math.round(x / D); const k = stacks.get(b) || 0; stacks.set(b, k + 1); maxStack = Math.max(maxStack, k + 1);
     const a = pubG.append("a").attr("href", scholarURL(p.q)).attr("target","_blank").attr("rel","noopener").attr("class","pubdot");
@@ -2451,7 +2466,7 @@ function drawMilestones(){
   tl.attr("viewBox", `0 0 ${W} ${H}`).attr("width", W).attr("height", H).style("height", H + "px");
   marker = tl.append("line").attr("y1",TLY-14).attr("y2",TLY+14).attr("stroke",css("--ink")).attr("stroke-width",2).style("pointer-events","none");
   const leg = document.getElementById("pubLegend");
-  if (leg) leg.innerHTML = `<span><b>${PUBS.length}</b>&nbsp;publications supplied this page's names and links, one dot each; click a dot or a milestone to search Google Scholar.</span>` +
+  if (leg) leg.innerHTML = state.lcol === "src" ? `<span><b>${PUBS.length}</b>&nbsp;publications, one dot each, coloured by year on the same scale as the network links (Link colours: Source year); click a dot to search Google Scholar.</span>` : `<span><b>${PUBS.length}</b>&nbsp;publications supplied this page's names and links, one dot each; click a dot or a milestone to search Google Scholar.</span>` +
     `<span><i style="background:var(--spore)"></i>named genera or species</span><span><i style="background:var(--insitu)"></i>found spores inside a plant organ</span><span><i style="background:var(--plant)"></i>joined organs into a whole plant</span>`;
   drawTimelineMarker();
 }
@@ -2531,6 +2546,14 @@ function setMode(m){
   fitted = false; drawBack(); render(); sim.alpha(0.9).restart();
 }
 document.querySelectorAll(".seg button[data-mode]").forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.querySelectorAll(".seg button[data-lcol]").forEach(b => b.onclick = () => {
+  state.lcol = b.dataset.lcol;
+  document.querySelectorAll(".seg button[data-lcol]").forEach(x => x.setAttribute("aria-pressed", x.dataset.lcol === state.lcol));
+  const k = document.getElementById("keySrc"); if (k) k.hidden = state.lcol !== "src";
+  const bar = document.getElementById("srcBar"); if (bar) bar.style.background = `linear-gradient(90deg, ${d3.range(0, 1.0001, 0.1).map(f => srcCol(SRC_Y0 + f * (SRC_Y1 - SRC_Y0))).join(",")})`;
+  const ends = document.getElementById("srcEnds"); if (ends) ends.textContent = `${SRC_Y0} → ${SRC_Y1 - 1}.`;
+  render(); drawMilestones();
+});
 document.querySelectorAll(".seg button[data-scale]").forEach(b => b.onclick = () => {
   state.scale = b.dataset.scale;
   document.querySelectorAll(".seg button[data-scale]").forEach(x => x.setAttribute("aria-pressed", x.dataset.scale === state.scale));
@@ -4495,7 +4518,7 @@ document.addEventListener("click", e => {
       <li><time>23 Nov 2026</time><div>A second pass added organ-to-plant links, Mississippian records and further in situ records; these are marked "added 2026-11-23". The living-families view was also added. Its pollen comes from Punt et al., Halbritter et al. (2018), PalDat and the NAMS 2026 guide; its clades follow APG IV and PPG I. Living parent genera were added the same day.</div></li>
       <li><time>24 Nov 2026</time><div>First public copy on GitHub Pages. Fossil occurrences came from the <a href="https://paleobiodb.org" target="_blank" rel="noopener">Paleobiology Database</a>: 44,021 records for 435 of 503 genera, CC BY 4.0, rebuilt with <code>R/rebuild_occurrences.R</code>. Angiosperm families were resolved with Open Tree of Life. A catalogue of survey reports, theses and other literature ("Where more exists") was searched and compiled. Also added:<ul><li>Discovery milestones, the true-scale time tree and the games.</li><li>The Community Paleoecology coprolite catalogue (Habgood, Hass &amp; Kerp 2004 and network records).</li><li>A North American archaeological-pollen pilot (data kept; switched off on the page for now).</li></ul></div></li>
       <li><time>25 Nov 2026</time><div>Genus and species names put in italics throughout. Old "Paleoecology of the Freshwater and Estuarine Realms" labels renamed Community Paleoecology.</div></li>
-      <li><time>27 Nov 2026</time><div><b>Palynodata in situ pass.</b> <a href="https://paleobotany.ru/palynodata/taxa" target="_blank" rel="noopener">Palynodata</a> is a bibliographic and taxonomic database of fossil spores, pollen and other palynomorphs, served online by the Laboratory of Paleobotany, A.A. Borissiak Paleontological Institute (paleobotany.ru). Its 283 in situ publications and the taxa listed under each were read and compared with this network. <span id="siteNPd"></span> Only papers about a single fossil organ were used, and each link cites the original paper. Links appear with the status "Palynodata listing, original not yet read". The files are in <code>data/palynodata/</code>. A <b>Vouch for a link</b> card was added under Play. It lists every link not yet checked by a person and opens a prefilled report for each one; vouched links are recorded in <code>vouches.json</code>.</div></li>
+      <li><time>27 Nov 2026</time><div><b>Palynodata in situ pass.</b> <a href="https://paleobotany.ru/palynodata/taxa" target="_blank" rel="noopener">Palynodata</a> is a bibliographic and taxonomic database of fossil spores, pollen and other palynomorphs, served online by the Laboratory of Paleobotany, A.A. Borissiak Paleontological Institute (paleobotany.ru). Its 283 in situ publications and the taxa listed under each were read and compared with this network. <span id="siteNPd"></span> Only papers about a single fossil organ were used, and each link cites the original paper. Links appear with the status "Palynodata listing, original not yet read". The files are in <code>data/palynodata/</code>. A <b>Vouch for a link</b> card was added under Play. It lists every link not yet checked by a person and opens a prefilled report for each one; vouched links are recorded in <code>vouches.json</code>. A <b>Link colours: Source year</b> option colours every link, and the milestones timeline, by the year of the paper it cites, so newer and older sources can be compared.</div></li>
     </ol>
 
     <h3>Where the sources live</h3>
