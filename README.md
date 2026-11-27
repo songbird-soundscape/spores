@@ -18,11 +18,20 @@ An interactive network linking dispersed fossil spores and pollen to the plant o
 | `data/pbdb_occurrences.csv` | The same records as a table, one row per occurrence |
 | `data/pbdb_query_log.csv` | One row per genus: records returned, records kept, and any note from PBDB |
 | `data/genera_by_interval.csv` | The dispersed spore and pollen genera on each interval's page |
+| `data/palynodata/` | In situ links added from Palynodata on 27 November 2026, with the harvested publication lists and the R script that compares them with the network (see its README) |
 | `R/rebuild_occurrences.R` | Rebuilds the three files above: `Rscript R/rebuild_occurrences.R` |
 
 ## Occurrence data
 
 Downloaded from the [Paleobiology Database](https://paleobiodb.org) on 24 November 2026 with `R/rebuild_occurrences.R`: 44,021 occurrences for 435 of 503 genera. Only records identified under each genus's own name are kept, because PBDB's synonym handling can pull in unrelated taxa (for example, the pollen genus *Polyporina* brought in the bryozoan *Polypora*). Palaeocoordinates are PBDB's (GPlates). PBDB data are CC BY 4.0.
+
+## Site info
+
+The page's **Site info** button opens a day-by-day timeline of what was added and from where, which larger databases hold each source, who compiled the photographs, and what is still to do (`index.html#site-info` opens it directly).
+
+## Palynodata
+
+On 27 November 2026, 71 spore-to-organ links and 36 genera were added from in situ publications listed in [Palynodata](https://paleobotany.ru/palynodata/taxa) (Laboratory of Paleobotany, A.A. Borissiak Paleontological Institute). Each link cites the original paper, which has not yet been read for this page. Details are in `data/palynodata/README.md`.
 
 ## Day and night
 
@@ -30,7 +39,7 @@ The page switches itself to the night theme about 30 minutes before local sunset
 
 ## Images
 
-Photomicrographs come from published sources and may be under copyright. This is a freely distributed educational resource, made to encourage collaboration among people who study spores and plants. If an image is yours and you would like it credited differently or removed, please open an issue and it will be done.
+The photomicrographs were compiled by Vann Smith. They come from published sources and may be under copyright. Stephen C. Caird chose how they are used and shared here and takes full responsibility for that, so please raise any concern with him, not with Vann Smith. This is a freely distributed educational resource, made to encourage collaboration among people who study spores and plants. If an image is yours and you would like it credited differently or removed, please open an issue and it will be done.
 
 ## Contributing
 
