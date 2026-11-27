@@ -13,6 +13,14 @@
 .site-src, .site-todo{margin:0; padding-left:20px} .site-src li, .site-todo li{margin:3px 0}
 .site-foot{color:var(--muted); font-size:13px}
 .site-in a{color:var(--accent)}
+.vouchdlg{max-width:min(920px, 96vw)}
+.vouch-asks{margin:4px 0 8px; padding-left:22px} .vouch-asks li{margin:4px 0}
+.vouch-bar{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 4px} .vouch-bar input{flex:1 1 200px}
+.vouch-bar input, .vouch-bar select{font:inherit; padding:5px 8px; border:1px solid var(--rule); border-radius:8px; background:var(--panel); color:var(--ink)}
+.vouch-count{font-size:13px; color:var(--muted); margin:4px 0}
+.vouch-list{list-style:none; margin:0; padding:0} .vouch-list li{border-top:1px solid var(--rule); padding:8px 0}
+.vl-kind{font-size:12px; color:var(--muted); margin-left:4px} .vl-ref{font-size:12.5px; margin:2px 0 4px}
+.vl-act{display:flex; gap:14px; flex-wrap:wrap; font-size:13px; align-items:center} .vl-go{font-weight:700}
 .sitebtn{all:unset; cursor:pointer; color:var(--accent); font-weight:600; font-size:13.5px} .sitebtn:hover{text-decoration:underline}
 </style>
 
@@ -592,7 +600,6 @@ body.ttfull-open{overflow:hidden}
   <header>
     <h1 id="pageTitle">Sporae Dispersae: spores and their parent plants, 1780 to now</h1>
     <p class="sub" id="pageSub">Pennsylvanian spore and pollen genera, the plant organs they were found in, and the whole plants those organs were assembled into. Move the year to watch names appear and links form. Switch views to arrange the same network by when it was learned, by relationships, or by supposed habitat. Click anything for the sources behind it.</p>
-      <p class="sub" style="margin-top:2px"><button type="button" class="sitebtn" data-siteinfo>Site info: sources, timeline of additions and what is left to do</button></p>
   </header>
 
   <div class="bar" role="group" aria-label="Geological interval">
@@ -615,6 +622,7 @@ body.ttfull-open{overflow:hidden}
       <div class="playcards" role="group" aria-label="Play">
         <button type="button" id="gameBtn" class="playbtn" aria-pressed="false"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 9h6a3 3 0 1 1 6 0h6v6a3 3 0 1 0 0 6v6h-6a3 3 0 1 0-6 0H6v-6a3 3 0 1 1 0-6z" fill="currentColor"/></svg><span><b>Match game</b><small>Build whole plants from their spores</small></span></button>
         <button type="button" id="cookBtn" class="playbtn" aria-haspopup="dialog"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 4c-1.6 2 1.6 3.4 0 5.6M16 3c-1.6 2 1.6 3.4 0 5.6M21 4c-1.6 2 1.6 3.4 0 5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 13h24v2h-2l-1.6 10.4A3 3 0 0 1 21.4 28H10.6a3 3 0 0 1-3-2.6L6 15H4z" fill="currentColor"/></svg><span><b>Cook a spore</b><small>Heat one and watch it darken</small></span></button>
+        <button type="button" id="vouchBtn" class="playbtn" aria-haspopup="dialog"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l6 6L26 9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Vouch for a link</b><small>Check one against the literature</small></span></button>
       </div></div>
     <div class="yearbox">
       <button id="play" type="button" aria-label="Play through the years">Play</button>
@@ -3864,6 +3872,8 @@ try { const want = sessionStorage.getItem("selAfter"); if (want) { sessionStorag
     const c = document.createElement("button"); c.type = "button"; c.id = "contribBtn"; c.textContent = "Contribute";
     c.title = "Send a document or photo that fills a gap"; c.onclick = () => { const s = document.getElementById("contribute"); if (s) { s.scrollIntoView({behavior: "smooth", block: "start"}); setTimeout(() => s.querySelector("input, textarea, a, button")?.focus({preventScroll: true}), 600); } };
     h.appendChild(c);
+    const si = document.createElement("button"); si.type = "button"; si.id = "siteInfoBtn"; si.textContent = "Site info";
+    si.title = "Timeline of additions, sources, photo credits and what is left to do"; si.onclick = () => document.getElementById("siteDlg")?.showModal(); h.appendChild(si);
   }
   const boot = () => { addButton(); if (!store.get()) setTimeout(() => { if (window.__hubOpen) document.addEventListener("sd-hub-closed", () => setTimeout(welcome, 400), {once: true}); else welcome(); }, 1200); };
   if (document.readyState === "complete") boot(); else window.addEventListener("load", boot);
@@ -4378,6 +4388,97 @@ document.addEventListener("click", e => {
   if (document.readyState === "complete") start(); else window.addEventListener("load", start);
 })();
 </script>
+<dialog id="vouchDlg" class="sitedlg vouchdlg" aria-labelledby="vouchTitle">
+  <div class="site-in">
+    <div class="site-head"><h2 id="vouchTitle">Vouch for a link</h2><button type="button" class="site-x" aria-label="Close">✕</button></div>
+    <p>This network was compiled with AI, which can make mistakes. The information is only useful to a person who understands it, and no link here has been vouched for yet. Pick a link, follow it into the scholarly literature, and report back specifically:</p>
+    <ol class="vouch-asks">
+      <li><b>The AI's reading.</b> What in the source confirms, or contradicts, the way the AI read it here? Give the page, figure or plate.</li>
+      <li><b>The authors' reading.</b> What confirms the authors' interpretation, or calls it into question? Later work, other specimens, other workers.</li>
+      <li><b>What you found along the way.</b> Any questions, findings or peripheral connections in paleoecology you came across, with references cited.</li>
+    </ol>
+    <p class="site-foot">"Vouch" opens a GitHub issue already filled in with the link and these three questions (a free GitHub account is needed). "Copy" puts the same report on your clipboard so you can send it another way. Reports are read by Stephen C. Caird. A link counts as vouched once a report confirms it, and your name goes in the record unless you ask otherwise.</p>
+    <div class="vouch-bar">
+      <input type="search" id="vouchQ" placeholder="Filter: a genus, author or year" aria-label="Filter links">
+      <select id="vouchIv" aria-label="Interval"></select>
+      <select id="vouchType" aria-label="Kind of link"><option value="">All kinds</option><option value="insitu">In situ</option><option value="assembly">Organ to plant</option><option value="affinity">Affinity</option></select>
+      <select id="vouchSt" aria-label="Status"><option value="need">Needs vouching</option><option value="done">Vouched</option><option value="">All</option></select>
+    </div>
+    <p class="vouch-count" id="vouchCount" role="status" aria-live="polite"></p>
+    <ul class="vouch-list" id="vouchList"></ul>
+    <p><button type="button" class="sitebtn" id="vouchMore" hidden>Show more</button></p>
+  </div>
+</dialog>
+<script>
+(() => {
+  const dlg = document.getElementById("vouchDlg"); if (!dlg || typeof DATASETS !== "object") return;
+  const $ = id => document.getElementById(id);
+  const esc3 = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  const IVL = {"silurian-devonian":"Silurian–Devonian", mississippian:"Mississippian", pennsylvanian:"Pennsylvanian", permian:"Permian", "triassic-jurassic":"Triassic–Jurassic", cretaceous:"Cretaceous", cenozoic:"Cenozoic", modern:"Living plants"};
+  const KIND = {insitu:"in situ: spores found inside the organ", assembly:"organ to plant: the organ belongs to the plant", affinity:"affinity: spore form assigned to a plant group"};
+  const LINKS = [];
+  Object.entries(DATASETS).forEach(([iv, d]) => d.edges.forEach(e => {
+    if (!["insitu","assembly","affinity"].includes(e[2])) return;
+    LINKS.push({iv, s:e[0], t:String(e[1]).replace(/^G:/, ""), type:e[2], year:e[3], ref:e[5] || "", note:e[6] || "", vs:e[7] || "", key:[iv, e[0], e[1], e[2]].join("|")});
+  }));
+  let VOUCH = {};   /* key -> [{by, issue, date}] ; kept in vouches.json next to the page */
+  fetch("vouches.json", {cache:"no-cache"}).then(r => r.ok ? r.json() : {}).then(j => { VOUCH = (j && j.links) || {}; if (dlg.open) render(true); }).catch(() => {});
+  const ivSel = $("vouchIv");
+  ivSel.innerHTML = `<option value="">All intervals</option>` + Object.keys(DATASETS).map(k => `<option value="${k}">${IVL[k] || k}</option>`).join("");
+  const repo = (() => { const h = location.hostname; return /\.github\.io$/.test(h) ? "https://github.com/songbird-soundscape/spores" : "https://github.com/songbird-soundscape/spores"; })();
+  const report = l => [
+    `Link: ${l.s} → ${l.t} (${KIND[l.type] || l.type})`,
+    `Interval: ${IVL[l.iv] || l.iv}`,
+    `Source cited on the page: ${l.ref || "none given"}`,
+    l.note ? `Note on the page: ${l.note}` : "",
+    `Status on the page: ${l.vs || "not stated"}`,
+    `Link key: ${l.key}`,
+    ``,
+    `1. The AI's reading: what in the source confirms or contradicts how it was read here? (page, figure, plate)`,
+    ``, ``,
+    `2. The authors' reading: what confirms their interpretation, or calls it into question?`,
+    ``, ``,
+    `3. Questions, findings or peripheral connections in paleoecology that I came across, with references:`,
+    ``, ``,
+    `References I read:`,
+    ``, ``,
+    `Name to credit (or "anonymous"):`
+  ].filter((x, i, a) => x !== "" || a[i-1] !== undefined).join("\n");
+  const scholar = l => "https://scholar.google.com/scholar?q=" + encodeURIComponent([l.s, l.t, (l.ref.match(/[A-Z][A-Za-z\-]+(?: (?:&|et al\.)[^;()]*?)? \d{4}/) || [""])[0]].join(" ").trim());
+  const issue = l => repo + "/issues/new?labels=vouch&title=" + encodeURIComponent(`Vouch: ${l.s} → ${l.t} (${IVL[l.iv] || l.iv})`) + "&body=" + encodeURIComponent(report(l));
+  let shown = 60, cur = [];
+  function render(keep){
+    if (!keep) shown = 60;
+    const q = $("vouchQ").value.trim().toLowerCase(), iv = ivSel.value, ty = $("vouchType").value, st = $("vouchSt").value;
+    cur = LINKS.filter(l => (!iv || l.iv === iv) && (!ty || l.type === ty)
+      && (!st || (st === "done") === !!(VOUCH[l.key] && VOUCH[l.key].length))
+      && (!q || (l.s + " " + l.t + " " + l.ref + " " + l.year).toLowerCase().includes(q)));
+    const need = LINKS.filter(l => !(VOUCH[l.key] && VOUCH[l.key].length)).length;
+    $("vouchCount").textContent = `${need.toLocaleString("en-US")} of ${LINKS.length.toLocaleString("en-US")} links still need vouching · ${cur.length.toLocaleString("en-US")} shown by these filters`;
+    $("vouchList").innerHTML = cur.slice(0, shown).map((l, i) => {
+      const v = VOUCH[l.key] || [];
+      return `<li><div class="vl-main"><i>${esc3(l.s)}</i> → <i>${esc3(l.t)}</i> <span class="vl-kind">${esc3(l.type === "insitu" ? "in situ" : l.type === "assembly" ? "organ to plant" : "affinity")} · ${esc3(IVL[l.iv] || l.iv)}${l.year ? " · " + esc3(l.year) : ""}</span></div>`
+        + `<div class="vl-ref">${esc3(l.ref || "no source cited")}${l.vs ? ` <span class="pill warn">${esc3(l.vs)}</span>` : ""}${v.length ? ` <span class="pill ok">vouched by ${esc3(v.map(x => x.by).join(", "))}</span>` : ""}</div>`
+        + `<div class="vl-act"><a href="${scholar(l)}" target="_blank" rel="noopener">Search Google Scholar</a><a href="${issue(l)}" target="_blank" rel="noopener" class="vl-go">Vouch</a><button type="button" class="sitebtn" data-copy="${i}">Copy</button></div></li>`;
+    }).join("");
+    $("vouchMore").hidden = cur.length <= shown;
+  }
+  $("vouchList").addEventListener("click", e => {
+    const b = e.target.closest("[data-copy]"); if (!b) return;
+    const l = cur[+b.dataset.copy]; if (!l) return;
+    navigator.clipboard?.writeText(report(l)).then(() => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy", 1500); }, () => { b.textContent = "Copy failed"; });
+  });
+  ["vouchQ","vouchIv","vouchType","vouchSt"].forEach(id => $(id).addEventListener("input", () => render()));
+  $("vouchMore").onclick = () => { shown += 60; render(true); };
+  const open = () => { const cur = (typeof PERIOD === "string" && DATASETS[PERIOD]) ? PERIOD : ""; if (cur && !ivSel.dataset.set) { ivSel.value = cur; ivSel.dataset.set = 1; } render(); dlg.showModal(); };
+  document.getElementById("vouchBtn")?.addEventListener("click", open);
+  document.querySelectorAll("[data-vouch]").forEach(b => b.addEventListener("click", e => { e.preventDefault(); open(); }));
+  dlg.querySelector(".site-x").onclick = () => dlg.close();
+  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+  if (location.hash === "#vouch") open();
+  window.SD_VOUCH = {count: () => LINKS.length};
+})();
+</script>
 <dialog id="siteDlg" class="sitedlg" aria-labelledby="siteTitle">
   <div class="site-in">
     <div class="site-head"><h2 id="siteTitle">Site info: how this network was put together</h2><button type="button" class="site-x" aria-label="Close">✕</button></div>
@@ -4394,7 +4495,7 @@ document.addEventListener("click", e => {
       <li><time>23 Nov 2026</time><div>A second pass added organ-to-plant links, Mississippian records and further in situ records; these are marked "added 2026-11-23". The living-families view was also added. Its pollen comes from Punt et al., Halbritter et al. (2018), PalDat and the NAMS 2026 guide; its clades follow APG IV and PPG I. Living parent genera were added the same day.</div></li>
       <li><time>24 Nov 2026</time><div>First public copy on GitHub Pages. Fossil occurrences came from the <a href="https://paleobiodb.org" target="_blank" rel="noopener">Paleobiology Database</a>: 44,021 records for 435 of 503 genera, CC BY 4.0, rebuilt with <code>R/rebuild_occurrences.R</code>. Angiosperm families were resolved with Open Tree of Life. A catalogue of survey reports, theses and other literature ("Where more exists") was searched and compiled. Also added:<ul><li>Discovery milestones, the true-scale time tree and the games.</li><li>The Community Paleoecology coprolite catalogue (Habgood, Hass &amp; Kerp 2004 and network records).</li><li>A North American archaeological-pollen pilot (data kept; switched off on the page for now).</li></ul></div></li>
       <li><time>25 Nov 2026</time><div>Genus and species names put in italics throughout. Old "Paleoecology of the Freshwater and Estuarine Realms" labels renamed Community Paleoecology.</div></li>
-      <li><time>27 Nov 2026</time><div><b>Palynodata in situ pass.</b> <a href="https://paleobotany.ru/palynodata/taxa" target="_blank" rel="noopener">Palynodata</a> is a bibliographic and taxonomic database of fossil spores, pollen and other palynomorphs, served online by the Laboratory of Paleobotany, A.A. Borissiak Paleontological Institute (paleobotany.ru). Its 283 in situ publications and the taxa listed under each were read and compared with this network. <span id="siteNPd"></span> Only papers about a single fossil organ were used, and each link cites the original paper. Links appear with the status "Palynodata listing, original not yet read". The files are in <code>data/palynodata/</code>.</div></li>
+      <li><time>27 Nov 2026</time><div><b>Palynodata in situ pass.</b> <a href="https://paleobotany.ru/palynodata/taxa" target="_blank" rel="noopener">Palynodata</a> is a bibliographic and taxonomic database of fossil spores, pollen and other palynomorphs, served online by the Laboratory of Paleobotany, A.A. Borissiak Paleontological Institute (paleobotany.ru). Its 283 in situ publications and the taxa listed under each were read and compared with this network. <span id="siteNPd"></span> Only papers about a single fossil organ were used, and each link cites the original paper. Links appear with the status "Palynodata listing, original not yet read". The files are in <code>data/palynodata/</code>. A <b>Vouch for a link</b> card was added under Play. It lists every link not yet checked by a person and opens a prefilled report for each one; vouched links are recorded in <code>vouches.json</code>.</div></li>
     </ol>
 
     <h3>Where the sources live</h3>
@@ -4429,7 +4530,9 @@ document.addEventListener("click", e => {
     mem: N.filter(n => n[6] === "memory").length + E.filter(e => /background knowledge/i.test(e[7] || "")).length,
     unc: E.filter(e => /match uncertain|unconfirmed/i.test(e[7] || "")).length
   };
+  const nV = window.SD_VOUCH ? window.SD_VOUCH.count() : 0;
   const todo = [
+    `Vouch for every link: none of the ${fmt(nV || E.length)} links has yet been checked by a person against its source (Play → Vouch for a link).`,
     `Read the original papers behind the ${fmt(cnt.pdRead)} links taken from Palynodata (status "original not yet read"), and confirm each one.`,
     `Hand-check the Palynodata papers that describe several organs at once, such as Abbott 1963, Sharma &amp; Bohra 1980 and Krassilov 1980. Their spore–organ pairings are not on the page yet; the candidates are in <code>data/palynodata/</code>.`,
     `Read the 28 Palynodata in situ publications whose taxon lists did not load on 27 November 2026.`,

@@ -1,0 +1,4 @@
+{
+  "about": "Links in the Sporae Dispersae network that a person has checked against the literature. Key: interval|dispersed genus|parent|kind, as shown in each vouch report. Each entry: by (name as they want it credited), issue (GitHub issue number), date, verdict (confirmed / confirmed with changes / disputed), and the references they read.",
+  "links": {}
+}
