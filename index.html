@@ -13,6 +13,12 @@
 .site-src, .site-todo{margin:0; padding-left:20px} .site-src li, .site-todo li{margin:3px 0}
 .site-foot{color:var(--muted); font-size:13px}
 .site-in a{color:var(--accent)}
+#year{-webkit-appearance:none; appearance:none; height:22px; background:transparent}
+#year::-webkit-slider-runnable-track{height:6px; border-radius:3px; background:var(--rainbow, var(--rule))}
+#year::-moz-range-track{height:6px; border-radius:3px; background:var(--rainbow, var(--rule))}
+#year::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; margin-top:-5px; border-radius:50%; background:var(--panel); border:2px solid var(--ink); cursor:pointer}
+#year::-moz-range-thumb{width:13px; height:13px; border-radius:50%; background:var(--panel); border:2px solid var(--ink); cursor:pointer}
+.affleg span{white-space:nowrap} .affleg{display:flex; flex-wrap:wrap; gap:4px 12px; margin-top:6px; font-size:12px} .affleg i{display:inline-block; width:14px; height:4px; border-radius:2px; margin-right:4px; vertical-align:middle}
 .srcbar{display:inline-block; width:150px; height:8px; border-radius:4px; vertical-align:middle; margin:0 6px} .srcends{font-family:var(--mono); font-size:11.5px}
 .vouchdlg{max-width:min(920px, 96vw)}
 .vouch-asks{margin:4px 0 8px; padding-left:22px} .vouch-asks li{margin:4px 0}
@@ -638,7 +644,7 @@ body.ttfull-open{overflow:hidden}
     <div class="field"><span>Link colours</span>
       <div class="seg" role="group" aria-label="Link colours">
         <button type="button" data-lcol="kind" aria-pressed="true">Kind of link</button>
-        <button type="button" data-lcol="src" aria-pressed="false" title="Colour each link by the year of the paper it cites, on the same scale as the timeline">Source year</button>
+        <button type="button" data-lcol="aff" aria-pressed="false" title="Colour each link by the institution of the first author of the paper it cites">Author affiliation</button>
       </div></div>
     <label class="field" for="region"><span>Ecoregion</span>
       <select id="region"><option value="all">Both</option><option value="Euramerica">Euramerica (paleoequatorial)</option><option value="Gondwana">Gondwana</option></select></label>
@@ -705,7 +711,8 @@ body.ttfull-open{overflow:hidden}
           <span><i class="sw" style="border-color:var(--assembly)"></i>Organ linked to the whole plant</span>
           <span><i class="sw" style="border-color:var(--affinity); border-top-style:dotted"></i>Assigned to a group only</span>
           <span><i class="sw" style="border-color:var(--insitu); border-top-style:dashed"></i>Dashed: year approximate or a "known by" bound</span>
-          <span id="keySrc" hidden style="flex-basis:100%; grid-column:1/-1; display:block"><b>Source year</b> (Link colours): each link is coloured by the year of the first paper it cites, on the same scale as the milestones timeline. <i class="srcbar" id="srcBar"></i><span class="srcends" id="srcEnds"></span> Grey: no paper cited (from a guide, a database pass or background knowledge).</span>
+          <span id="keySrc" style="flex-basis:100%; grid-column:1/-1; display:block"><b>Hover a link</b> to colour it by the year of the paper it cites (the rainbow on the year slider) and pick out that paper's dot on the milestones timeline.</span>
+          <span id="keyAff" hidden style="flex-basis:100%; grid-column:1/-1; display:block"><b>Author affiliation</b> (Link colours): each link is coloured by the institution of the first author of the paper it cites, at the time of that paper; earth tones run by country and then institution. Most affiliations come from background knowledge and still need checking; a few are from OpenAlex (<code>data/affiliations/</code>). Grey: affiliation not yet recorded. <span id="affLeg" class="affleg"></span></span>
           <span id="keyHabitat"><i class="sw" style="border-color:var(--hull); border-top-style:dotted"></i>Habitat view: dotted outline marks a supposed habitat; click it</span>
         </div>
       </div>
@@ -1867,6 +1874,7 @@ sim.on("tick", () => {
     const cx = target(n)[0], hw = (n.group === "unknown" || leafX[n.group] == null) ? WW/2 - 70 : Math.max(6, laneW/2 - (n._r || 6)/curK - 3);
     if (n.x < cx - hw) { n.x = cx - hw; n.vx = 0; } else if (n.x > cx + hw) { n.x = cx + hw; n.vx = 0; } });
   linkSel.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  if (window.__hitSel) window.__hitSel.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y).attr("display", d => linkOn(d) ? null : "none");
   placeNodes();
   drawHulls();
   declutterSoon();
@@ -1938,12 +1946,16 @@ function ecoBlock(n){
     + `<p><a href="${ECO_URL}" target="_blank" rel="noopener">Open in Community Paleoecology</a></p>`;
 }
 function colorOf(d){ return {hub:css("--hub"), plant:css("--plant"), organ:css("--organ"), spore:css("--spore"), mega:css("--mega"), "sp-spore":css("--spore"), "sp-plant":css("--plant")}[d.kind]; }
+const AFF = {"inst":[["University of Western Australia","Australia"],["Birbal Sahni Institute of Palaeosciences","India"],["University of Allahabad","India"],["Geological Institute USSR Academy of Sciences","Russia"],["Institute of Geology Czech Academy of Sciences","Czechia"],["University of Vienna","Austria"],["Geologisches Landesamt Nordrhein-Westfalen (Krefeld)","Germany"],["Senckenberg Research Institute","Germany"],["University of Munster","Germany"],["Aarhus University","Denmark"],["Bergius Foundation (Royal Swedish Academy of Sciences)","Sweden"],["Swedish Museum of Natural History","Sweden"],["University of Oslo","Norway"],["Utrecht University","Netherlands"],["University of Liege","Belgium"],["Ecole des Mines de Paris","France"],["Museum national d'Histoire naturelle","France"],["Universite Louis Pasteur Strasbourg","France"],["University of Lille","France"],["University of Montpellier","France"],["Cardiff University","United Kingdom"],["Owens College Manchester","United Kingdom"],["Royal Holloway College","United Kingdom"],["University College London","United Kingdom"],["University of Aberdeen","United Kingdom"],["University of Cambridge","United Kingdom"],["University of Glasgow","United Kingdom"],["University of Manchester","United Kingdom"],["University of Reading","United Kingdom"],["University of Sheffield","United Kingdom"],["Cornell University","United States"],["Emporia State University (Kansas State Teachers College)","United States"],["Field Museum of Natural History","United States"],["Florida Museum of Natural History","United States"],["Illinois State Geological Survey","United States"],["Ohio State University","United States"],["Ohio University","United States"],["Smithsonian National Museum of Natural History","United States"],["U.S. Geological Survey","United States"],["University of Connecticut","United States"],["University of Illinois Urbana-Champaign","United States"],["University of Illinois at Chicago","United States"],["University of Michigan","United States"],["University of North Carolina at Chapel Hill","United States"],["Washington University in St. Louis","United States"],["Western Illinois University","United States"]],"cites":{"lang 1937":27,"fanning et al 1988":20,"fanning et al 1991":20,"kerp & hass 2006":8,"kerp & hass 2003":8,"gensel 1976":43,"potonie 1962":6,"edwards 1970":20,"wellman 2006":29,"kraeusel & weyland 1935":7,"hoeg 1942":12,"andrews & phillips 1968":39,"leclercq 1957":14,"kraeusel & weyland 1929":7,"lang 1925":27,"halle 1936":11,"arnold 1939":42,"andrews et al 1974":39,"andrews et al 1976":39,"balme 1995":0,"leclercq & hueber 1975":14,"trewin & hass 2004":24,"surange 1952":1,"walton 1957":26,"walton 1949":26,"meyer-berthaud 1986":19,"meyer-berthaud & galtier 1986":19,"eggert & taylor 1971":41,"brongniart 1828":16,"dimichele 1980":37,"chaloner 1951":23,"florin 1936":11,"chaloner 1958":23,"eggert & taylor 1968":41,"willard 1989":40,"schopf 1941":34,"leisman & phillips 1979":31,"benson 1918":22,"chaloner 1953":23,"leisman 1970":31,"zeiller 1906":15,"williamson 1888":21,"andrews & mamay 1951":44,"potonie 1965":6,"mamay 1950":38,"dimichele et al 1996":37,"brongniart 1849":16,"zeiller 1893":15,"williamson 1871":21,"bek 2021":4,"brousmiche 1983":18,"eggert & taylor 1966":41,"bek & psenicka 2001":4,"renault 1896":16,"mamay 1957":38,"pfefferkorn et al 1971":40,"taylor 1972":35,"williamson 1870":21,"renault 1879":16,"florin 1940":11,"florin 1939":11,"zeiller 1896":15,"pant & nautiyal 1960":2,"arnold 1938":42,"chaloner 1956":23,"feng & rothwell 1989":36,"andrews & agashe 1963":44,"potonie 1963":6,"phillips & andrews 1965":40,"brousmiche et al 1985":18,"leisman & peters 1970":31,"galtier 1971":19,"taylor & brack-hanes 1976":35,"stidd 1978":45,"galtier & scott 1979":19,"mapes & schabilion 1979":36,"surange & chandra 1975":1,"meyen 1977":3,"meyen & gomankov in gomankov & meyen 1986":3,"meyen 1984":3,"florin 1938":11,"clement-westerhof 1984":13,"clement-westerhof 1987":13,"florin 1944":10,"meyen 1981":3,"clement-westerhof 1974":13,"meyen 1962":3,"meyen 1982":3,"pant & misra 1977":2,"maithy 1974":1,"surange 1966":1,"pant & khare 1974":2,"schopf 1965":38,"rothwell 1980":36,"nathorst 1908":11,"grauvogel-stamm & duringer 1983":17,"lundblad 1948":11,"lundblad 1950":11,"grauvogel-stamm 1978":17,"harris 1931":25,"grauvogel-stamm & grauvogel 1980":17,"arnold 1956":42,"seward 1913":25,"harris 1946":28,"andrews & pearsall 1941":44,"harris 1961":28,"nathorst 1909":11,"harris 1932":25,"kraeusel & schaarschmidt 1966":7,"harris 1941":28,"pedersen et al 1989":9,"harris 1948":28,"harris & miller 1974":28,"vishnu-mittre 1953":1,"crane & upchurch 1987":32,"grauvogel-stamm 1969":17,"kraeusel 1949":7,"crane et al 1986":32,"harris 1969":28,"harris 1964":28,"bose & srivastava 1973":1,"srivastava 1984":1,"osborn & taylor 1993":35,"pedersen et al 1991":9,"friis et al 1986":9,"crane et al 1993":32,"friis 1990":11,"pedersen et al 1994":9,"friis 1985":9,"friis & skarby 1982":9,"friis 1983":9,"pedersen & friis 2001":9,"pedersen & crane 2000":9,"osborn & taylor 1995":35,"rothwell & stockey 1991":36,"kraeusel 1920":7,"rothwell & basinger 1979":36,"potonie 1967":6,"crane & stockey 1987":32,"crepet & daghlian 1980":39,"crepet et al 1980":39,"crepet et al 1975":39,"manchester 1986":33,"crane et al 1991":32,"manchester 1992":33,"crepet & daghlian 1981":39,"crepet & dilcher 1977":39,"crepet & taylor 1985":39,"crepet & daghlian 1982":39,"taylor & crepet 1987":35,"crepet & feldman 1991":30,"halbritter et al 2018":5},"note":"First-author affiliation per cited paper; data/affiliations/ (author_affiliations.csv, affil.R)"};   /* AFF-DATA: built by data/affiliations/affil.R */
 /* "Source year" colouring: one scale shared by the network links and the milestones timeline */
 const SRC_Y0 = 1820, SRC_Y1 = 2026;
 const srcCol = y => (y == null || !isFinite(y)) ? css("--muted") : d3.interpolateTurbo(0.08 + 0.86 * Math.max(0, Math.min(1, (y - SRC_Y0) / (SRC_Y1 - SRC_Y0))));
 const srcYear = l => { if (l._sy !== undefined) return l._sy; const c = (typeof citesIn === "function") ? citesIn(l.ref) : []; return l._sy = c.length ? c[0].year : null; };
 const linkColorKind = l => css(l.type==="insitu"||l.type==="insitu-gen"||l.type==="insitu-sp"||l.type==="compare-sp"?"--insitu":l.type==="affinity"?"--affinity":(l.type==="member"||l.type==="taxon")?"--rule":"--assembly");
-const linkColor = l => state.lcol === "src" && !(l.type==="member"||l.type==="taxon") ? srcCol(srcYear(l)) : linkColorKind(l);
+const affOf = l => { if (l._af !== undefined) return l._af; const c = (typeof citesIn === "function") ? citesIn(l.ref) : []; const a = c.length ? AFF.cites[citeKey(c[0])] : null; return l._af = a == null ? null : a; };
+const affCol = i => { if (i == null) return css("--muted"); const n = AFF.inst.length; const t = n > 1 ? i / (n - 1) : 0.5;
+  return d3.piecewise(d3.interpolateLab, ["#4a2e1d", "#8c5a2b", "#c08a3e", "#a3a14a", "#6f7f3a", "#5c6b5e", "#7a6a8a"])(t); };
+const linkColor = l => state.lcol === "aff" && !(l.type==="member"||l.type==="taxon") ? affCol(affOf(l)) : linkColorKind(l);
 
 let lastPlaced = null;
 function reaimIfPlaced(){
@@ -2415,7 +2427,7 @@ let tlV = [YMIN, YMAX];
 function tlSet(v0, v1){ const minSpan = 12; let a = Math.round(v0), b = Math.round(v1);
   if (b - a < minSpan) { const c = (a + b) / 2; a = Math.round(c - minSpan / 2); b = a + minSpan; }
   if (a < YMIN) { b += YMIN - a; a = YMIN; } if (b > YMAX) { a -= b - YMAX; b = YMAX; } a = Math.max(YMIN, a);
-  tlV = [a, b]; const yi = document.getElementById("year"); yi.min = a; yi.max = b;
+  tlV = [a, b]; const yi = document.getElementById("year"); yi.min = a; yi.max = b; if (typeof paintSlider === "function") paintSlider();
   const y = Math.max(a, Math.min(b, state.year)); if (y !== state.year) { state.year = y; yi.value = y; document.getElementById("yearOut").textContent = y; render(); }
   drawMilestones(); const z = document.getElementById("tlZoomOut"); if (z) z.disabled = a === YMIN && b === YMAX; }
 function tlZoom(f){ const c = Math.max(tlV[0], Math.min(tlV[1], state.year)), h = (tlV[1] - tlV[0]) * f / 2; tlSet(c - h, c + h); }
@@ -2429,17 +2441,14 @@ function drawMilestones(){
   d3.range(Math.ceil((tlV[0]+1)/step)*step, tlV[1], step).forEach(y => tl.append("text").attr("class","yr").attr("x",tx(y)).attr("y",TLY-11).attr("text-anchor","middle").text(y));
   /* publications: small dots stacked beneath the axis, one per paper, coloured by what it contributed */
   const D = 5.2, stacks = new Map(); let maxStack = 0;
-  if (state.lcol === "src") { const gid = "srcGrad"; const df = tl.append("defs").append("linearGradient").attr("id", gid).attr("x1", 0).attr("x2", 1);
-    d3.range(0, 1.0001, 0.05).forEach(f => { const y = tlV[0] + f * (tlV[1] - tlV[0]); df.append("stop").attr("offset", f).attr("stop-color", srcCol(y)); });
-    tl.append("rect").attr("x", 9).attr("width", W - 18).attr("y", TLY - 2.5).attr("height", 5).attr("rx", 2.5).attr("fill", `url(#${gid})`); }
-  const colOf = p => state.lcol === "src" ? srcCol(p.year) : p.kinds.has("in situ") ? css("--insitu") : p.kinds.has("organ to plant") ? css("--plant") : css("--spore");
+  const colOf = p => p.kinds.has("in situ") ? css("--insitu") : p.kinds.has("organ to plant") ? css("--plant") : css("--spore");
   const pubG = tl.append("g").attr("class","pubs");
   PUBS.forEach(p => { const x = tx(p.year), b = Math.round(x / D); const k = stacks.get(b) || 0; stacks.set(b, k + 1); maxStack = Math.max(maxStack, k + 1);
     const a = pubG.append("a").attr("href", scholarURL(p.q)).attr("target","_blank").attr("rel","noopener").attr("class","pubdot");
     const kinds = [...p.kinds].join(", "), about = [...p.about].slice(0, 6).join("; ") + (p.about.size > 6 ? "; …" : "");
     a.append("title").text(`${p.who} ${p.year} (${kinds})${about ? ": " + about : ""}${p.full ? "\n" + p.full : ""}\nClick to search Google Scholar`);
     a.append("circle").attr("cx", b * D).attr("cy", TLY + 9 + k * D).attr("r", 2.1).attr("fill", colOf(p)).attr("stroke", css("--panel")).attr("stroke-width", 0.6);
-    pubNodes.push({y: p.year, a}); });
+    pubNodes.push({y: p.year, a, key: p.key, fill: colOf(p)}); });
   /* milestones: a numbered Reinschospora glyph on the axis, and below the timeline a numbered list in full, so every one reads */
   const list = document.getElementById("msList"), goYear = y => { stopPlay?.(); state.year = y; document.getElementById("year").value = y; document.getElementById("yearOut").textContent = y; render(); };
   if (list) list.innerHTML = ""; let lastBadge = null;
@@ -2466,7 +2475,7 @@ function drawMilestones(){
   tl.attr("viewBox", `0 0 ${W} ${H}`).attr("width", W).attr("height", H).style("height", H + "px");
   marker = tl.append("line").attr("y1",TLY-14).attr("y2",TLY+14).attr("stroke",css("--ink")).attr("stroke-width",2).style("pointer-events","none");
   const leg = document.getElementById("pubLegend");
-  if (leg) leg.innerHTML = state.lcol === "src" ? `<span><b>${PUBS.length}</b>&nbsp;publications, one dot each, coloured by year on the same scale as the network links (Link colours: Source year); click a dot to search Google Scholar.</span>` : `<span><b>${PUBS.length}</b>&nbsp;publications supplied this page's names and links, one dot each; click a dot or a milestone to search Google Scholar.</span>` +
+  if (leg) leg.innerHTML = `<span><b>${PUBS.length}</b>&nbsp;publications supplied this page's names and links, one dot each; click a dot or a milestone to search Google Scholar.</span>` +
     `<span><i style="background:var(--spore)"></i>named genera or species</span><span><i style="background:var(--insitu)"></i>found spores inside a plant organ</span><span><i style="background:var(--plant)"></i>joined organs into a whole plant</span>`;
   drawTimelineMarker();
 }
@@ -2549,11 +2558,29 @@ document.querySelectorAll(".seg button[data-mode]").forEach(b => b.onclick = () 
 document.querySelectorAll(".seg button[data-lcol]").forEach(b => b.onclick = () => {
   state.lcol = b.dataset.lcol;
   document.querySelectorAll(".seg button[data-lcol]").forEach(x => x.setAttribute("aria-pressed", x.dataset.lcol === state.lcol));
-  const k = document.getElementById("keySrc"); if (k) k.hidden = state.lcol !== "src";
-  const bar = document.getElementById("srcBar"); if (bar) bar.style.background = `linear-gradient(90deg, ${d3.range(0, 1.0001, 0.1).map(f => srcCol(SRC_Y0 + f * (SRC_Y1 - SRC_Y0))).join(",")})`;
-  const ends = document.getElementById("srcEnds"); if (ends) ends.textContent = `${SRC_Y0} → ${SRC_Y1 - 1}.`;
-  render(); drawMilestones();
+  const k = document.getElementById("keyAff"); if (k) k.hidden = state.lcol !== "aff";
+  const lg = document.getElementById("affLeg");
+  if (lg && !lg.dataset.done) { lg.dataset.done = 1; const used = new Map(); links.forEach(l => { const a = affOf(l); if (a != null && !(l.type==="member"||l.type==="taxon")) used.set(a, (used.get(a) || 0) + 1); });
+    lg.innerHTML = [...used.entries()].sort((a, b) => a[0] - b[0]).map(([i, n]) => `<span title="${esc(AFF.inst[i][0])}, ${esc(AFF.inst[i][1] || "")}: ${n} link${n===1?"":"s"}"><i style="background:${affCol(i)}"></i>${esc(AFF.inst[i][0])}${AFF.inst[i][1] ? " (" + esc(AFF.inst[i][1]) + ")" : ""}</span>`).join(""); }
+  render();
 });
+/* the year slider always carries the source-year rainbow */
+function paintSlider(){ const yi = document.getElementById("year"); if (!yi) return; const a = +yi.min, b = +yi.max;
+  yi.style.setProperty("--rainbow", `linear-gradient(90deg, ${d3.range(0, 1.0001, 0.1).map(f => srcCol(a + f * (b - a))).join(",")})`); }
+paintSlider();
+/* hovering a link: it takes its source-year colour, and its paper's dot on the timeline turns black, ringed white */
+(() => { const parent = d3.select(gLinks.node().parentNode);
+  const gHit = parent.insert("g", () => gLinks.node().nextSibling).attr("class", "linkhits");
+  const hitSel = gHit.selectAll("line").data(links.filter(l => l.ref)).join("line").attr("stroke", "transparent").attr("stroke-width", 9).style("pointer-events", "stroke").style("cursor", "help");
+  hitSel.append("title").text(l => { const s = l.source.id ?? l.source, t = l.target.id ?? l.target, y = srcYear(l), a = affOf(l);
+    return `${s} → ${t}\n${l.ref}${y ? "\nSource year: " + y : ""}${a != null ? "\nFirst author's institution: " + AFF.inst[a][0] : ""}`; });
+  const vis = new Map(); linkSel.each(function(l){ vis.set(l, this); });
+  hitSel.on("mouseenter", function(e, l){ const v = vis.get(l); if (v) d3.select(v).attr("stroke", srcCol(srcYear(l))).attr("stroke-width", 4).attr("opacity", 1).raise();
+      const keys = new Set(citesIn(l.ref).map(citeKey));
+      pubNodes.forEach(p => { if (keys.has(p.key)) { p.a.raise(); p.a.select("circle").attr("fill", "#000").attr("stroke", "#fff").attr("stroke-width", 1.6).attr("r", 4.2); } }); })
+    .on("mouseleave", function(e, l){ render();
+      pubNodes.forEach(p => p.a.select("circle").attr("fill", p.fill).attr("stroke", css("--panel")).attr("stroke-width", 0.6).attr("r", 2.1)); });
+  window.__hitSel = hitSel; })();
 document.querySelectorAll(".seg button[data-scale]").forEach(b => b.onclick = () => {
   state.scale = b.dataset.scale;
   document.querySelectorAll(".seg button[data-scale]").forEach(x => x.setAttribute("aria-pressed", x.dataset.scale === state.scale));
